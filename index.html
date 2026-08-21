@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="<!-- figma:lang -->">
+  <head>
+    <!-- figma:head-start -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><!-- figma:title --></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- figma:head-end -->
+  </head>
+  <body>
+    <!-- figma:body-start -->
+    <div id="root">
+    <div class="page-glow" aria-hidden="true"></div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+      <div class="container header__inner">
+        <a href="#" class="header__logo">
+          <img src="assets/logo.png" alt="Troya Hotel" class="header__logo-img" />
+        </a>
+
+        <nav class="header__nav header__nav--desktop">
+          <a href="#rooms" class="nav-link">Номера</a>
+          <a href="#amenities" class="nav-link">Удобства</a>
+          <a href="#excursions" class="nav-link">Экскурсии</a>
+          <a href="#reviews" class="nav-link">Отзывы</a>
+          <a href="#contact" class="nav-link">Контакты</a>
+          <button type="button" class="btn btn--gold btn--sm" data-open-modal>Забронировать</button>
+        </nav>
+
+        <button type="button" class="burger" id="burger" aria-label="Меню" aria-expanded="false">
+          <span class="burger__ring"></span>
+          <span class="burger__lines">
+            <i></i><i></i><i></i>
+          </span>
+          <span class="burger__label" data-open="Меню" data-close="Закрыть">Меню</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile overlay menu -->
+    <div class="menu-overlay" id="menu-overlay" aria-hidden="true">
+      <div class="menu-overlay__wash"></div>
+      <div class="menu-overlay__photo">
+        <img
+          src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900&h=1200&fit=crop&auto=format"
+          alt=""
+        />
+      </div>
+      <nav class="menu-overlay__nav" id="nav">
+        <a href="#rooms" class="menu-overlay__link" data-i="01"><span>Номера</span></a>
+        <a href="#amenities" class="menu-overlay__link" data-i="02"><span>Удобства</span></a>
+        <a href="#excursions" class="menu-overlay__link" data-i="03"><span>Экскурсии</span></a>
+        <a href="#reviews" class="menu-overlay__link" data-i="04"><span>Отзывы</span></a>
+        <a href="#contact" class="menu-overlay__link" data-i="05"><span>Контакты</span></a>
+        <button type="button" class="btn btn--gold menu-overlay__cta" data-open-modal>Забронировать</button>
+      </nav>
+      <p class="menu-overlay__meta">Казань · ул. Восстания, 119</p>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero__bg">
+        <img
+          class="hero__img"
+          src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=1800&h=1200&fit=crop&auto=format"
+          alt="Интерьер отеля Троя"
+        />
+        <div class="hero__overlay"></div>
+        <div class="hero__grain"></div>
+      </div>
+
+      <p class="hero__city">Казань — ул. Восстания, 119</p>
+
+      <div class="container hero__content">
+        <p class="hero__eyebrow anim-up" style="--d: 0.3s">Отель в Казани</p>
+        <h1 class="hero__title anim-up" style="--d: 0.5s">
+          Ваше идеальное<br />
+          <em>укрытие</em><br />
+          от суеты
+        </h1>
+        <p class="hero__text anim-up" style="--d: 0.7s">
+          Комфортабельный отель в самом сердце Казани. Современные номера, завтраки, парковка и
+          организация экскурсий.
+        </p>
+        <div class="hero__actions anim-up" style="--d: 0.9s">
+          <button type="button" class="btn btn--gold" data-open-modal>Забронировать номер</button>
+          <a href="#rooms" class="btn btn--ghost">Смотреть номера</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Marquee -->
+    <div class="marquee">
+      <div class="marquee__track">
+        <span>Бесплатный Wi-Fi</span><i>◆</i>
+        <span>Охраняемая парковка</span><i>◆</i>
+        <span>Завтрак включён</span><i>◆</i>
+        <span>Кондиционер во всех номерах</span><i>◆</i>
+        <span>Организация экскурсий</span><i>◆</i>
+        <span>Трансфер</span><i>◆</i>
+        <span>Прачечная</span><i>◆</i>
+        <span>Хранение багажа</span><i>◆</i>
+        <span>Бесплатный Wi-Fi</span><i>◆</i>
+        <span>Охраняемая парковка</span><i>◆</i>
+        <span>Завтрак включён</span><i>◆</i>
+        <span>Кондиционер во всех номерах</span><i>◆</i>
+        <span>Организация экскурсий</span><i>◆</i>
+        <span>Трансфер</span><i>◆</i>
+        <span>Прачечная</span><i>◆</i>
+        <span>Хранение багажа</span><i>◆</i>
+      </div>
+    </div>
+
+    <!-- About -->
+    <section class="about section">
+      <div class="container about__grid">
+        <div class="reveal-left">
+          <p class="eyebrow">Об отеле</p>
+          <h2 class="heading gold-line">
+            Место, где<em> история</em><br />
+            встречает комфорт
+          </h2>
+          <p class="text">
+            Отель «Троя» расположен на улице Восстания в Казани — в нескольких минутах от главных
+            достопримечательностей татарской столицы. Мы предлагаем уютные современные номера,
+            внимательный персонал и всё необходимое для комфортного отдыха или деловой поездки.
+          </p>
+          <p class="text">
+            Казань — уникальный город, где слились русская и татарская культуры. Мы поможем вам
+            открыть его через авторские экскурсии, трансферы и индивидуальные маршруты.
+          </p>
+          <div class="about__stats">
+            <div>
+              <p class="about__stat-num">5+</p>
+              <p class="about__stat-label">Типов номеров</p>
+            </div>
+            <div>
+              <p class="about__stat-num">12</p>
+              <p class="about__stat-label">Экскурсий</p>
+            </div>
+            <div>
+              <p class="about__stat-num">24/7</p>
+              <p class="about__stat-label">Сервис</p>
+            </div>
+          </div>
+        </div>
+        <div class="about__media reveal-right">
+          <div class="about__img-wrap">
+            <img
+              src="https://images.unsplash.com/photo-1766777596127-ad864f0d27ad?w=700&h=950&fit=crop&auto=format"
+              alt="Казань — Кремль"
+            />
+          </div>
+          <div class="about__card">
+            <p class="about__card-label">Адрес</p>
+            <p class="about__card-title">ул. Восстания, 119</p>
+            <p class="about__card-sub">Казань, Татарстан</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Rooms slider -->
+    <section id="rooms" class="rooms section section--mist">
+      <div class="container">
+        <div class="rooms__top reveal">
+          <div>
+            <p class="eyebrow">Номерной фонд</p>
+            <h2 class="heading gold-line">Выберите свой номер</h2>
+          </div>
+          <div class="rooms__controls">
+            <button type="button" class="slider-nav" id="rooms-prev" aria-label="Предыдущий номер">‹</button>
+            <span class="rooms__counter"><b id="rooms-current">01</b><i>/</i><span id="rooms-total">05</span></span>
+            <button type="button" class="slider-nav" id="rooms-next" aria-label="Следующий номер">›</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rooms-slider reveal delay-200" id="rooms-slider">
+        <div class="rooms-slider__stage" id="rooms-stage"></div>
+        <div class="rooms-slider__panel">
+          <span class="rooms__tag" id="room-tag"></span>
+          <h3 class="rooms__name" id="room-name"></h3>
+          <p class="rooms__subtitle" id="room-subtitle"></p>
+          <p class="rooms__price" id="room-price"></p>
+          <p class="rooms__desc text" id="room-desc"></p>
+          <div class="rooms__features" id="room-features"></div>
+          <div class="rooms__footer">
+            <p class="rooms__note">Завтрак — 300 ₽ · Доп. кровать — 1 200 ₽</p>
+            <button type="button" class="btn btn--gold" id="room-book">Забронировать</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Amenities -->
+    <section id="amenities" class="amenities section">
+      <div class="container">
+        <div class="amenities__intro reveal">
+          <div>
+            <p class="eyebrow">Сервис</p>
+            <h2 class="heading gold-line">
+              Всё для вашего<br />
+              <em>комфорта</em>
+            </h2>
+          </div>
+          <p class="amenities__aside text">
+            Не список галочек — а атмосфера заботы, которую вы чувствуете с первой минуты.
+          </p>
+        </div>
+        <div class="amenities__mosaic" id="amenities-grid"></div>
+      </div>
+    </section>
+
+    <!-- Excursions -->
+    <section id="excursions" class="excursions section section--sand">
+      <div class="container">
+        <div class="excursions__header reveal">
+          <div>
+            <p class="eyebrow">Экскурсии</p>
+            <h2 class="heading gold-line">
+              Откройте Татарстан<br />
+              <em>вместе с нами</em>
+            </h2>
+          </div>
+          <p class="text excursions__lead">
+            Мы организуем авторские экскурсии по Казани и всему Татарстану — от ночных прогулок по
+            городу до речных путешествий на остров Свияжск.
+          </p>
+        </div>
+
+        <div class="excursions__photo reveal delay-200">
+          <img
+            src="https://images.unsplash.com/photo-1777138388693-8d692c865526?w=1400&h=400&fit=crop&auto=format"
+            alt="Казань — вид на крепость"
+          />
+          <div class="excursions__photo-fade"></div>
+        </div>
+
+        <div class="excursions__grid" id="excursions-grid"></div>
+
+        <div class="excursions__cta reveal">
+          <a href="tel:88435644646" class="btn btn--outline">Узнать подробности и цены</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reviews slider -->
+    <section id="reviews" class="reviews section">
+      <div class="container reviews__layout">
+        <div class="reviews__intro reveal">
+          <p class="eyebrow">Отзывы гостей</p>
+          <h2 class="heading gold-line">
+            Голоса тех,<br /><em>кто уже был</em>
+          </h2>
+          <div class="reviews__controls">
+            <button type="button" class="slider-nav" id="reviews-prev" aria-label="Предыдущий отзыв">‹</button>
+            <button type="button" class="slider-nav" id="reviews-next" aria-label="Следующий отзыв">›</button>
+          </div>
+        </div>
+
+        <div class="reviews-deck reveal delay-200" id="reviews-deck" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact section section--mist">
+      <div class="container contact__grid">
+        <div class="reveal-left">
+          <p class="eyebrow">Контакты</p>
+          <h2 class="heading gold-line">
+            Свяжитесь<br /><em>с нами</em>
+          </h2>
+
+          <div class="contact__list">
+            <div class="contact__item">
+              <p class="contact__label">Бронирование</p>
+              <a href="tel:88435644646" class="contact__phone">8 (843) 564-46-46</a>
+              <a href="tel:89046785600" class="contact__phone">8 (904) 678-56-00</a>
+            </div>
+            <div class="contact__item">
+              <p class="contact__label">Бухгалтерия (9:00–15:00)</p>
+              <a href="tel:88435648319" class="contact__phone">8 (843) 564-83-19</a>
+            </div>
+            <div class="contact__item">
+              <p class="contact__label">Email</p>
+              <a href="mailto:hoteltroya@mail.ru" class="contact__email">hoteltroya@mail.ru</a>
+            </div>
+            <div class="contact__item">
+              <p class="contact__label">Адрес</p>
+              <p class="text">420095, РФ, РТ, г. Казань</p>
+              <p class="text">ул. Восстания, 119</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="contact__aside reveal-right">
+          <div class="contact__map">
+            <img
+              src="https://images.unsplash.com/photo-1764470729410-4336faf28051?w=700&h=400&fit=crop&auto=format"
+              alt="Казань"
+            />
+            <div class="contact__map-pin">
+              <span class="contact__dot"></span>
+              <span class="contact__pin-label">ул. Восстания, 119</span>
+            </div>
+          </div>
+          <a href="tel:88435644646" class="btn btn--gold btn--block">Позвонить и забронировать</a>
+          <div class="contact__hours">
+            <p class="contact__label">Режим работы администрации</p>
+            <p class="contact__hours-text">Круглосуточно, 24/7</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container footer__inner">
+        <a href="#" class="footer__brand">Отель <span>Троя</span></a>
+        <p class="footer__meta">ООО «ТРОЯ» · ИНН 1657131940 · Казань, ул. Восстания, 119</p>
+        <p class="footer__copy">© 2026 Все права защищены</p>
+      </div>
+    </footer>
+
+    <!-- Booking Modal -->
+    <div class="modal" id="booking-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal__backdrop" data-close-modal></div>
+      <div class="modal__dialog">
+        <div class="modal__header">
+          <div class="modal__brand">
+            <img src="assets/logo.png" alt="Troya Hotel" />
+            <div>
+              <p class="modal__eyebrow" id="modal-title">Онлайн-бронирование</p>
+              <p class="modal__room" id="modal-room" hidden></p>
+            </div>
+          </div>
+          <button type="button" class="modal__close" data-close-modal aria-label="Закрыть">✕</button>
+        </div>
+
+        <div class="modal__success" id="modal-success" hidden>
+          <div class="modal__success-icon">✓</div>
+          <h3>Заявка отправлена</h3>
+          <p>
+            Мы свяжемся с вами в ближайшее время для подтверждения бронирования.<br />
+            <strong>8 (843) 564-46-46</strong>
+          </p>
+          <button type="button" class="btn btn--gold" data-close-modal>Закрыть</button>
+        </div>
+
+        <form class="modal__form" id="booking-form">
+          <div class="form-row form-row--2">
+            <div class="field">
+              <label for="name">Ваше имя *</label>
+              <input id="name" name="name" required placeholder="Иван Иванов" />
+            </div>
+            <div class="field">
+              <label for="phone">Телефон *</label>
+              <input id="phone" name="phone" type="tel" required placeholder="+7 (___) ___-__-__" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" placeholder="your@email.com" />
+          </div>
+
+          <div class="form-row form-row--3">
+            <div class="field">
+              <label for="checkin">Заезд *</label>
+              <input id="checkin" name="checkin" type="date" required />
+            </div>
+            <div class="field">
+              <label for="checkout">Выезд *</label>
+              <input id="checkout" name="checkout" type="date" required />
+            </div>
+            <div class="field">
+              <label for="guests">Гостей</label>
+              <select id="guests" name="guests">
+                <option value="1">1 гость</option>
+                <option value="2">2 гостя</option>
+                <option value="3">3 гостя</option>
+                <option value="4">4 гостя</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" id="room-field" hidden>
+            <label for="room-type">Тип номера</label>
+            <input id="room-type" name="room" readonly />
+          </div>
+
+          <div class="field">
+            <label for="comment">Комментарий</label>
+            <textarea id="comment" name="comment" rows="3" placeholder="Особые пожелания, ранний заезд..."></textarea>
+          </div>
+
+          <p class="modal__hint">* ОБЯЗАТЕЛЬНЫЕ ПОЛЯ · ЗАВТРАК +300 ₽ · ДОП. КРОВАТЬ +1 200 ₽</p>
+          <button type="submit" class="btn btn--gold btn--block">Отправить заявку</button>
+        </form>
+      </div>
+    </div>
+
+    </div>
+    <script src="js/main.js" defer></script>
+    <!-- figma:body-end -->
+  </body>
+</html>

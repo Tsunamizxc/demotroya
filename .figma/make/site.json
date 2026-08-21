@@ -1,0 +1,12 @@
+{
+  "title": "Отель Троя — Казань",
+  "language": "ru",
+  "description": "Комфортабельный отель в самом сердце Казани. Современные номера, завтраки, парковка и организация экскурсий.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
