@@ -6,7 +6,7 @@ const ROOMS = [
     price: "от 4 000 ₽",
     desc: "Уютный номер с двумя кроватями, всеми удобствами и современной ванной комнатой.",
     features: ["Две кровати", "Телевизор", "Кондиционер", "Мини-бар", "Холодильник"],
-    img: "https://images.unsplash.com/photo-1629140727571-9b5c6f6267b4?w=600&h=500&fit=crop&auto=format",
+    img: "https://images.unsplash.com/photo-1629140727571-9b5c6f6267b4?w=900&h=700&fit=crop&auto=format",
     tag: "Стандарт",
   },
   {
@@ -15,7 +15,7 @@ const ROOMS = [
     price: "от 5 000 ₽",
     desc: "Просторный номер для семьи или компании с тремя раздельными кроватями и плазменным ТВ.",
     features: ["Три кровати", "Плазменный ТВ", "Кондиционер", "Мини-бар", "Холодильник"],
-    img: "https://images.unsplash.com/photo-1578898886225-c7c894047899?w=600&h=500&fit=crop&auto=format",
+    img: "https://images.unsplash.com/photo-1578898886225-c7c894047899?w=900&h=700&fit=crop&auto=format",
     tag: "Семейный",
   },
   {
@@ -24,7 +24,7 @@ const ROOMS = [
     price: "от 5 700 ₽",
     desc: "Двуспальная кровать, полный набор удобств. Идеально для деловых поездок.",
     features: ["Двуспальная кровать", "Телевизор", "Кондиционер", "Телефон", "Мини-бар"],
-    img: "https://images.unsplash.com/photo-1590675560125-0d832b9d719e?w=600&h=500&fit=crop&auto=format",
+    img: "https://images.unsplash.com/photo-1590675560125-0d832b9d719e?w=900&h=700&fit=crop&auto=format",
     tag: "Бизнес",
   },
   {
@@ -33,7 +33,7 @@ const ROOMS = [
     price: "от 6 400 ₽",
     desc: "Уникальный дизайн, халаты, тапочки, большой плазменный ТВ и чайный сервиз.",
     features: ["Дизайнерский интерьер", "Халат и тапочки", "Большой ТВ", "Чайный сервиз", "Мини-кухня"],
-    img: "https://images.unsplash.com/photo-1731336478850-6bce7235e320?w=600&h=500&fit=crop&auto=format",
+    img: "https://images.unsplash.com/photo-1731336478850-6bce7235e320?w=900&h=700&fit=crop&auto=format",
     tag: "Люкс",
   },
   {
@@ -42,7 +42,7 @@ const ROOMS = [
     price: "от 6 700 ₽",
     desc: "Большая двуспальная кровать, халаты, тапочки и полный комплект премиальных удобств.",
     features: ["Большая кровать", "Халат и тапочки", "Кондиционер", "Полный мини-бар", "Доп. кровать"],
-    img: "https://images.unsplash.com/photo-1742821855309-d26c83bdfe1d?w=600&h=500&fit=crop&auto=format",
+    img: "https://images.unsplash.com/photo-1742821855309-d26c83bdfe1d?w=900&h=700&fit=crop&auto=format",
     tag: "Премиум",
   },
 ];
@@ -85,6 +85,25 @@ const AMENITIES = [
   },
 ];
 
+const REVIEWS = [
+  {
+    name: "Ольга",
+    text: "Очень понравился отель! Персонал встречает с улыбкой, атмосфера уюта и тишины ощущается по всей территории. Чувствуешь себя как дома, но лучше.",
+  },
+  {
+    name: "Анастасия",
+    text: "Внимательный сервис, уютные номера, чистое постельное бельё и кондиционер в каждом номере. Обязательно вернёмся снова! Рекомендуем всем.",
+  },
+  {
+    name: "Дмитрий",
+    text: "Удобное расположение, тихие номера и быстрое бронирование. Организовали трансфер без лишних вопросов — всё чётко и по-деловому.",
+  },
+  {
+    name: "Мария",
+    text: "Брали экскурсию в Свияжск через отель — маршрут отличный, гид живой, а после прогулки приятно вернуться в тёплый номер.",
+  },
+];
+
 const EXCURSIONS = [
   { num: "01", title: "Спортивная Казань", desc: "Казань Арена, дворец водных видов спорта, конный комплекс, остров Свияжск, прогулка по Волге." },
   { num: "02", title: "Храм всех религий", desc: "Раифский монастырь, Свияжск, Макарьевская пустынь — речное возвращение." },
@@ -97,6 +116,10 @@ const EXCURSIONS = [
   { num: "09", title: "Ночная Казань", desc: "Подсвеченные достопримечательности, легенды озера Кабан." },
   { num: "10", title: "Обзорная Казань", desc: "Мечеть Кул-Шариф, башня Сююмбике, Благовещенский собор, панорамные виды." },
 ];
+
+function pad(n) {
+  return String(n).padStart(2, "0");
+}
 
 /* ─── Modal ──────────────────────────────────────── */
 const modal = document.getElementById("booking-modal");
@@ -128,7 +151,6 @@ function openModal(roomName) {
     roomTypeInput.value = "";
   }
 
-  // Force reflow so transition always runs
   void modal.offsetWidth;
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
@@ -150,8 +172,6 @@ function closeModal() {
   };
 
   dialog.addEventListener("transitionend", onEnd);
-
-  // Fallback if transitionend doesn't fire
   setTimeout(finishClose, 400);
 }
 
@@ -164,7 +184,10 @@ function finishClose() {
 }
 
 document.querySelectorAll("[data-open-modal]").forEach((btn) => {
-  btn.addEventListener("click", () => openModal());
+  btn.addEventListener("click", () => {
+    setMenuOpen(false);
+    openModal();
+  });
 });
 
 document.querySelectorAll("[data-close-modal]").forEach((el) => {
@@ -172,7 +195,10 @@ document.querySelectorAll("[data-close-modal]").forEach((el) => {
 });
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape") closeModal();
+  if (e.key === "Escape") {
+    closeModal();
+    setMenuOpen(false);
+  }
 });
 
 bookingForm?.addEventListener("submit", (e) => {
@@ -181,23 +207,32 @@ bookingForm?.addEventListener("submit", (e) => {
   modalSuccess.hidden = false;
 });
 
-/* ─── Header / mobile nav ────────────────────────── */
+/* ─── Header / creative burger ───────────────────── */
 const header = document.getElementById("header");
 const burger = document.getElementById("burger");
+const menuOverlay = document.getElementById("menu-overlay");
 const nav = document.getElementById("nav");
+const burgerLabel = burger?.querySelector(".burger__label");
 
-function setNavOpen(open) {
-  nav.classList.toggle("is-open", open);
-  burger.classList.toggle("is-open", open);
-  burger.setAttribute("aria-expanded", String(open));
+function setMenuOpen(open) {
+  menuOverlay?.classList.toggle("is-open", open);
+  burger?.classList.toggle("is-open", open);
+  burger?.setAttribute("aria-expanded", String(open));
+  menuOverlay?.setAttribute("aria-hidden", String(!open));
+  document.body.classList.toggle("menu-open", open);
+  if (burgerLabel) {
+    burgerLabel.textContent = open
+      ? burgerLabel.dataset.close || "Закрыть"
+      : burgerLabel.dataset.open || "Меню";
+  }
 }
 
 burger?.addEventListener("click", () => {
-  setNavOpen(!nav.classList.contains("is-open"));
+  setMenuOpen(!menuOverlay?.classList.contains("is-open"));
 });
 
 nav?.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", () => setNavOpen(false));
+  link.addEventListener("click", () => setMenuOpen(false));
 });
 
 window.addEventListener(
@@ -209,12 +244,11 @@ window.addEventListener(
 );
 
 window.addEventListener("resize", () => {
-  if (window.innerWidth > 900) setNavOpen(false);
+  if (window.innerWidth > 900) setMenuOpen(false);
 });
 
-/* ─── Rooms ──────────────────────────────────────── */
-const tabsEl = document.getElementById("room-tabs");
-const roomImg = document.getElementById("room-img");
+/* ─── Rooms stacked slider ───────────────────────── */
+const roomsStage = document.getElementById("rooms-stage");
 const roomTag = document.getElementById("room-tag");
 const roomName = document.getElementById("room-name");
 const roomSubtitle = document.getElementById("room-subtitle");
@@ -222,68 +256,142 @@ const roomPrice = document.getElementById("room-price");
 const roomDesc = document.getElementById("room-desc");
 const roomFeatures = document.getElementById("room-features");
 const roomBook = document.getElementById("room-book");
+const roomsCurrent = document.getElementById("rooms-current");
+const roomsTotal = document.getElementById("rooms-total");
 
 let activeRoom = 0;
 
-function renderRoom(index) {
-  activeRoom = index;
+function updateRoomPanel(index) {
   const room = ROOMS[index];
-
-  tabsEl.querySelectorAll(".rooms__tab").forEach((tab, i) => {
-    tab.classList.toggle("is-active", i === index);
-    tab.setAttribute("aria-selected", String(i === index));
-  });
-
-  // Restart image animation
-  roomImg.style.animation = "none";
-  void roomImg.offsetWidth;
-  roomImg.style.animation = "";
-  roomImg.src = room.img;
-  roomImg.alt = room.name;
-
   roomTag.textContent = room.tag;
   roomName.textContent = room.name;
   roomSubtitle.textContent = room.subtitle;
   roomPrice.textContent = room.price;
   roomDesc.textContent = room.desc;
   roomFeatures.innerHTML = room.features.map((f) => `<span>${f}</span>`).join("");
+  if (roomsCurrent) roomsCurrent.textContent = pad(index + 1);
 }
 
-if (tabsEl) {
-  ROOMS.forEach((room, i) => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "rooms__tab" + (i === 0 ? " is-active" : "");
-    btn.setAttribute("role", "tab");
-    btn.setAttribute("aria-selected", String(i === 0));
-    btn.textContent = room.tag;
-    btn.addEventListener("click", () => renderRoom(i));
-    tabsEl.appendChild(btn);
-  });
-  renderRoom(0);
+function renderRoomSlides() {
+  if (!roomsStage) return;
+  roomsStage.innerHTML = ROOMS.map(
+    (room, i) => `
+      <article class="room-slide" data-index="${i}">
+        <img src="${room.img}" alt="${room.name}" draggable="false" />
+      </article>
+    `
+  ).join("");
+  if (roomsTotal) roomsTotal.textContent = pad(ROOMS.length);
+  setActiveRoom(0);
 }
+
+function setActiveRoom(index) {
+  activeRoom = (index + ROOMS.length) % ROOMS.length;
+  const slides = roomsStage?.querySelectorAll(".room-slide");
+  slides?.forEach((slide, i) => {
+    slide.classList.remove("is-active", "is-next", "is-prev", "is-far");
+    if (i === activeRoom) slide.classList.add("is-active");
+    else if (i === (activeRoom + 1) % ROOMS.length) slide.classList.add("is-next");
+    else if (i === (activeRoom - 1 + ROOMS.length) % ROOMS.length) slide.classList.add("is-prev");
+    else slide.classList.add("is-far");
+  });
+  updateRoomPanel(activeRoom);
+}
+
+function bindSwipe(el, onPrev, onNext) {
+  if (!el) return;
+  let startX = 0;
+  let dragging = false;
+
+  el.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    startX = e.clientX;
+    el.setPointerCapture?.(e.pointerId);
+  });
+
+  el.addEventListener("pointerup", (e) => {
+    if (!dragging) return;
+    dragging = false;
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) < 40) return;
+    if (dx < 0) onNext();
+    else onPrev();
+  });
+
+  el.addEventListener("pointercancel", () => {
+    dragging = false;
+  });
+}
+
+renderRoomSlides();
+
+document.getElementById("rooms-prev")?.addEventListener("click", () => setActiveRoom(activeRoom - 1));
+document.getElementById("rooms-next")?.addEventListener("click", () => setActiveRoom(activeRoom + 1));
+bindSwipe(roomsStage, () => setActiveRoom(activeRoom - 1), () => setActiveRoom(activeRoom + 1));
 
 roomBook?.addEventListener("click", () => {
   const room = ROOMS[activeRoom];
   openModal(`${room.name} — ${room.subtitle}`);
 });
 
-/* ─── Amenities ──────────────────────────────────── */
+/* ─── Amenities mosaic ───────────────────────────── */
 const amenitiesGrid = document.getElementById("amenities-grid");
 if (amenitiesGrid) {
   amenitiesGrid.innerHTML = AMENITIES.map((a, i) => {
     const delay = Math.min((i % 4) * 100 + 100, 400);
     return `
-      <div class="amenity reveal delay-${delay}">
+      <article class="amenity reveal delay-${delay}" data-index="${pad(i + 1)}">
         <div class="amenity__icon">
-          <img src="${a.icon}" alt="" width="56" height="56" loading="lazy" />
+          <img src="${a.icon}" alt="" width="40" height="40" loading="lazy" />
         </div>
         <h3>${a.title}</h3>
         <p>${a.desc}</p>
-      </div>
+      </article>
     `;
   }).join("");
 }
+
+/* ─── Reviews deck slider ────────────────────────── */
+const reviewsDeck = document.getElementById("reviews-deck");
+let activeReview = 0;
+
+function renderReviews() {
+  if (!reviewsDeck) return;
+  reviewsDeck.innerHTML = REVIEWS.map(
+    (r, i) => `
+      <article class="review-card" data-index="${i}">
+        <div class="review-card__mark">“</div>
+        <div class="review-card__stars">★★★★★</div>
+        <p class="review-card__text">${r.text}</p>
+        <div class="review-card__author">
+          <div class="review-card__avatar">${r.name[0]}</div>
+          <div>
+            <p class="review-card__name">${r.name}</p>
+            <p class="review-card__role">ГОСТЬ ОТЕЛЯ</p>
+          </div>
+        </div>
+      </article>
+    `
+  ).join("");
+  setActiveReview(0);
+}
+
+function setActiveReview(index) {
+  activeReview = (index + REVIEWS.length) % REVIEWS.length;
+  reviewsDeck?.querySelectorAll(".review-card").forEach((card, i) => {
+    card.classList.remove("is-active", "is-next", "is-prev", "is-far");
+    if (i === activeReview) card.classList.add("is-active");
+    else if (i === (activeReview + 1) % REVIEWS.length) card.classList.add("is-next");
+    else if (i === (activeReview - 1 + REVIEWS.length) % REVIEWS.length) card.classList.add("is-prev");
+    else card.classList.add("is-far");
+  });
+}
+
+renderReviews();
+
+document.getElementById("reviews-prev")?.addEventListener("click", () => setActiveReview(activeReview - 1));
+document.getElementById("reviews-next")?.addEventListener("click", () => setActiveReview(activeReview + 1));
+bindSwipe(reviewsDeck, () => setActiveReview(activeReview - 1), () => setActiveReview(activeReview + 1));
 
 /* ─── Excursions ─────────────────────────────────── */
 const excursionsGrid = document.getElementById("excursions-grid");
