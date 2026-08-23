@@ -6,8 +6,9 @@ const ROOMS = [
     price: "от 4 000 ₽",
     desc: "Уютный номер с двумя кроватями, всеми удобствами и современной ванной комнатой.",
     features: ["Две кровати", "Телевизор", "Кондиционер", "Мини-бар", "Холодильник"],
-    img: "https://images.unsplash.com/photo-1629140727571-9b5c6f6267b4?w=900&h=700&fit=crop&auto=format",
+    img: "assets/photos/room-1.jpg",
     tag: "Стандарт",
+    href: "room-standard.html",
   },
   {
     name: "Standard+",
@@ -15,8 +16,9 @@ const ROOMS = [
     price: "от 5 000 ₽",
     desc: "Просторный номер для семьи или компании с тремя раздельными кроватями и плазменным ТВ.",
     features: ["Три кровати", "Плазменный ТВ", "Кондиционер", "Мини-бар", "Холодильник"],
-    img: "https://images.unsplash.com/photo-1578898886225-c7c894047899?w=900&h=700&fit=crop&auto=format",
+    img: "assets/photos/room-2.jpg",
     tag: "Семейный",
+    href: "room-family.html",
   },
   {
     name: "Business Comfort",
@@ -24,8 +26,9 @@ const ROOMS = [
     price: "от 5 700 ₽",
     desc: "Двуспальная кровать, полный набор удобств. Идеально для деловых поездок.",
     features: ["Двуспальная кровать", "Телевизор", "Кондиционер", "Телефон", "Мини-бар"],
-    img: "https://images.unsplash.com/photo-1590675560125-0d832b9d719e?w=900&h=700&fit=crop&auto=format",
+    img: "assets/photos/room-3.jpg",
     tag: "Бизнес",
+    href: "room-business.html",
   },
   {
     name: "Business Family",
@@ -33,8 +36,9 @@ const ROOMS = [
     price: "от 6 400 ₽",
     desc: "Уникальный дизайн, халаты, тапочки, большой плазменный ТВ и чайный сервиз.",
     features: ["Дизайнерский интерьер", "Халат и тапочки", "Большой ТВ", "Чайный сервиз", "Мини-кухня"],
-    img: "https://images.unsplash.com/photo-1731336478850-6bce7235e320?w=900&h=700&fit=crop&auto=format",
+    img: "assets/photos/room-4.jpg",
     tag: "Люкс",
+    href: "room-luxe.html",
   },
   {
     name: "Business Comfort+",
@@ -42,8 +46,9 @@ const ROOMS = [
     price: "от 6 700 ₽",
     desc: "Большая двуспальная кровать, халаты, тапочки и полный комплект премиальных удобств.",
     features: ["Большая кровать", "Халат и тапочки", "Кондиционер", "Полный мини-бар", "Доп. кровать"],
-    img: "https://images.unsplash.com/photo-1742821855309-d26c83bdfe1d?w=900&h=700&fit=crop&auto=format",
+    img: "assets/photos/room-5.jpg",
     tag: "Премиум",
+    href: "room-premium.html",
   },
 ];
 
@@ -186,7 +191,7 @@ function finishClose() {
 document.querySelectorAll("[data-open-modal]").forEach((btn) => {
   btn.addEventListener("click", () => {
     setMenuOpen(false);
-    openModal();
+    openModal(btn.dataset.room || undefined);
   });
 });
 
@@ -260,6 +265,7 @@ const roomPrice = document.getElementById("room-price");
 const roomDesc = document.getElementById("room-desc");
 const roomFeatures = document.getElementById("room-features");
 const roomBook = document.getElementById("room-book");
+const roomMore = document.getElementById("room-more");
 const roomsCurrent = document.getElementById("rooms-current");
 const roomsTotal = document.getElementById("rooms-total");
 
@@ -274,6 +280,7 @@ function updateRoomPanel(index) {
   roomDesc.textContent = room.desc;
   roomFeatures.innerHTML = room.features.map((f) => `<span>${f}</span>`).join("");
   if (roomsCurrent) roomsCurrent.textContent = pad(index + 1);
+  if (roomMore) roomMore.href = room.href || "rooms.html";
 }
 
 function renderRoomSlides() {

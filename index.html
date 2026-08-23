@@ -19,12 +19,12 @@
     <!-- Header -->
     <header class="header" id="header">
       <div class="container header__inner">
-        <a href="#" class="header__logo">
+        <a href="index.html" class="header__logo">
           <img src="assets/logo.png" alt="Troya Hotel" class="header__logo-img" />
         </a>
 
         <nav class="header__nav header__nav--desktop">
-          <a href="#rooms" class="nav-link">Номера</a>
+          <a href="rooms.html" class="nav-link">Номера</a>
           <a href="#amenities" class="nav-link">Удобства</a>
           <a href="#excursions" class="nav-link">Экскурсии</a>
           <a href="#reviews" class="nav-link">Отзывы</a>
@@ -47,7 +47,7 @@
       <div class="menu-overlay__wash"></div>
       <div class="menu-overlay__photo">
         <img
-          src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=900&h=1200&fit=crop&auto=format"
+          src="assets/photos/menu.jpg"
           alt=""
         />
       </div>
@@ -56,7 +56,7 @@
           <span></span>
           <span></span>
         </button>
-        <a href="#rooms" class="menu-overlay__link" data-i="01"><span>Номера</span></a>
+        <a href="rooms.html" class="menu-overlay__link" data-i="01"><span>Номера</span></a>
         <a href="#amenities" class="menu-overlay__link" data-i="02"><span>Удобства</span></a>
         <a href="#excursions" class="menu-overlay__link" data-i="03"><span>Экскурсии</span></a>
         <a href="#reviews" class="menu-overlay__link" data-i="04"><span>Отзывы</span></a>
@@ -71,7 +71,7 @@
       <div class="hero__bg">
         <img
           class="hero__img"
-          src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=1800&h=1200&fit=crop&auto=format"
+          src="assets/photos/hero.jpg"
           alt="Интерьер отеля Троя"
         />
         <div class="hero__overlay"></div>
@@ -93,7 +93,7 @@
         </p>
         <div class="hero__actions anim-up" style="--d: 0.9s">
           <button type="button" class="btn btn--gold" data-open-modal>Забронировать номер</button>
-          <a href="#rooms" class="btn btn--ghost">Смотреть номера</a>
+          <a href="rooms.html" class="btn btn--ghost">Смотреть номера</a>
         </div>
       </div>
     </section>
@@ -156,7 +156,7 @@
         <div class="about__media reveal-right">
           <div class="about__img-wrap">
             <img
-              src="https://images.unsplash.com/photo-1766777596127-ad864f0d27ad?w=700&h=950&fit=crop&auto=format"
+              src="assets/photos/about.jpg"
               alt="Казань — Кремль"
             />
           </div>
@@ -176,6 +176,7 @@
           <div>
             <p class="eyebrow">Номерной фонд</p>
             <h2 class="heading gold-line">Выберите свой номер</h2>
+            <p class="rooms__all"><a href="rooms.html">Все номера →</a></p>
           </div>
           <div class="rooms__controls">
             <button type="button" class="slider-nav" id="rooms-prev" aria-label="Предыдущий номер">
@@ -204,7 +205,10 @@
           <div class="rooms__features" id="room-features"></div>
           <div class="rooms__footer">
             <p class="rooms__note">Завтрак — 300 ₽ · Доп. кровать — 1 200 ₽</p>
-            <button type="button" class="btn btn--gold" id="room-book">Забронировать</button>
+            <div class="rooms__footer-actions">
+              <a class="btn btn--outline" id="room-more" href="rooms.html">Подробнее</a>
+              <button type="button" class="btn btn--gold" id="room-book">Забронировать</button>
+            </div>
           </div>
         </div>
       </div>
@@ -248,7 +252,7 @@
 
         <div class="excursions__photo reveal delay-200">
           <img
-            src="https://images.unsplash.com/photo-1777138388693-8d692c865526?w=1400&h=400&fit=crop&auto=format"
+            src="assets/photos/excursions.jpg"
             alt="Казань — вид на крепость"
           />
           <div class="excursions__photo-fade"></div>
@@ -322,7 +326,7 @@
         <div class="contact__aside reveal-right">
           <div class="contact__map">
             <img
-              src="https://images.unsplash.com/photo-1764470729410-4336faf28051?w=700&h=400&fit=crop&auto=format"
+              src="assets/photos/contact.jpg"
               alt="Казань"
             />
             <div class="contact__map-pin">
@@ -342,7 +346,7 @@
     <!-- Footer -->
     <footer class="footer">
       <div class="container footer__inner">
-        <a href="#" class="footer__brand">Отель <span>Троя</span></a>
+        <a href="index.html" class="footer__brand">Отель <span>Троя</span></a>
         <p class="footer__meta">ООО «ТРОЯ» · ИНН 1657131940 · Казань, ул. Восстания, 119</p>
         <p class="footer__copy">© 2026 Все права защищены</p>
       </div>

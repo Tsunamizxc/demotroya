@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Standard+ двухместный — Отель Троя</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,300;1,9..144,400&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div id="root">
+      <div class="page-glow" aria-hidden="true"></div>
+      <header class="header" id="header">
+        <div class="container header__inner">
+          <a href="index.html" class="header__logo">
+            <img src="assets/logo.png" alt="Troya Hotel" class="header__logo-img" />
+          </a>
+          <nav class="header__nav header__nav--desktop">
+            <a href="rooms.html" class="nav-link is-current">Номера</a>
+            <a href="index.html#amenities" class="nav-link">Удобства</a>
+            <a href="index.html#excursions" class="nav-link">Экскурсии</a>
+            <a href="index.html#reviews" class="nav-link">Отзывы</a>
+            <a href="index.html#contact" class="nav-link">Контакты</a>
+            <button type="button" class="btn btn--gold btn--sm" data-open-modal data-room="Standard+ — Двухместный">Забронировать</button>
+          </nav>
+          <button type="button" class="burger" id="burger" aria-label="Меню" aria-expanded="false">
+            <span class="burger__ring"></span>
+            <span class="burger__lines"><i></i><i></i><i></i></span>
+            <span class="burger__label" data-open="Меню" data-close="Закрыть">Меню</span>
+          </button>
+        </div>
+      </header>
+      <div class="menu-overlay" id="menu-overlay" aria-hidden="true">
+        <div class="menu-overlay__wash"></div>
+        <div class="menu-overlay__photo"><img src="assets/photos/menu.jpg" alt="" /></div>
+        <nav class="menu-overlay__nav" id="nav">
+          <button type="button" class="menu-overlay__close" id="menu-close" aria-label="Закрыть меню"><span></span><span></span></button>
+          <a href="rooms.html" class="menu-overlay__link" data-i="01"><span>Номера</span></a>
+          <a href="index.html#amenities" class="menu-overlay__link" data-i="02"><span>Удобства</span></a>
+          <a href="index.html#excursions" class="menu-overlay__link" data-i="03"><span>Экскурсии</span></a>
+          <a href="index.html#reviews" class="menu-overlay__link" data-i="04"><span>Отзывы</span></a>
+          <a href="index.html#contact" class="menu-overlay__link" data-i="05"><span>Контакты</span></a>
+          <button type="button" class="btn btn--gold menu-overlay__cta" data-open-modal data-room="Standard+ — Двухместный">Забронировать</button>
+        </nav>
+        <p class="menu-overlay__meta">Казань · ул. Восстания, 119</p>
+      </div>
+
+      <section class="hero hero--page">
+        <div class="hero__bg">
+          <img class="hero__img" src="assets/photos/room-1.jpg" alt="Standard+ двухместный" />
+          <div class="hero__overlay"></div>
+          <div class="hero__grain"></div>
+        </div>
+        <div class="container hero__content">
+          <p class="crumbs anim-up" style="--d: 0.2s">
+            <a href="index.html">Главная</a><span>/</span><a href="rooms.html">Номера</a><span>/</span><span>Standard+</span>
+          </p>
+          <p class="hero__eyebrow anim-up" style="--d: 0.35s">01 · Стандарт</p>
+          <h1 class="hero__title anim-up" style="--d: 0.5s">
+            Две кровати.<br /><em>Тишина.</em><br />Свой ритм.
+          </h1>
+          <p class="hero__text anim-up" style="--d: 0.7s">от 4 000 ₽ за ночь · двухместный</p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container room-detail">
+          <div class="reveal-left">
+            <p class="room-detail__lead">
+              Номер для тех, кто едет вдвоём и не хочет делить одну кровать — и не хочет платить за лишний квадрат.
+            </p>
+            <p class="text">
+              Standard+ двухместный собран просто: две отдельные кровати, плотные шторы, кондиционер и ванная
+              с горячей водой, которая не заканчивается посреди душа. После Кремля и улицы Баумана сюда
+              возвращаются молча — и это комплимент номеру.
+            </p>
+            <p class="text">
+              Телевизор, мини-бар и холодильник уже на месте. Завтрак можно добавить за 300 ₽. Если нужен
+              ещё один гость — скажите при бронировании, поставим дополнительную кровать.
+            </p>
+            <div class="room-facts">
+              <div class="room-facts__item"><b>2</b><span>Гостя</span></div>
+              <div class="room-facts__item"><b>18 м²</b><span>Площадь</span></div>
+              <div class="room-facts__item"><b>2</b><span>Раздельные кровати</span></div>
+            </div>
+          </div>
+          <aside class="room-bookcard reveal-right">
+            <p class="eyebrow">Этот номер</p>
+            <p class="room-bookcard__price">от 4 000 ₽<small>за ночь, без завтрака</small></p>
+            <div class="room-bookcard__meta">
+              <span>2 гостя</span>
+              <span>18 м²</span>
+              <span>2 кровати</span>
+            </div>
+            <p class="room-bookcard__note">Завтрак +300 ₽ · Доп. кровать +1 200 ₽</p>
+            <button type="button" class="btn btn--gold" data-open-modal data-room="Standard+ — Двухместный">Забронировать</button>
+            <a class="room-bookcard__phone" href="tel:88435644646">8 (843) 564-46-46</a>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section section--mist">
+        <div class="container">
+          <p class="eyebrow reveal">В номере</p>
+          <h2 class="heading gold-line reveal">Что уже ждёт вас</h2>
+          <div class="room-perks">
+            <article class="room-perk reveal"><h3>Две кровати</h3><p>Не «полуторка на двоих», а две полноценные — удобно и друзьям, и коллегам.</p></article>
+            <article class="room-perk reveal delay-100"><h3>Свой климат</h3><p>Кондиционер, который можно выставить под себя, а не под весь этаж.</p></article>
+            <article class="room-perk reveal delay-200"><h3>Мини-бар и холодильник</h3><p>Вода, перекус после позднего приезда — без похода в магазин ночью.</p></article>
+            <article class="room-perk reveal delay-300"><h3>Ванная комната</h3><p>Современная, чистая, с горячей водой. Полотенца — свежие к заезду.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <div class="room-next">
+        <a class="room-next__card" href="room-family.html">
+          <img src="assets/photos/room-2.jpg" alt="" />
+          <div>
+            <p>Следующий · 02</p>
+            <h3>Standard+ трёхместный</h3>
+          </div>
+        </a>
+        <a class="room-next__card" href="room-premium.html">
+          <img src="assets/photos/room-5.jpg" alt="" />
+          <div>
+            <p>Или сразу · 05</p>
+            <h3>Business Comfort+</h3>
+          </div>
+        </a>
+      </div>
+
+      <footer class="footer">
+        <div class="container footer__inner">
+          <a href="index.html" class="footer__brand">Отель <span>Троя</span></a>
+          <p class="footer__meta">ООО «ТРОЯ» · ИНН 1657131940 · Казань, ул. Восстания, 119</p>
+          <p class="footer__copy">© 2026 Все права защищены</p>
+        </div>
+      </footer>
+
+      <div class="modal" id="booking-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal__backdrop" data-close-modal></div>
+        <div class="modal__dialog">
+          <div class="modal__header">
+            <div class="modal__brand">
+              <img src="assets/logo.png" alt="Troya Hotel" />
+              <div>
+                <p class="modal__eyebrow" id="modal-title">Онлайн-бронирование</p>
+                <p class="modal__room" id="modal-room" hidden></p>
+              </div>
+            </div>
+            <button type="button" class="modal__close" data-close-modal aria-label="Закрыть">✕</button>
+          </div>
+          <div class="modal__success" id="modal-success" hidden>
+            <div class="modal__success-icon">✓</div>
+            <h3>Заявка отправлена</h3>
+            <p>Мы свяжемся с вами в ближайшее время для подтверждения бронирования.<br /><strong>8 (843) 564-46-46</strong></p>
+            <button type="button" class="btn btn--gold" data-close-modal>Закрыть</button>
+          </div>
+          <form class="modal__form" id="booking-form">
+            <div class="form-row form-row--2">
+              <div class="field"><label for="name">Ваше имя *</label><input id="name" name="name" required placeholder="Иван Иванов" /></div>
+              <div class="field"><label for="phone">Телефон *</label><input id="phone" name="phone" type="tel" required placeholder="+7 (___) ___-__-__" /></div>
+            </div>
+            <div class="field"><label for="email">Email</label><input id="email" name="email" type="email" placeholder="your@email.com" /></div>
+            <div class="form-row form-row--3">
+              <div class="field"><label for="checkin">Заезд *</label><input id="checkin" name="checkin" type="date" required /></div>
+              <div class="field"><label for="checkout">Выезд *</label><input id="checkout" name="checkout" type="date" required /></div>
+              <div class="field">
+                <label for="guests">Гостей</label>
+                <select id="guests" name="guests">
+                  <option value="1">1 гость</option>
+                  <option value="2" selected>2 гостя</option>
+                  <option value="3">3 гостя</option>
+                  <option value="4">4 гостя</option>
+                </select>
+              </div>
+            </div>
+            <div class="field" id="room-field" hidden><label for="room-type">Тип номера</label><input id="room-type" name="room" readonly /></div>
+            <div class="field"><label for="comment">Комментарий</label><textarea id="comment" name="comment" rows="3" placeholder="Особые пожелания, ранний заезд..."></textarea></div>
+            <p class="modal__hint">* ОБЯЗАТЕЛЬНЫЕ ПОЛЯ · ЗАВТРАК +300 ₽ · ДОП. КРОВАТЬ +1 200 ₽</p>
+            <button type="submit" class="btn btn--gold btn--block">Отправить заявку</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="js/main.js" defer></script>
+  </body>
+</html>
