@@ -231,6 +231,10 @@ burger?.addEventListener("click", () => {
   setMenuOpen(!menuOverlay?.classList.contains("is-open"));
 });
 
+document.getElementById("menu-close")?.addEventListener("click", () => {
+  setMenuOpen(false);
+});
+
 nav?.querySelectorAll("a").forEach((link) => {
   link.addEventListener("click", () => setMenuOpen(false));
 });
@@ -300,34 +304,143 @@ function setActiveRoom(index) {
 
 function bindSwipe(el, onPrev, onNext) {
   if (!el) return;
+
+  const THRESHOLD = 36;
   let startX = 0;
-  let dragging = false;
+  let startY = 0;
+  let tracking = false;
+  let axis = null;
+
+  const begin = (x, y) => {
+    tracking = true;
+    axis = null;
+    startX = x;
+    startY = y;
+  };
+
+  const updateAxis = (x, y) => {
+    if (!tracking || axis) return;
+    const dx = x - startX;
+    const dy = y - startY;
+    if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+    axis = Math.abs(dx) > Math.abs(dy) ? "x" : "y";
+  };
+
+  const finish = (x) => {
+    if (!tracking) return;
+    const dx = x - startX;
+    const shouldGo = axis === "x" && Math.abs(dx) >= THRESHOLD;
+    tracking = false;
+    axis = null;
+    if (!shouldGo) return;
+    if (dx < 0) onNext();
+    else onPrev();
+  };
+
+  el.addEventListener(
+    "touchstart",
+    (e) => {
+      const t = e.changedTouches[0];
+      begin(t.clientX, t.clientY);
+    },
+    { passive: true }
+  );
+
+  el.addEventListener(
+    "touchmove",
+    (e) => {
+      const t = e.changedTouches[0];
+      updateAxis(t.clientX, t.clientY);
+    },
+    { passive: true }
+  );
+
+  el.addEventListener(
+    "touchend",
+    (e) => {
+      const t = e.changedTouches[0];
+      finish(t.clientX);
+    },
+    { passive: true }
+  );
 
   el.addEventListener("pointerdown", (e) => {
-    dragging = true;
-    startX = e.clientX;
+    if (e.pointerType === "touch") return;
+    if (e.button !== 0) return;
+    begin(e.clientX, e.clientY);
     el.setPointerCapture?.(e.pointerId);
   });
 
+  el.addEventListener("pointermove", (e) => {
+    if (e.pointerType === "touch") return;
+    updateAxis(e.clientX, e.clientY);
+  });
+
   el.addEventListener("pointerup", (e) => {
-    if (!dragging) return;
-    dragging = false;
-    const dx = e.clientX - startX;
-    if (Math.abs(dx) < 40) return;
-    if (dx < 0) onNext();
-    else onPrev();
+    if (e.pointerType === "touch") return;
+    finish(e.clientX);
   });
 
   el.addEventListener("pointercancel", () => {
-    dragging = false;
+    tracking = false;
+    axis = null;
   });
 }
 
 renderRoomSlides();
 
-document.getElementById("rooms-prev")?.addEventListener("click", () => setActiveRoom(activeRoom - 1));
-document.getElementById("rooms-next")?.addEventListener("click", () => setActiveRoom(activeRoom + 1));
-bindSwipe(roomsStage, () => setActiveRoom(activeRoom - 1), () => setActiveRoom(activeRoom + 1));
+const ROOM_AUTOPLAY_MS = 6000;
+const roomsSlider = document.getElementById("rooms-slider");
+let roomAutoplayTimer = null;
+
+function stopRoomAutoplay() {
+  if (roomAutoplayTimer) {
+    clearInterval(roomAutoplayTimer);
+    roomAutoplayTimer = null;
+  }
+}
+
+function startRoomAutoplay() {
+  stopRoomAutoplay();
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  roomAutoplayTimer = setInterval(() => {
+    setActiveRoom(activeRoom + 1);
+  }, ROOM_AUTOPLAY_MS);
+}
+
+function stepRoom(delta) {
+  setActiveRoom(activeRoom + delta);
+  startRoomAutoplay();
+}
+
+document.getElementById("rooms-prev")?.addEventListener("click", () => stepRoom(-1));
+document.getElementById("rooms-next")?.addEventListener("click", () => stepRoom(1));
+bindSwipe(roomsStage, () => stepRoom(-1), () => stepRoom(1));
+
+roomsSlider?.addEventListener("pointerenter", (e) => {
+  if (e.pointerType === "mouse") stopRoomAutoplay();
+});
+roomsSlider?.addEventListener("pointerleave", (e) => {
+  if (e.pointerType === "mouse") startRoomAutoplay();
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) stopRoomAutoplay();
+  else startRoomAutoplay();
+});
+
+if ("IntersectionObserver" in window && roomsSlider) {
+  const roomsInView = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) startRoomAutoplay();
+      else stopRoomAutoplay();
+    },
+    { threshold: 0.35 }
+  );
+  roomsInView.observe(roomsSlider);
+} else {
+  startRoomAutoplay();
+}
 
 roomBook?.addEventListener("click", () => {
   const room = ROOMS[activeRoom];

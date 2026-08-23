@@ -52,6 +52,10 @@
         />
       </div>
       <nav class="menu-overlay__nav" id="nav">
+        <button type="button" class="menu-overlay__close" id="menu-close" aria-label="Закрыть меню">
+          <span></span>
+          <span></span>
+        </button>
         <a href="#rooms" class="menu-overlay__link" data-i="01"><span>Номера</span></a>
         <a href="#amenities" class="menu-overlay__link" data-i="02"><span>Удобства</span></a>
         <a href="#excursions" class="menu-overlay__link" data-i="03"><span>Экскурсии</span></a>
@@ -174,9 +178,17 @@
             <h2 class="heading gold-line">Выберите свой номер</h2>
           </div>
           <div class="rooms__controls">
-            <button type="button" class="slider-nav" id="rooms-prev" aria-label="Предыдущий номер">‹</button>
+            <button type="button" class="slider-nav" id="rooms-prev" aria-label="Предыдущий номер">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M15 5L8 12l7 7" />
+              </svg>
+            </button>
             <span class="rooms__counter"><b id="rooms-current">01</b><i>/</i><span id="rooms-total">05</span></span>
-            <button type="button" class="slider-nav" id="rooms-next" aria-label="Следующий номер">›</button>
+            <button type="button" class="slider-nav" id="rooms-next" aria-label="Следующий номер">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
       </div>
@@ -259,8 +271,16 @@
             Голоса тех,<br /><em>кто уже был</em>
           </h2>
           <div class="reviews__controls">
-            <button type="button" class="slider-nav" id="reviews-prev" aria-label="Предыдущий отзыв">‹</button>
-            <button type="button" class="slider-nav" id="reviews-next" aria-label="Следующий отзыв">›</button>
+            <button type="button" class="slider-nav" id="reviews-prev" aria-label="Предыдущий отзыв">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M15 5L8 12l7 7" />
+              </svg>
+            </button>
+            <button type="button" class="slider-nav" id="reviews-next" aria-label="Следующий отзыв">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
         </div>
 

@@ -232,16 +232,31 @@ button {
 .slider-nav {
   width: 48px;
   height: 48px;
+  padding: 0;
   border-radius: 50%;
   border: 1px solid var(--line-gold);
   background: var(--bg-white);
   color: var(--ink);
-  font-size: 22px;
-  line-height: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  line-height: 0;
   transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
+}
+
+.slider-nav svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.slider-nav svg path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .slider-nav:hover {
@@ -553,6 +568,53 @@ button {
 
 .menu-overlay.is-open .menu-overlay__meta {
   opacity: 1;
+}
+
+.menu-overlay__close {
+  position: absolute;
+  top: max(16px, env(safe-area-inset-top));
+  right: 20px;
+  z-index: 3;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--line-gold);
+  background: var(--bg-white);
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.86);
+  transition: opacity 0.3s ease 0.12s, transform 0.35s var(--ease) 0.12s, background 0.25s ease, color 0.25s ease;
+}
+
+.menu-overlay.is-open .menu-overlay__close {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.menu-overlay__close span {
+  position: absolute;
+  width: 16px;
+  height: 1.5px;
+  background: currentColor;
+  border-radius: 2px;
+}
+
+.menu-overlay__close span:first-child {
+  transform: rotate(45deg);
+}
+
+.menu-overlay__close span:last-child {
+  transform: rotate(-45deg);
+}
+
+.menu-overlay__close:hover {
+  background: var(--gold);
+  color: #fff;
+  border-color: var(--gold);
 }
 
 /* Hero */
@@ -1238,6 +1300,7 @@ button {
 
 .reviews__controls {
   display: flex;
+  align-items: center;
   gap: 12px;
   margin-top: 36px;
 }
@@ -1251,6 +1314,14 @@ button {
   min-height: 420px;
   perspective: 1400px;
   overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y;
+}
+
+.reviews-deck:active {
+  cursor: grabbing;
 }
 
 .review-card {
@@ -1267,6 +1338,7 @@ button {
     filter 0.45s ease;
   display: flex;
   flex-direction: column;
+  touch-action: pan-y;
 }
 
 .review-card.is-active {
@@ -1903,8 +1975,11 @@ button {
   }
 
   .hero {
-    padding: calc(var(--header-h) + 24px) 0 72px;
-    min-height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: 100svh;
+    height: 100svh;
+    padding: calc(var(--header-h) + 16px) 0 32px;
   }
 
   .hero__title {
