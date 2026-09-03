@@ -14,9 +14,9 @@
   --line: rgba(44, 38, 31, 0.1);
   --line-gold: rgba(176, 138, 74, 0.28);
   --shadow: 0 24px 60px rgba(44, 38, 31, 0.1);
-  --font-display: "Fraunces", serif;
-  --font-sans: "Outfit", sans-serif;
-  --font-mono: "DM Mono", monospace;
+  --font-display: "Cormorant Garamond", serif;
+  --font-sans: "Manrope", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
   --container: 1280px;
   --header-h: 72px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -693,7 +693,7 @@ button {
   font-weight: 300;
   line-height: 1;
   color: #fbf8f3;
-  max-width: 700px;
+  max-width: 767px;
   margin-bottom: 32px;
   text-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
 }
