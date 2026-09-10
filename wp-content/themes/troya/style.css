@@ -1,0 +1,12 @@
+<?php
+/**
+ * Theme Name: Troya Hotel
+ * Theme URI: http://localhost/demotroya
+ * Description: Премиальный сайт отеля «Троя» с ACF, SMTP и заявками в админке.
+ * Author: Cursiva
+ * Version: 1.0.0
+ * Text Domain: troya
+ * Requires PHP: 7.4
+ */
+
+defined( 'ABSPATH' ) || exit;
