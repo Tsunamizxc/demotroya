@@ -288,7 +288,7 @@ function renderRoomSlides() {
   roomsStage.innerHTML = ROOMS.map(
     (room, i) => `
       <article class="room-slide" data-index="${i}">
-        <img src="${room.img}" alt="${room.name}" draggable="false" />
+        <img src="${room.img}" alt="${room.name}" draggable="false" loading="${i === 0 ? "eager" : "lazy"}" decoding="async" />
       </article>
     `
   ).join("");
@@ -554,3 +554,56 @@ function initReveal() {
 }
 
 initReveal();
+
+/* ─── Hero video autoplay ────────────────────────── */
+(function initHeroVideo() {
+  const video = document.getElementById("hero-video");
+  const fallback = document.querySelector(".hero__img--fallback");
+  if (!video) return;
+
+  video.loop = false;
+  video.removeAttribute("loop");
+
+  const tryPlay = () => {
+    video.muted = true;
+    video.loop = false;
+    const playPromise = video.play();
+    if (playPromise?.catch) {
+      playPromise.catch(() => {
+        if (fallback) fallback.hidden = false;
+      });
+    }
+  };
+
+  video.addEventListener("ended", () => {
+    video.pause();
+    try {
+      video.currentTime = Math.max((video.duration || 0) - 0.05, 0);
+    } catch (_) {
+      /* ignore */
+    }
+  });
+
+  video.addEventListener("error", () => {
+    if (fallback) fallback.hidden = false;
+    video.hidden = true;
+  });
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    video.removeAttribute("autoplay");
+    video.pause();
+    if (fallback) fallback.hidden = false;
+    return;
+  }
+
+  if (video.readyState >= 2) tryPlay();
+  else video.addEventListener("canplay", tryPlay, { once: true });
+
+  document.addEventListener(
+    "visibilitychange",
+    () => {
+      if (!document.hidden) tryPlay();
+    },
+    { passive: true }
+  );
+})();

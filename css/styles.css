@@ -118,6 +118,8 @@ button {
   padding: 100px 0;
   position: relative;
   z-index: 1;
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 800px;
 }
 
 .section--mist {
@@ -717,6 +719,69 @@ button {
   flex-wrap: wrap;
   gap: 16px;
   align-items: center;
+}
+
+/* ─── Video hero ─────────────────────────────────── */
+.hero--video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: 100svh;
+  height: 100vh;
+  height: 100dvh;
+  height: 100svh;
+  padding: 0;
+  overflow: hidden;
+}
+
+.hero--video .hero__bg {
+  position: absolute;
+  inset: 0;
+}
+
+.hero__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #1c1814;
+}
+
+.hero--video .hero__content {
+  position: relative;
+  z-index: 2;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  width: 100%;
+  padding-top: var(--header-h);
+}
+
+.hero--video .hero__title {
+  max-width: 767px;
+  margin-bottom: 24px;
+  font-size: clamp(42px, 8vw, 108px);
+  text-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+}
+
+.hero--video .hero__text {
+  color: rgba(251, 248, 243, 0.85);
+}
+
+@media (max-width: 640px) {
+  .hero--video .hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .hero--video .hero__actions .btn {
+    width: 100%;
+  }
 }
 
 .anim-up {
@@ -2413,12 +2478,17 @@ button {
     padding: 72px 0;
   }
 
-  .hero {
+  .hero,
+  .hero--video {
     min-height: 100vh;
     min-height: 100dvh;
     min-height: 100svh;
     height: 100svh;
-    padding: calc(var(--header-h) + 16px) 0 32px;
+    padding: 0;
+  }
+
+  .hero--video .hero__title {
+    font-size: clamp(42px, 14vw, 64px);
   }
 
   .hero--page {
