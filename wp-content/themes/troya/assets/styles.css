@@ -759,6 +759,7 @@ button {
   justify-content: center;
   width: 100%;
   padding-top: var(--header-h);
+  padding-bottom: 120px;
 }
 
 .hero--video .hero__title {
@@ -772,6 +773,31 @@ button {
   color: rgba(251, 248, 243, 0.85);
 }
 
+/* Bnovo booking widget */
+.bnovo-widget {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 24px;
+  z-index: 3;
+  width: 100%;
+  padding: 0 24px;
+  box-sizing: border-box;
+}
+
+.bnovo-widget__inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.bnovo-widget #_bnovo_link_ {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
 @media (max-width: 640px) {
   .hero--video .hero__actions {
     flex-direction: column;
@@ -781,6 +807,15 @@ button {
 
   .hero--video .hero__actions .btn {
     width: 100%;
+  }
+
+  .bnovo-widget {
+    bottom: 12px;
+    padding: 0 12px;
+  }
+
+  .hero--video .hero__content {
+    padding-bottom: 140px;
   }
 }
 
@@ -2697,5 +2732,54 @@ button {
   }
   .room-gallery__item.is-wide {
     grid-column: auto;
+  }
+}
+
+/* Bnovo booking page */
+.booking-page {
+  padding: calc(var(--header-h, 72px) + 28px) 0 64px;
+}
+
+.booking-page__head {
+  margin-bottom: 28px;
+}
+
+.booking-page__lead {
+  margin-top: 12px;
+  max-width: 56ch;
+}
+
+.booking-page__frame {
+  width: min(100% - 40px, var(--container, 1280px));
+  margin: 0 auto;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--line, rgba(44, 38, 31, 0.1));
+  min-height: 70vh;
+}
+
+.booking-page__iframe {
+  display: block;
+  width: 100%;
+  min-height: 2200px;
+  border: 0;
+  background: #fff;
+}
+
+@media (max-width: 640px) {
+  .booking-page {
+    padding-top: calc(var(--header-h, 72px) + 16px);
+  }
+
+  .booking-page__frame {
+    width: 100%;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .booking-page__iframe {
+    min-height: 2400px;
   }
 }

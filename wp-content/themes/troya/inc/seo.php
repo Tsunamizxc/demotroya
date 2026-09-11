@@ -42,6 +42,12 @@ function troya_document_title_parts( array $parts ): array {
 		return $parts;
 	}
 
+	if ( is_page( 'booking' ) || is_page_template( 'page-booking.php' ) ) {
+		$parts['title'] = troya_option( 'seo_booking_title', 'Онлайн-бронирование — Отель Троя, Казань' );
+		unset( $parts['tagline'], $parts['site'] );
+		return $parts;
+	}
+
 	if ( is_page( 'nomera' ) || is_page_template( 'page-nomera.php' ) ) {
 		$parts['title'] = troya_option( 'seo_rooms_title', 'Номера — Отель Троя, Казань' );
 		unset( $parts['tagline'], $parts['site'] );
@@ -69,6 +75,13 @@ function troya_get_seo_description(): string {
 		return (string) troya_option(
 			'seo_home_description',
 			'Отель «Троя» в Казани на ул. Восстания, 119. Современные номера, завтраки, парковка, трансфер и экскурсии. Бронирование: 8 (843) 564-46-46.'
+		);
+	}
+
+	if ( is_page( 'booking' ) || is_page_template( 'page-booking.php' ) ) {
+		return (string) troya_option(
+			'seo_booking_description',
+			'Забронируйте номер в отеле «Троя» в Казани онлайн. Прямое бронирование без комиссии, ул. Восстания, 119.'
 		);
 	}
 

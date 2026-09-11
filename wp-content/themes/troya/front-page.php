@@ -68,6 +68,50 @@ if ( ! is_array( $stats ) || ! $stats ) {
 			<a href="<?php echo esc_url( $rooms_url ); ?>" class="btn btn--ghost"><?php echo esc_html( troya_option( 'hero_cta_secondary', 'Смотреть номера' ) ); ?></a>
 		</div>
 	</div>
+
+	<div class="bnovo-widget anim-up" style="--d: 0.85s">
+		<div class="bnovo-widget__inner" id="_bn_widget_">
+			<a href="https://bnovo.ru/" id="_bnovo_link_" target="_blank" rel="noopener noreferrer">Bnovo</a>
+		</div>
+	</div>
+	<script src="//widget.reservationsteps.ru/js/bnovo.js"></script>
+	<script>
+	(function () {
+		if (typeof Bnovo_Widget === 'undefined') return;
+		Bnovo_Widget.init(function () {
+			Bnovo_Widget.open('_bn_widget_', {
+				type: 'horizontal',
+				uid: <?php echo wp_json_encode( troya_option( 'bnovo_uid', 'eb9cee17-77f8-4f25-9817-b3fc2080617b' ) ); ?>,
+				lang: 'ru',
+				width: '100%',
+				background: '#e8c64e',
+				bg_alpha: '80',
+				padding: '20',
+				border_radius: '1',
+				font_type: 'arial',
+				font_size: '16',
+				title_color: '#3e2319',
+				title_size: '18',
+				inp_color: '#222222',
+				inp_bordhover: '#3796e5',
+				inp_bordcolor: '#cccccc',
+				inp_alpha: '100',
+				btn_background: '#5b3325',
+				btn_background_over: '#754d40',
+				btn_textcolor: '#ffffff',
+				btn_textover: '#ffffff',
+				btn_bordcolor: '#5b3325',
+				btn_bordhover: '#754d40',
+				text_concierge: 'Получи скидку через Bnovo Concierge',
+				url: <?php echo wp_json_encode( home_url( '/booking/' ) ); ?>,
+				adults_default: '2',
+				dates_preset: 'on',
+				dfrom_tomorrow: 'on',
+				dto_nextday: 'on'
+			});
+		});
+	})();
+	</script>
 </section>
 
 <div class="marquee">
