@@ -39,8 +39,18 @@ const modalSuccess = document.getElementById("modal-success");
 
 let modalClosing = false;
 
+function reachGoal(name) {
+  try {
+    if (typeof window.yaCounter50056810 !== "undefined") {
+      window.yaCounter50056810.reachGoal(name);
+    }
+  } catch (e) {}
+}
+
 function openModal(roomName) {
   if (!modal || modalClosing) return;
+
+  reachGoal("CLKBTN");
 
   modal.classList.remove("is-closing");
   bookingForm.hidden = false;
@@ -138,6 +148,7 @@ bookingForm?.addEventListener("submit", async (e) => {
       throw new Error(json?.data?.message || "Не удалось отправить заявку");
     }
 
+    reachGoal("ORDER");
     bookingForm.hidden = true;
     modalSuccess.hidden = false;
   } catch (err) {

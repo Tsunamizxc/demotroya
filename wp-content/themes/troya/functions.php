@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'TROYA_VERSION', '1.0.2' );
+define( 'TROYA_VERSION', '1.0.3' );
 define( 'TROYA_DIR', get_template_directory() );
 define( 'TROYA_URI', get_template_directory_uri() );
 
@@ -18,6 +18,7 @@ require TROYA_DIR . '/inc/enqueue.php';
 require TROYA_DIR . '/inc/forms.php';
 require TROYA_DIR . '/inc/seo.php';
 require TROYA_DIR . '/inc/setup-content.php';
+require TROYA_DIR . '/inc/migrate.php';
 
 add_action(
 	'after_setup_theme',

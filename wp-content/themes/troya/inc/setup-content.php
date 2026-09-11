@@ -8,19 +8,7 @@
 defined( 'ABSPATH' ) || exit;
 
 add_action( 'after_switch_theme', 'troya_seed_content' );
-add_action( 'init', 'troya_maybe_seed_content', 30 );
-
-function troya_maybe_seed_content(): void {
-	if ( get_option( 'troya_seeded_v1' ) ) {
-		return;
-	}
-
-	if ( ! function_exists( 'update_field' ) ) {
-		return;
-	}
-
-	troya_seed_content();
-}
+// Initial seed is also triggered from migrations when needed.
 
 function troya_seed_content(): void {
 	if ( ! function_exists( 'update_field' ) ) {
