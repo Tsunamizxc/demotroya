@@ -377,13 +377,29 @@ function goToRoom(index, { play = true, animate = true } = {}) {
   if (!ROOMS.length) return;
 
   const next = ((index % ROOMS.length) + ROOMS.length) % ROOMS.length;
-  if (next === activeRoom && !play) return;
+  // Same slide: never restart from a random click — only arrows/swipe/dots change room.
+  if (next === activeRoom) {
+    if (play) {
+      const video = roomsVideos[activeRoom];
+      if (
+        video &&
+        video.tagName === "VIDEO" &&
+        video.paused &&
+        Number.isFinite(video.duration) &&
+        video.duration > 0 &&
+        video.currentTime > 0.05 &&
+        video.currentTime < video.duration - 0.15
+      ) {
+        playRoomVideo(activeRoom, false);
+      }
+    }
+    return;
+  }
 
   activeRoom = next;
   updateRoomPanel(activeRoom, animate);
 
   if (play) {
-    // User navigation / in-view play must not depend on IO flags alone (mobile).
     roomsInView = true;
     roomsHasPlayed = true;
     playRoomVideo(activeRoom, true);
@@ -454,24 +470,6 @@ function initRoomsSlider() {
   updateRoomPanel(0, false);
   roomsVideos.forEach((item, i) => item.classList.toggle("is-active", i === 0));
 
-  const unlockRoomsPlayback = () => {
-    roomsInView = true;
-    roomsHasPlayed = true;
-    playRoomVideo(activeRoom, true);
-  };
-
-  // First gesture unlocks autoplay policies on iOS/Android.
-  roomsSection.addEventListener(
-    "pointerdown",
-    () => {
-      const video = roomsVideos[activeRoom];
-      if (video && video.tagName === "VIDEO" && video.paused) {
-        unlockRoomsPlayback();
-      }
-    },
-    { passive: true }
-  );
-
   if ("IntersectionObserver" in window) {
     const mobile = window.matchMedia("(max-width: 900px)").matches;
     const io = new IntersectionObserver(
@@ -484,11 +482,15 @@ function initRoomsSlider() {
             playRoomVideo(activeRoom, true);
           } else {
             const video = roomsVideos[activeRoom];
+            // Resume only if playback was interrupted mid-clip, never restart after ended.
             if (
               video &&
               video.tagName === "VIDEO" &&
               video.paused &&
-              (!Number.isFinite(video.duration) || video.currentTime < video.duration - 0.15)
+              Number.isFinite(video.duration) &&
+              video.duration > 0 &&
+              video.currentTime > 0.05 &&
+              video.currentTime < video.duration - 0.15
             ) {
               playRoomVideo(activeRoom, false);
             }
@@ -504,7 +506,9 @@ function initRoomsSlider() {
     );
     io.observe(roomsSection);
   } else {
-    unlockRoomsPlayback();
+    roomsInView = true;
+    roomsHasPlayed = true;
+    playRoomVideo(0, true);
   }
 
   document.addEventListener("visibilitychange", () => {
@@ -515,7 +519,10 @@ function initRoomsSlider() {
         video &&
         video.tagName === "VIDEO" &&
         video.paused &&
-        (!Number.isFinite(video.duration) || video.currentTime < video.duration - 0.15)
+        Number.isFinite(video.duration) &&
+        video.duration > 0 &&
+        video.currentTime > 0.05 &&
+        video.currentTime < video.duration - 0.15
       ) {
         playRoomVideo(activeRoom, false);
       }
