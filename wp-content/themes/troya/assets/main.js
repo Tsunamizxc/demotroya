@@ -377,7 +377,7 @@ function goToRoom(index, { play = true, animate = true } = {}) {
   if (!ROOMS.length) return;
 
   const next = ((index % ROOMS.length) + ROOMS.length) % ROOMS.length;
-  // Same slide: never restart from a random click — only arrows/swipe/dots change room.
+  // Same slide: never restart from a random click — only arrows/dots change room.
   if (next === activeRoom) {
     if (play) {
       const video = roomsVideos[activeRoom];
@@ -464,8 +464,7 @@ function initRoomsSlider() {
     stepRoom(1);
   });
 
-  const swipeTarget = roomsSection.querySelector(".rooms-story__frame") || roomsSection;
-  bindSwipe(swipeTarget, () => stepRoom(-1), () => stepRoom(1));
+  // No swipe on rooms block: accidental finger moves were changing slides.
 
   updateRoomPanel(0, false);
   roomsVideos.forEach((item, i) => item.classList.toggle("is-active", i === 0));
