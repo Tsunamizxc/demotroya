@@ -277,11 +277,27 @@ function pauseAllRoomsVideos() {
   });
 }
 
+function prepareRoomVideoEl(video) {
+  if (!video || video.tagName !== "VIDEO") return;
+  video.muted = true;
+  video.defaultMuted = true;
+  video.playsInline = true;
+  video.setAttribute("muted", "");
+  video.setAttribute("playsinline", "");
+  video.setAttribute("webkit-playsinline", "");
+  // Inline src is more reliable on iOS than nested <source>.
+  const source = video.querySelector("source");
+  if (source?.src && !video.getAttribute("src")) {
+    video.src = source.src;
+  }
+}
+
 function setActiveRoomVideo(index) {
   roomsVideos.forEach((item, i) => {
     const on = i === index;
     item.classList.toggle("is-active", on);
     if (item.tagName !== "VIDEO") return;
+    prepareRoomVideoEl(item);
     item.preload = Math.abs(i - index) <= 1 ? "auto" : "metadata";
     if (!on && !item.paused) item.pause();
   });
@@ -295,6 +311,7 @@ function playRoomVideo(index, fromStart) {
   }
 
   setActiveRoomVideo(index);
+  prepareRoomVideoEl(video);
 
   if (reduceMotion) {
     try {
@@ -306,18 +323,54 @@ function playRoomVideo(index, fromStart) {
     return;
   }
 
-  const start = () => {
-    try {
-      if (fromStart) video.currentTime = 0;
-    } catch (e) {}
+  let started = false;
+  const tryPlay = () => {
+    if (started) return;
+    started = true;
+    video.muted = true;
     const playPromise = video.play();
     if (playPromise && typeof playPromise.catch === "function") {
-      playPromise.catch(() => {});
+      playPromise.catch(() => {
+        started = false;
+      });
     }
   };
 
-  if (video.readyState >= 2) start();
-  else video.addEventListener("loadeddata", start, { once: true });
+  const start = () => {
+    if (fromStart && video.currentTime > 0.02) {
+      const onSeeked = () => {
+        video.removeEventListener("seeked", onSeeked);
+        tryPlay();
+      };
+      video.addEventListener("seeked", onSeeked, { once: true });
+      try {
+        video.currentTime = 0;
+      } catch (e) {
+        tryPlay();
+      }
+      // iOS can skip seeked if already near 0 / not ready.
+      window.setTimeout(() => {
+        if (video.paused) tryPlay();
+      }, 250);
+      return;
+    }
+    tryPlay();
+  };
+
+  if (video.readyState >= 2) {
+    start();
+    return;
+  }
+
+  const onReady = () => start();
+  video.addEventListener("loadeddata", onReady, { once: true });
+  video.addEventListener("canplay", onReady, { once: true });
+  try {
+    video.load();
+  } catch (e) {}
+  window.setTimeout(() => {
+    if (video.paused) start();
+  }, 600);
 }
 
 function goToRoom(index, { play = true, animate = true } = {}) {
@@ -329,8 +382,8 @@ function goToRoom(index, { play = true, animate = true } = {}) {
   activeRoom = next;
   updateRoomPanel(activeRoom, animate);
 
-  const shouldPlay = play && (roomsInView || roomsHasPlayed);
-  if (shouldPlay) {
+  if (play) {
+    // User navigation / in-view play must not depend on IO flags alone (mobile).
     roomsInView = true;
     roomsHasPlayed = true;
     playRoomVideo(activeRoom, true);
@@ -351,7 +404,7 @@ function initRoomsSlider() {
 
   roomsVideosEl.innerHTML = ROOMS.map((room, i) => {
     if (room.video) {
-      return `<video class="rooms-story__video" data-index="${i}" muted playsinline preload="${i === 0 ? "auto" : "metadata"}" poster="${room.img || ""}">
+      return `<video class="rooms-story__video" data-index="${i}" muted defaultMuted playsinline webkit-playsinline preload="${i === 0 ? "auto" : "metadata"}" poster="${room.img || ""}" src="${room.video}">
         <source src="${room.video}" type="video/mp4" />
       </video>`;
     }
@@ -362,6 +415,7 @@ function initRoomsSlider() {
 
   roomsVideos.forEach((video) => {
     if (video.tagName !== "VIDEO") return;
+    prepareRoomVideoEl(video);
     video.addEventListener("ended", () => {
       // Keep the natural last frame — seeking back causes a visible jerk.
       video.pause();
@@ -400,10 +454,30 @@ function initRoomsSlider() {
   updateRoomPanel(0, false);
   roomsVideos.forEach((item, i) => item.classList.toggle("is-active", i === 0));
 
+  const unlockRoomsPlayback = () => {
+    roomsInView = true;
+    roomsHasPlayed = true;
+    playRoomVideo(activeRoom, true);
+  };
+
+  // First gesture unlocks autoplay policies on iOS/Android.
+  roomsSection.addEventListener(
+    "pointerdown",
+    () => {
+      const video = roomsVideos[activeRoom];
+      if (video && video.tagName === "VIDEO" && video.paused) {
+        unlockRoomsPlayback();
+      }
+    },
+    { passive: true }
+  );
+
   if ("IntersectionObserver" in window) {
+    const mobile = window.matchMedia("(max-width: 900px)").matches;
     const io = new IntersectionObserver(
       ([entry]) => {
-        roomsInView = entry.isIntersecting && entry.intersectionRatio >= 0.35;
+        const minRatio = mobile ? 0.12 : 0.35;
+        roomsInView = entry.isIntersecting && entry.intersectionRatio >= minRatio;
         if (roomsInView) {
           if (!roomsHasPlayed) {
             roomsHasPlayed = true;
@@ -414,8 +488,7 @@ function initRoomsSlider() {
               video &&
               video.tagName === "VIDEO" &&
               video.paused &&
-              Number.isFinite(video.duration) &&
-              video.currentTime < video.duration - 0.15
+              (!Number.isFinite(video.duration) || video.currentTime < video.duration - 0.15)
             ) {
               playRoomVideo(activeRoom, false);
             }
@@ -424,13 +497,14 @@ function initRoomsSlider() {
           pauseAllRoomsVideos();
         }
       },
-      { threshold: [0.35, 0.55] }
+      {
+        threshold: mobile ? [0.08, 0.15, 0.25, 0.4] : [0.35, 0.55],
+        rootMargin: mobile ? "40px 0px 40px 0px" : "0px",
+      }
     );
     io.observe(roomsSection);
   } else {
-    roomsInView = true;
-    roomsHasPlayed = true;
-    playRoomVideo(0, true);
+    unlockRoomsPlayback();
   }
 
   document.addEventListener("visibilitychange", () => {
@@ -440,8 +514,8 @@ function initRoomsSlider() {
       if (
         video &&
         video.tagName === "VIDEO" &&
-        Number.isFinite(video.duration) &&
-        video.currentTime < video.duration - 0.15
+        video.paused &&
+        (!Number.isFinite(video.duration) || video.currentTime < video.duration - 0.15)
       ) {
         playRoomVideo(activeRoom, false);
       }
