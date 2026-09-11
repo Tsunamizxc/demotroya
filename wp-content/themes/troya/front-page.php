@@ -29,7 +29,7 @@ $map_embed = troya_option(
 
 $hero_poster = troya_img_url( troya_option( 'hero_poster' ), troya_asset( 'photos/hero-building.jpg' ) );
 $hero_video  = troya_option( 'hero_video' );
-$hero_video_url = is_array( $hero_video ) && ! empty( $hero_video['url'] ) ? $hero_video['url'] : troya_asset( 'videos/hero-flythrough.mp4' );
+$hero_video_url = is_array( $hero_video ) && ! empty( $hero_video['url'] ) ? $hero_video['url'] : troya_asset( 'videos/hero-video.mp4' );
 
 $marquee = troya_option( 'marquee_items', array() );
 if ( ! is_array( $marquee ) || ! $marquee ) {
@@ -191,7 +191,8 @@ if ( ! is_array( $stats ) || ! $stats ) {
 					<p class="rooms__price" id="room-price"></p>
 					<p class="rooms__desc text" id="room-desc"></p>
 					<div class="rooms__features" id="room-features"></div>
-					<p class="rooms__note"><?php echo esc_html( troya_option( 'rooms_note', 'Завтрак — 300 ₽ · Доп. кровать — 1 200 ₽' ) ); ?></p>
+					<p class="rooms__note"><?php echo esc_html( troya_option( 'rooms_note', 'Завтрак — 300 ₽' ) ); ?></p>
+					<a class="rooms-story__gallery-link" href="<?php echo esc_url( troya_gallery_url() ); ?>">Фотогалерея отеля</a>
 					<div class="rooms__footer-actions">
 						<a class="btn btn--outline" id="room-more" href="<?php echo esc_url( $rooms_url ); ?>">Подробнее</a>
 						<a class="btn btn--gold" id="room-book" href="<?php echo esc_url( troya_booking_url() ); ?>">Забронировать</a>
@@ -219,6 +220,46 @@ if ( ! is_array( $stats ) || ! $stats ) {
 		<div class="amenities__mosaic" id="amenities-grid"></div>
 	</div>
 </section>
+
+<?php
+$home_gallery_items = troya_home_gallery_preview_items( 9 );
+$gallery_page_url   = troya_gallery_url();
+?>
+<?php if ( $home_gallery_items ) : ?>
+<section id="gallery" class="home-gallery section section--mist">
+	<div class="container home-gallery__layout">
+		<div class="home-gallery__copy reveal-left">
+			<p class="eyebrow"><?php echo esc_html( troya_option( 'home_gallery_eyebrow', 'Галерея' ) ); ?></p>
+			<h2 class="heading gold-line"><?php echo wp_kses_post( troya_option( 'home_gallery_title', "Атмосфера<br /><em>отеля Троя</em>" ) ); ?></h2>
+			<p class="text"><?php echo esc_html( troya_option( 'home_gallery_text', 'Номера, ресепшен, столовая и виды здания — загляните в фотогалерею и почувствуйте настроение отеля ещё до заезда.' ) ); ?></p>
+			<a class="btn btn--gold" href="<?php echo esc_url( $gallery_page_url ); ?>"><?php echo esc_html( troya_option( 'home_gallery_cta', 'Смотреть все фото' ) ); ?></a>
+		</div>
+
+		<div class="home-gallery__slider reveal-right" data-home-gallery>
+			<div class="home-gallery__viewport">
+				<div class="home-gallery__track">
+					<?php foreach ( $home_gallery_items as $i => $item ) : ?>
+						<figure class="home-gallery__slide<?php echo 0 === $i ? ' is-active' : ''; ?>" data-index="<?php echo (int) $i; ?>">
+							<img src="<?php echo esc_url( $item['url'] ); ?>" alt="<?php echo esc_attr( $item['alt'] ); ?>" loading="<?php echo 0 === $i ? 'eager' : 'lazy'; ?>" decoding="async" />
+						</figure>
+					<?php endforeach; ?>
+				</div>
+				<?php if ( count( $home_gallery_items ) > 1 ) : ?>
+					<button type="button" class="slider-nav home-gallery__nav home-gallery__nav--prev" data-home-gallery-prev aria-label="Предыдущее фото">
+						<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5L8 12l7 7" /></svg>
+					</button>
+					<button type="button" class="slider-nav home-gallery__nav home-gallery__nav--next" data-home-gallery-next aria-label="Следующее фото">
+						<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" /></svg>
+					</button>
+					<span class="home-gallery__counter" aria-live="polite">
+						<b data-home-gallery-current>01</b><i>/</i><span><?php echo esc_html( str_pad( (string) count( $home_gallery_items ), 2, '0', STR_PAD_LEFT ) ); ?></span>
+					</span>
+				<?php endif; ?>
+			</div>
+		</div>
+	</div>
+</section>
+<?php endif; ?>
 
 <section id="excursions" class="excursions section section--sand">
 	<div class="container">

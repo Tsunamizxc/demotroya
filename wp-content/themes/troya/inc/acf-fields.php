@@ -36,6 +36,7 @@ function troya_register_acf(): void {
 	troya_acf_about_fields();
 	troya_acf_rooms_section_fields();
 	troya_acf_amenities_fields();
+	troya_acf_home_gallery_fields();
 	troya_acf_excursions_fields();
 	troya_acf_reviews_fields();
 	troya_acf_contact_fields();
@@ -211,7 +212,7 @@ function troya_acf_general_settings(): void {
 					'name'          => 'seo_rooms_description',
 					'type'          => 'textarea',
 					'rows'          => 3,
-					'default_value' => 'Каталог номеров отеля «Троя» в Казани: Standard+, Business Comfort, семейные и премиум-категории. Цены от 4 000 ₽.',
+					'default_value' => 'Каталог номеров отеля «Троя» в Казани: стандарт, бизнес-комфорт и семейные категории. Цены от 4 000 ₽.',
 				),
 				array(
 					'key'           => 'field_seo_booking_title',
@@ -246,8 +247,8 @@ function troya_acf_smtp_settings(): void {
 					'label'         => 'SMTP сервер',
 					'name'          => 'smtp_host',
 					'type'          => 'text',
-					'default_value' => 'smtp.gmail.com',
-					'instructions'  => 'Заявки всегда сохраняются в разделе «Заявки». SMTP нужен для дублирования на email.',
+					'default_value' => 'smtp.beget.com',
+					'instructions'  => 'Beget: smtp.beget.com. Заявки сохраняются в «Заявки», SMTP дублирует их на email.',
 				),
 				array(
 					'key'           => 'field_smtp_port',
@@ -269,22 +270,26 @@ function troya_acf_smtp_settings(): void {
 					'default_value' => 'ssl',
 				),
 				array(
-					'key'   => 'field_smtp_username',
-					'label' => 'Логин SMTP',
-					'name'  => 'smtp_username',
-					'type'  => 'text',
+					'key'           => 'field_smtp_username',
+					'label'         => 'Логин SMTP',
+					'name'          => 'smtp_username',
+					'type'          => 'text',
+					'default_value' => 'troya-hotel-tickets@troy-a-hotel.ru',
+					'instructions'  => 'Полный адрес ящика на Beget.',
 				),
 				array(
-					'key'   => 'field_smtp_password',
-					'label' => 'Пароль SMTP',
-					'name'  => 'smtp_password',
-					'type'  => 'password',
+					'key'          => 'field_smtp_password',
+					'label'        => 'Пароль SMTP',
+					'name'         => 'smtp_password',
+					'type'         => 'password',
+					'instructions' => 'Пароль почтового ящика Beget.',
 				),
 				array(
-					'key'   => 'field_smtp_from_email',
-					'label' => 'Email отправителя',
-					'name'  => 'smtp_from_email',
-					'type'  => 'email',
+					'key'           => 'field_smtp_from_email',
+					'label'         => 'Email отправителя',
+					'name'          => 'smtp_from_email',
+					'type'          => 'email',
+					'default_value' => 'troya-hotel-tickets@troy-a-hotel.ru',
 				),
 				array(
 					'key'           => 'field_smtp_from_name',
@@ -294,13 +299,20 @@ function troya_acf_smtp_settings(): void {
 					'default_value' => 'Отель Троя',
 				),
 				array(
-					'key'          => 'field_smtp_to_email',
-					'label'        => 'Email получателей заявок',
-					'name'         => 'smtp_to_email',
-					'type'         => 'textarea',
-					'rows'         => 3,
-					'instructions' => 'Один или несколько адресов через запятую.',
-					'default_value'=> 'hoteltroya@mail.ru',
+					'key'           => 'field_smtp_to_email',
+					'label'         => 'Email получателей заявок',
+					'name'          => 'smtp_to_email',
+					'type'          => 'textarea',
+					'rows'          => 3,
+					'instructions'  => 'Один или несколько адресов через запятую.',
+					'default_value' => 'tech@cursiva.ru',
+				),
+				array(
+					'key'     => 'field_smtp_test_hint',
+					'label'   => 'Проверка',
+					'name'    => 'smtp_test_hint',
+					'type'    => 'message',
+					'message' => '<p>После сохранения настроек можно отправить тестовое письмо: <a class="button button-secondary" href="' . esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=troya_smtp_test' ), 'troya_smtp_test' ) ) . '">Отправить тест на получателей</a></p>',
 				),
 			),
 			'location'   => troya_acf_location_options(),
@@ -550,11 +562,54 @@ function troya_acf_rooms_section_fields(): void {
 					'label'         => 'Примечание',
 					'name'          => 'rooms_note',
 					'type'          => 'text',
-					'default_value' => 'Завтрак — 300 ₽ · Доп. кровать — 1 200 ₽',
+					'default_value' => 'Завтрак — 300 ₽',
 				),
 			),
 			'location'   => troya_acf_location_options(),
 			'menu_order' => 50,
+		)
+	);
+}
+
+function troya_acf_home_gallery_fields(): void {
+	acf_add_local_field_group(
+		array(
+			'key'    => 'group_troya_home_gallery',
+			'title'  => 'Блок: Галерея (главная)',
+			'fields' => array(
+				array(
+					'key'           => 'field_home_gallery_eyebrow',
+					'label'         => 'Надзаголовок',
+					'name'          => 'home_gallery_eyebrow',
+					'type'          => 'text',
+					'default_value' => 'Галерея',
+				),
+				array(
+					'key'           => 'field_home_gallery_title',
+					'label'         => 'Заголовок (HTML)',
+					'name'          => 'home_gallery_title',
+					'type'          => 'textarea',
+					'rows'          => 2,
+					'default_value' => "Атмосфера<br /><em>отеля Троя</em>",
+				),
+				array(
+					'key'           => 'field_home_gallery_text',
+					'label'         => 'Текст',
+					'name'          => 'home_gallery_text',
+					'type'          => 'textarea',
+					'rows'          => 3,
+					'default_value' => 'Номера, ресепшен, столовая и виды здания — загляните в фотогалерею и почувствуйте настроение отеля ещё до заезда.',
+				),
+				array(
+					'key'           => 'field_home_gallery_cta',
+					'label'         => 'Текст кнопки',
+					'name'          => 'home_gallery_cta',
+					'type'          => 'text',
+					'default_value' => 'Смотреть все фото',
+				),
+			),
+			'location'   => troya_acf_location_options(),
+			'menu_order' => 55,
 		)
 	);
 }
@@ -873,7 +928,7 @@ function troya_acf_modal_fields(): void {
 					'label'         => 'Подсказка под формой',
 					'name'          => 'modal_hint',
 					'type'          => 'text',
-					'default_value' => '* ОБЯЗАТЕЛЬНЫЕ ПОЛЯ · ЗАВТРАК +300 ₽ · ДОП. КРОВАТЬ +1 200 ₽',
+					'default_value' => '* ОБЯЗАТЕЛЬНЫЕ ПОЛЯ · ЗАВТРАК +300 ₽',
 				),
 			),
 			'location'   => troya_acf_location_options(),

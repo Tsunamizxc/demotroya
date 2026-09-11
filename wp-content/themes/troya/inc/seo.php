@@ -48,6 +48,12 @@ function troya_document_title_parts( array $parts ): array {
 		return $parts;
 	}
 
+	if ( is_page( 'galereya' ) || is_page_template( 'page-gallery.php' ) ) {
+		$parts['title'] = 'Фотогалерея — Отель Троя, Казань';
+		unset( $parts['tagline'], $parts['site'] );
+		return $parts;
+	}
+
 	if ( is_page( 'nomera' ) || is_page_template( 'page-nomera.php' ) ) {
 		$parts['title'] = troya_option( 'seo_rooms_title', 'Номера — Отель Троя, Казань' );
 		unset( $parts['tagline'], $parts['site'] );
@@ -85,10 +91,14 @@ function troya_get_seo_description(): string {
 		);
 	}
 
+	if ( is_page( 'galereya' ) || is_page_template( 'page-gallery.php' ) ) {
+		return 'Фотогалерея отеля «Троя» в Казани: номера, ресепшен, столовая и виды здания.';
+	}
+
 	if ( is_page( 'nomera' ) || is_page_template( 'page-nomera.php' ) ) {
 		return (string) troya_option(
 			'seo_rooms_description',
-			'Каталог номеров отеля «Троя» в Казани: Standard+, Business Comfort, семейные и премиум-категории. Цены от 4 000 ₽.'
+			'Каталог номеров отеля «Троя» в Казани: стандарт, бизнес-комфорт и семейные категории. Цены от 4 000 ₽.'
 		);
 	}
 

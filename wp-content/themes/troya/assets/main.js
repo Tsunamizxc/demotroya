@@ -5,11 +5,11 @@ const ROOMS =
     ? WP.rooms
     : [
         {
-          name: "Standard+",
+          name: "2-х местный Стандарт",
           subtitle: "Двухместный",
           price: "от 4 000 ₽",
-          desc: "Уютный номер с двумя кроватями.",
-          features: ["Две кровати", "Телевизор", "Кондиционер"],
+          desc: "Уютный номер с двумя раздельными кроватями, мини-холодильником и современным санузлом.",
+          features: ["Две кровати", "Телевизор", "Кондиционер", "Мини-холодильник", "Современный санузел"],
           img: (WP.homeUrl || "/") + "wp-content/themes/troya/assets/photos/room-1.jpg",
           tag: "Стандарт",
           href: WP.roomsUrl || "#",
@@ -363,12 +363,8 @@ function initRoomsSlider() {
   roomsVideos.forEach((video) => {
     if (video.tagName !== "VIDEO") return;
     video.addEventListener("ended", () => {
+      // Keep the natural last frame — seeking back causes a visible jerk.
       video.pause();
-      try {
-        if (Number.isFinite(video.duration) && video.duration > 0) {
-          video.currentTime = Math.max(video.duration - 0.05, 0);
-        }
-      } catch (e) {}
     });
   });
 
@@ -615,6 +611,67 @@ document.getElementById("reviews-prev")?.addEventListener("click", () => setActi
 document.getElementById("reviews-next")?.addEventListener("click", () => setActiveReview(activeReview + 1));
 bindSwipe(reviewsDeck, () => setActiveReview(activeReview - 1), () => setActiveReview(activeReview + 1));
 
+/* ─── Homepage gallery preview slider ─────────────── */
+(function initHomeGallery() {
+  const root = document.querySelector("[data-home-gallery]");
+  if (!root) return;
+
+  const slides = Array.from(root.querySelectorAll(".home-gallery__slide"));
+  const currentEl = root.querySelector("[data-home-gallery-current]");
+  const total = slides.length;
+  if (total < 2) return;
+
+  let index = 0;
+  let timer = null;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function setActive(next) {
+    index = ((next % total) + total) % total;
+    slides.forEach((slide, i) => slide.classList.toggle("is-active", i === index));
+    if (currentEl) currentEl.textContent = pad(index + 1);
+  }
+
+  function stopAuto() {
+    if (timer) {
+      window.clearInterval(timer);
+      timer = null;
+    }
+  }
+
+  function startAuto() {
+    if (reduce) return;
+    stopAuto();
+    timer = window.setInterval(() => setActive(index + 1), 4500);
+  }
+
+  root.querySelector("[data-home-gallery-prev]")?.addEventListener("click", () => {
+    setActive(index - 1);
+    startAuto();
+  });
+  root.querySelector("[data-home-gallery-next]")?.addEventListener("click", () => {
+    setActive(index + 1);
+    startAuto();
+  });
+
+  bindSwipe(root.querySelector(".home-gallery__viewport"), () => {
+    setActive(index - 1);
+    startAuto();
+  }, () => {
+    setActive(index + 1);
+    startAuto();
+  });
+
+  startAuto();
+  document.addEventListener(
+    "visibilitychange",
+    () => {
+      if (document.hidden) stopAuto();
+      else startAuto();
+    },
+    { passive: true }
+  );
+})();
+
 /* ─── Excursions ─────────────────────────────────── */
 const excursionsGrid = document.getElementById("excursions-grid");
 if (excursionsGrid) {
@@ -678,12 +735,8 @@ initReveal();
   };
 
   video.addEventListener("ended", () => {
+    // Keep the natural last frame — seeking back causes a visible jerk.
     video.pause();
-    try {
-      video.currentTime = Math.max((video.duration || 0) - 0.05, 0);
-    } catch (_) {
-      /* ignore */
-    }
   });
 
   video.addEventListener("error", () => {
@@ -704,7 +757,7 @@ initReveal();
   document.addEventListener(
     "visibilitychange",
     () => {
-      if (!document.hidden) tryPlay();
+      if (!document.hidden && video.paused && !video.ended) tryPlay();
     },
     { passive: true }
   );
@@ -764,10 +817,15 @@ initReveal();
   }
 
   function unlockPageScroll() {
+    const y = lightboxScrollY;
     document.documentElement.classList.remove("lightbox-open");
     document.body.classList.remove("lightbox-open");
     document.body.style.top = "";
-    window.scrollTo(0, lightboxScrollY);
+    const html = document.documentElement;
+    const prev = html.style.scrollBehavior;
+    html.style.scrollBehavior = "auto";
+    window.scrollTo({ top: y, left: 0, behavior: "auto" });
+    html.style.scrollBehavior = prev;
   }
 
   function openLightbox(at) {
@@ -821,6 +879,106 @@ initReveal();
   });
 
   bindSwipe(root.querySelector(".room-gallery__viewport"), () => setActive(index - 1), () => setActive(index + 1));
+  if (lightbox) {
+    bindSwipe(lightbox, () => setActive(index - 1), () => setActive(index + 1));
+  }
+})();
+
+/* ─── Site photo gallery lightbox ─────────────────── */
+(function initSiteGallery() {
+  const root = document.querySelector("[data-site-gallery]");
+  const dataEl = document.getElementById("site-gallery-data");
+  if (!root || !dataEl) return;
+
+  let images = [];
+  try {
+    images = JSON.parse(dataEl.textContent || "[]");
+  } catch (e) {
+    images = [];
+  }
+  if (!Array.isArray(images) || !images.length) return;
+
+  const lightbox = document.getElementById("site-lightbox");
+  const lightboxImg = document.getElementById("site-lightbox-img");
+  const lightboxCurrent = lightbox?.querySelector("[data-lightbox-current]");
+  const total = images.length;
+  let index = 0;
+  let lightboxOpen = false;
+  let lightboxScrollY = 0;
+
+  function renderLightbox() {
+    if (!lightbox || !lightboxImg) return;
+    const item = images[index] || {};
+    lightboxImg.src = item.url || "";
+    lightboxImg.alt = item.alt || "";
+    if (lightboxCurrent) lightboxCurrent.textContent = pad(index + 1);
+  }
+
+  function setActive(next) {
+    index = ((next % total) + total) % total;
+    if (lightboxOpen) renderLightbox();
+  }
+
+  function lockPageScroll() {
+    lightboxScrollY = window.scrollY || window.pageYOffset || 0;
+    document.documentElement.classList.add("lightbox-open");
+    document.body.classList.add("lightbox-open");
+    document.body.style.top = `-${lightboxScrollY}px`;
+  }
+
+  function unlockPageScroll() {
+    const y = lightboxScrollY;
+    document.documentElement.classList.remove("lightbox-open");
+    document.body.classList.remove("lightbox-open");
+    document.body.style.top = "";
+    const html = document.documentElement;
+    const prev = html.style.scrollBehavior;
+    html.style.scrollBehavior = "auto";
+    window.scrollTo({ top: y, left: 0, behavior: "auto" });
+    html.style.scrollBehavior = prev;
+  }
+
+  function openLightbox(at) {
+    if (!lightbox) return;
+    if (lightbox.parentElement !== document.body) {
+      document.body.appendChild(lightbox);
+    }
+    index = typeof at === "number" ? ((at % total) + total) % total : index;
+    lightbox.hidden = false;
+    lightbox.classList.add("is-open");
+    lightbox.setAttribute("aria-hidden", "false");
+    lightboxOpen = true;
+    lockPageScroll();
+    renderLightbox();
+  }
+
+  function closeLightbox() {
+    if (!lightbox || !lightboxOpen) return;
+    lightbox.classList.remove("is-open");
+    lightbox.hidden = true;
+    lightbox.setAttribute("aria-hidden", "true");
+    lightboxOpen = false;
+    unlockPageScroll();
+  }
+
+  root.querySelectorAll("[data-gallery-open]").forEach((btn) => {
+    btn.addEventListener("click", () => openLightbox(Number(btn.dataset.index) || 0));
+  });
+
+  lightbox?.querySelector("[data-lightbox-close]")?.addEventListener("click", closeLightbox);
+  lightbox?.querySelector("[data-lightbox-prev]")?.addEventListener("click", () => setActive(index - 1));
+  lightbox?.querySelector("[data-lightbox-next]")?.addEventListener("click", () => setActive(index + 1));
+  lightbox?.addEventListener("click", (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (!lightboxOpen) return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowLeft") setActive(index - 1);
+    if (e.key === "ArrowRight") setActive(index + 1);
+  });
+
   if (lightbox) {
     bindSwipe(lightbox, () => setActive(index - 1), () => setActive(index + 1));
   }

@@ -22,7 +22,7 @@ $phone1  = troya_option( 'site_phone_1', '8 (843) 564-46-46' );
 $m_title = troya_option( 'modal_title', 'Бронирование по телефону' );
 $s_title = troya_option( 'modal_success_title', 'Заявка отправлена' );
 $s_text  = troya_option( 'modal_success_text', 'Мы свяжемся с вами в ближайшее время для подтверждения бронирования.' );
-$hint    = troya_option( 'modal_hint', '* ОБЯЗАТЕЛЬНЫЕ ПОЛЯ · ЗАВТРАК +300 ₽ · ДОП. КРОВАТЬ +1 200 ₽' );
+$hint    = troya_option( 'modal_hint', '* ОБЯЗАТЕЛЬНЫЕ ПОЛЯ · ЗАВТРАК +300 ₽' );
 ?>
 
 <footer class="footer">

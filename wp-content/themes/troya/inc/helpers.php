@@ -186,3 +186,125 @@ function troya_get_rooms_payload(): array {
 
 	return $rooms;
 }
+
+/**
+ * Photo gallery page URL.
+ */
+function troya_gallery_url(): string {
+	$page = get_page_by_path( 'galereya' );
+	if ( $page ) {
+		$url = get_permalink( $page );
+		if ( $url ) {
+			return $url;
+		}
+	}
+
+	return home_url( '/galereya/' );
+}
+
+/**
+ * Theme asset album for the photo gallery page.
+ *
+ * @return array<int, array{url:string,alt:string}>
+ */
+function troya_theme_gallery_album( string $slug, string $alt_prefix = '' ): array {
+	$dir = TROYA_DIR . '/assets/photos/gallery/' . $slug;
+	if ( ! is_dir( $dir ) ) {
+		return array();
+	}
+
+	$files = array_values(
+		array_filter(
+			scandir( $dir ) ?: array(),
+			static function ( $name ) use ( $dir ) {
+				if ( '.' === $name || '..' === $name ) {
+					return false;
+				}
+				$ext = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
+				return in_array( $ext, array( 'jpg', 'jpeg', 'png', 'webp' ), true ) && is_file( $dir . '/' . $name );
+			}
+		)
+	);
+
+	natcasesort( $files );
+	$files = array_values( $files );
+	$items = array();
+	$i     = 0;
+
+	foreach ( $files as $name ) {
+		$i++;
+		$items[] = array(
+			'url' => troya_asset( 'photos/gallery/' . $slug . '/' . $name ),
+			'alt' => $alt_prefix ? sprintf( '%s — фото %d', $alt_prefix, $i ) : $name,
+		);
+	}
+
+	return $items;
+}
+
+/**
+ * Curated photo set for homepage gallery preview slider.
+ *
+ * @return array<int, array{url:string,alt:string}>
+ */
+function troya_home_gallery_preview_items( int $limit = 10 ): array {
+	$albums = array(
+		array( 'building', 'Отель Троя' ),
+		array( 'reception', 'Ресепшен' ),
+		array( 'dining', 'Столовая' ),
+	);
+
+	$items = array();
+	foreach ( $albums as $album ) {
+		foreach ( troya_theme_gallery_album( $album[0], $album[1] ) as $item ) {
+			$items[] = $item;
+		}
+	}
+
+	if ( $limit > 0 && count( $items ) > $limit ) {
+		$items = array_slice( $items, 0, $limit );
+	}
+
+	return array_values( $items );
+}
+
+/**
+ * Collect room gallery items for a post.
+ *
+ * @return array<int, array{url:string,alt:string}>
+ */
+function troya_room_gallery_items( int $post_id ): array {
+	$gallery = troya_field( 'room_gallery', array(), $post_id );
+	$items   = array();
+	$title   = get_the_title( $post_id );
+
+	if ( is_array( $gallery ) ) {
+		foreach ( $gallery as $photo ) {
+			$url = '';
+			if ( is_array( $photo ) && ! empty( $photo['url'] ) ) {
+				$url = (string) $photo['url'];
+			} elseif ( is_numeric( $photo ) ) {
+				$url = (string) ( wp_get_attachment_image_url( (int) $photo, 'large' ) ?: '' );
+			}
+			if ( ! $url ) {
+				continue;
+			}
+			$items[] = array(
+				'url' => $url,
+				'alt' => $title,
+			);
+		}
+	}
+
+	if ( ! $items ) {
+		$img = troya_img_url( troya_field( 'room_image', null, $post_id ), get_the_post_thumbnail_url( $post_id, 'large' ) ?: '' );
+		if ( $img ) {
+			$items[] = array(
+				'url' => $img,
+				'alt' => $title,
+			);
+		}
+	}
+
+	return $items;
+}

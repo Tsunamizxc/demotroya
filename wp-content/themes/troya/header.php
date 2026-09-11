@@ -17,6 +17,7 @@
 	$addr      = troya_option( 'site_address_short', 'Казань · ул. Восстания, 119' );
 	$rooms_url = troya_rooms_url();
 	$book_url  = troya_booking_url();
+	$gallery_url = troya_gallery_url();
 	?>
 
 	<header class="header" id="header">
@@ -27,6 +28,7 @@
 
 			<nav class="header__nav header__nav--desktop">
 				<a href="<?php echo esc_url( $rooms_url ); ?>" class="nav-link">Номера</a>
+				<a href="<?php echo esc_url( $gallery_url ); ?>" class="nav-link">Галерея</a>
 				<a href="<?php echo esc_url( home_url( '/#amenities' ) ); ?>" class="nav-link">Удобства</a>
 				<a href="<?php echo esc_url( home_url( '/#excursions' ) ); ?>" class="nav-link">Экскурсии</a>
 				<a href="<?php echo esc_url( home_url( '/#reviews' ) ); ?>" class="nav-link">Отзывы</a>
@@ -52,10 +54,11 @@
 				<span></span><span></span>
 			</button>
 			<a href="<?php echo esc_url( $rooms_url ); ?>" class="menu-overlay__link" data-i="01"><span>Номера</span></a>
-			<a href="<?php echo esc_url( home_url( '/#amenities' ) ); ?>" class="menu-overlay__link" data-i="02"><span>Удобства</span></a>
-			<a href="<?php echo esc_url( home_url( '/#excursions' ) ); ?>" class="menu-overlay__link" data-i="03"><span>Экскурсии</span></a>
-			<a href="<?php echo esc_url( home_url( '/#reviews' ) ); ?>" class="menu-overlay__link" data-i="04"><span>Отзывы</span></a>
-			<a href="<?php echo esc_url( home_url( '/#contact' ) ); ?>" class="menu-overlay__link" data-i="05"><span>Контакты</span></a>
+			<a href="<?php echo esc_url( $gallery_url ); ?>" class="menu-overlay__link" data-i="02"><span>Галерея</span></a>
+			<a href="<?php echo esc_url( home_url( '/#amenities' ) ); ?>" class="menu-overlay__link" data-i="03"><span>Удобства</span></a>
+			<a href="<?php echo esc_url( home_url( '/#excursions' ) ); ?>" class="menu-overlay__link" data-i="04"><span>Экскурсии</span></a>
+			<a href="<?php echo esc_url( home_url( '/#reviews' ) ); ?>" class="menu-overlay__link" data-i="05"><span>Отзывы</span></a>
+			<a href="<?php echo esc_url( home_url( '/#contact' ) ); ?>" class="menu-overlay__link" data-i="06"><span>Контакты</span></a>
 			<a href="<?php echo esc_url( $book_url ); ?>" class="btn btn--gold menu-overlay__cta"><?php echo esc_html( $cta ); ?></a>
 		</nav>
 		<p class="menu-overlay__meta"><?php echo esc_html( $addr ); ?></p>
