@@ -68,7 +68,8 @@ $rooms_q = new WP_Query(
 				<p class="text"><?php echo esc_html( (string) troya_field( 'room_desc' ) ); ?></p>
 				<div class="room-band__actions">
 					<a href="<?php the_permalink(); ?>" class="btn btn--gold">Смотреть номер</a>
-					<button type="button" class="btn btn--outline" data-open-modal data-room="<?php echo esc_attr( get_the_title() . ' — ' . troya_field( 'room_subtitle' ) ); ?>">Забронировать</button>
+					<a href="<?php echo esc_url( troya_room_booking_url( get_the_ID() ) ); ?>" class="btn btn--outline">Забронировать</a>
+					<button type="button" class="btn btn--ghost" data-open-modal data-room="<?php echo esc_attr( get_the_title() . ' — ' . troya_field( 'room_subtitle' ) ); ?>">Забронировать по телефону</button>
 				</div>
 			</div>
 		</article>

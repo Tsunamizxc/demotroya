@@ -78,14 +78,32 @@ function troya_enqueue_assets(): void {
 		'troya-main',
 		'TroyaData',
 		array(
-			'ajaxUrl'    => admin_url( 'admin-ajax.php' ),
-			'nonce'      => wp_create_nonce( 'troya_forms' ),
-			'rooms'      => troya_get_rooms_payload(),
-			'amenities'  => $amen_out,
-			'reviews'    => $rev_out,
-			'excursions' => $exc_out,
-			'homeUrl'    => home_url( '/' ),
-			'roomsUrl'   => troya_rooms_url(),
+			'ajaxUrl'     => admin_url( 'admin-ajax.php' ),
+			'nonce'       => wp_create_nonce( 'troya_forms' ),
+			'rooms'       => troya_get_rooms_payload(),
+			'amenities'   => $amen_out,
+			'reviews'     => $rev_out,
+			'excursions'  => $exc_out,
+			'homeUrl'     => home_url( '/' ),
+			'roomsUrl'    => troya_rooms_url(),
+			'bookingUrl'  => troya_booking_url(),
 		)
 	);
+
+	if ( is_page_template( 'page-booking.php' ) || is_page( 'booking' ) ) {
+		wp_enqueue_script(
+			'troya-iframe-resizer',
+			troya_asset( 'vendor/iframeResizer.min.js' ),
+			array(),
+			'4.3.9',
+			true
+		);
+		wp_enqueue_script(
+			'troya-booking-iframe',
+			troya_asset( 'booking-iframe.js' ),
+			array( 'troya-iframe-resizer' ),
+			TROYA_VERSION,
+			true
+		);
+	}
 }

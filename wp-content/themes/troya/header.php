@@ -16,6 +16,7 @@
 	$menu_img  = troya_img_url( troya_option( 'menu_image' ), troya_asset( 'photos/menu.jpg' ) );
 	$addr      = troya_option( 'site_address_short', 'Казань · ул. Восстания, 119' );
 	$rooms_url = troya_rooms_url();
+	$book_url  = troya_booking_url();
 	?>
 
 	<header class="header" id="header">
@@ -30,7 +31,7 @@
 				<a href="<?php echo esc_url( home_url( '/#excursions' ) ); ?>" class="nav-link">Экскурсии</a>
 				<a href="<?php echo esc_url( home_url( '/#reviews' ) ); ?>" class="nav-link">Отзывы</a>
 				<a href="<?php echo esc_url( home_url( '/#contact' ) ); ?>" class="nav-link">Контакты</a>
-				<button type="button" class="btn btn--gold btn--sm" data-open-modal><?php echo esc_html( $cta ); ?></button>
+				<a href="<?php echo esc_url( $book_url ); ?>" class="btn btn--gold btn--sm"><?php echo esc_html( $cta ); ?></a>
 			</nav>
 
 			<button type="button" class="burger" id="burger" aria-label="Меню" aria-expanded="false">
@@ -55,7 +56,7 @@
 			<a href="<?php echo esc_url( home_url( '/#excursions' ) ); ?>" class="menu-overlay__link" data-i="03"><span>Экскурсии</span></a>
 			<a href="<?php echo esc_url( home_url( '/#reviews' ) ); ?>" class="menu-overlay__link" data-i="04"><span>Отзывы</span></a>
 			<a href="<?php echo esc_url( home_url( '/#contact' ) ); ?>" class="menu-overlay__link" data-i="05"><span>Контакты</span></a>
-			<button type="button" class="btn btn--gold menu-overlay__cta" data-open-modal><?php echo esc_html( $cta ); ?></button>
+			<a href="<?php echo esc_url( $book_url ); ?>" class="btn btn--gold menu-overlay__cta"><?php echo esc_html( $cta ); ?></a>
 		</nav>
 		<p class="menu-overlay__meta"><?php echo esc_html( $addr ); ?></p>
 	</div>

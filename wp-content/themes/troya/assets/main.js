@@ -230,6 +230,9 @@ function updateRoomPanel(index) {
   roomFeatures.innerHTML = room.features.map((f) => `<span>${f}</span>`).join("");
   if (roomsCurrent) roomsCurrent.textContent = pad(index + 1);
   if (roomMore) roomMore.href = room.href || "rooms.html";
+  if (roomBook && roomBook.tagName === "A") {
+    roomBook.href = room.bookUrl || WP.bookingUrl || roomBook.getAttribute("href") || "#";
+  }
 }
 
 function renderRoomSlides() {
@@ -399,8 +402,7 @@ if ("IntersectionObserver" in window && roomsSlider) {
 }
 
 roomBook?.addEventListener("click", () => {
-  const room = ROOMS[activeRoom];
-  openModal(`${room.name} — ${room.subtitle}`);
+  reachGoal("CLKBTN");
 });
 
 /* ─── Amenities mosaic ───────────────────────────── */

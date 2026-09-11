@@ -1,6 +1,6 @@
 <?php
 /**
- * Single room with photo gallery.
+ * Single room with photo gallery and Bnovo availability.
  *
  * @package Troya
  */
@@ -29,8 +29,10 @@ while ( have_posts() ) :
 		$img  = $path ? troya_asset( $path ) : troya_asset( 'photos/room-1.jpg' );
 	}
 
-	$feats     = troya_field( 'room_features', array() );
-	$rooms_url = troya_rooms_url();
+	$feats      = troya_field( 'room_features', array() );
+	$rooms_url  = troya_rooms_url();
+	$book_url   = troya_room_booking_url( get_the_ID() );
+	$room_title = get_the_title();
 	?>
 	<section class="hero hero--page">
 		<div class="hero__bg">
@@ -85,12 +87,15 @@ while ( have_posts() ) :
 						<?php endforeach; ?>
 					</ul>
 				<?php endif; ?>
+
+				<?php troya_render_room_availability( get_the_ID() ); ?>
 			</div>
 			<aside class="room-bookcard reveal-right">
 				<p class="eyebrow">Этот номер</p>
 				<p class="room-bookcard__price"><?php echo esc_html( (string) troya_field( 'room_price' ) ); ?><small>за ночь</small></p>
 				<p class="room-bookcard__note"><?php echo esc_html( troya_option( 'rooms_note' ) ); ?></p>
-				<button type="button" class="btn btn--gold" data-open-modal data-room="<?php echo esc_attr( get_the_title() ); ?>">Забронировать</button>
+				<a class="btn btn--gold" href="<?php echo esc_url( $book_url ); ?>">Забронировать</a>
+				<button type="button" class="btn btn--outline" data-open-modal data-room="<?php echo esc_attr( $room_title ); ?>">Забронировать по телефону</button>
 				<a class="room-bookcard__phone" href="tel:<?php echo esc_attr( preg_replace( '/\D+/', '', troya_option( 'site_phone_1', '88435644646' ) ) ); ?>"><?php echo esc_html( troya_option( 'site_phone_1' ) ); ?></a>
 			</aside>
 		</div>

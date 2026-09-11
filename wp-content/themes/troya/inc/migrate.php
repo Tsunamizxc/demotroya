@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /** Bump when deploy needs DB-side fixes without manual admin clicks. */
-define( 'TROYA_SCHEMA_VERSION', 3 );
+define( 'TROYA_SCHEMA_VERSION', 4 );
 
 add_action( 'init', 'troya_maybe_run_migrations', 5 );
 add_action( 'after_switch_theme', 'troya_force_run_migrations' );
@@ -44,6 +44,10 @@ function troya_run_migrations(): void {
 
 	if ( $from < 3 ) {
 		troya_ensure_booking_stack();
+	}
+
+	if ( $from < 4 ) {
+		troya_ensure_bnovo_room_ids();
 	}
 
 	update_option( 'troya_schema_version', TROYA_SCHEMA_VERSION );
@@ -150,5 +154,40 @@ function troya_ensure_booking_stack(): void {
 	// Permalink structure for pretty /booking/
 	if ( ! get_option( 'permalink_structure' ) ) {
 		update_option( 'permalink_structure', '/%postname%/' );
+	}
+}
+
+/**
+ * Map WP rooms to Bnovo rate/category IDs for calendars and onlyrooms filter.
+ */
+function troya_ensure_bnovo_room_ids(): void {
+	if ( ! function_exists( 'update_field' ) ) {
+		return;
+	}
+
+	$map = troya_bnovo_default_room_map();
+	$q   = new WP_Query(
+		array(
+			'post_type'      => 'troya_room',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+			'fields'         => 'ids',
+		)
+	);
+
+	foreach ( $q->posts as $id ) {
+		$title = get_the_title( (int) $id );
+		if ( empty( $map[ $title ] ) ) {
+			continue;
+		}
+		$current = (string) troya_field( 'room_bnovo_ids', '', (int) $id );
+		if ( '' === trim( $current ) ) {
+			update_field( 'room_bnovo_ids', $map[ $title ], (int) $id );
+		}
+	}
+
+	$modal_title = (string) troya_option( 'modal_title', '' );
+	if ( '' === $modal_title || 'Онлайн-бронирование' === $modal_title ) {
+		update_field( 'modal_title', 'Бронирование по телефону', 'option' );
 	}
 }

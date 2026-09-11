@@ -64,7 +64,7 @@ if ( ! is_array( $stats ) || ! $stats ) {
 		<h1 class="hero__title anim-up" style="--d: 0.4s"><?php echo wp_kses_post( troya_option( 'hero_title', 'Отель <em>Троя</em>' ) ); ?></h1>
 		<p class="hero__text anim-up" style="--d: 0.55s"><?php echo esc_html( troya_option( 'hero_text', 'Комфортабельный отель в самом сердце Казани.' ) ); ?></p>
 		<div class="hero__actions anim-up" style="--d: 0.7s">
-			<button type="button" class="btn btn--gold" data-open-modal><?php echo esc_html( troya_option( 'hero_cta_primary', 'Забронировать номер' ) ); ?></button>
+			<a href="<?php echo esc_url( troya_booking_url() ); ?>" class="btn btn--gold"><?php echo esc_html( troya_option( 'hero_cta_primary', 'Забронировать номер' ) ); ?></a>
 			<a href="<?php echo esc_url( $rooms_url ); ?>" class="btn btn--ghost"><?php echo esc_html( troya_option( 'hero_cta_secondary', 'Смотреть номера' ) ); ?></a>
 		</div>
 	</div>
@@ -186,7 +186,7 @@ if ( ! is_array( $stats ) || ! $stats ) {
 				<p class="rooms__note"><?php echo esc_html( troya_option( 'rooms_note', 'Завтрак — 300 ₽ · Доп. кровать — 1 200 ₽' ) ); ?></p>
 				<div class="rooms__footer-actions">
 					<a class="btn btn--outline" id="room-more" href="<?php echo esc_url( $rooms_url ); ?>">Подробнее</a>
-					<button type="button" class="btn btn--gold" id="room-book">Забронировать</button>
+					<a class="btn btn--gold" id="room-book" href="<?php echo esc_url( troya_booking_url() ); ?>">Забронировать</a>
 				</div>
 			</div>
 		</div>

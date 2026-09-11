@@ -7,11 +7,12 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'TROYA_VERSION', '1.0.3' );
+define( 'TROYA_VERSION', '1.0.5' );
 define( 'TROYA_DIR', get_template_directory() );
 define( 'TROYA_URI', get_template_directory_uri() );
 
 require TROYA_DIR . '/inc/helpers.php';
+require TROYA_DIR . '/inc/bnovo.php';
 require TROYA_DIR . '/inc/post-types.php';
 require TROYA_DIR . '/inc/acf-fields.php';
 require TROYA_DIR . '/inc/enqueue.php';

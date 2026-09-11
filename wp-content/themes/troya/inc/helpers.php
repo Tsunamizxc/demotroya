@@ -159,6 +159,8 @@ function troya_get_rooms_payload(): array {
 		}
 		$img = troya_img_url( troya_field( 'room_image', null, $post->ID ), $fallback );
 
+		$bnovo_ids = troya_room_bnovo_ids( $post->ID );
+
 		$rooms[] = array(
 			'name'     => get_the_title( $post ),
 			'subtitle' => (string) troya_field( 'room_subtitle', '', $post->ID ),
@@ -168,6 +170,8 @@ function troya_get_rooms_payload(): array {
 			'img'      => $img,
 			'tag'      => (string) troya_field( 'room_tag', '', $post->ID ),
 			'href'     => get_permalink( $post ),
+			'bookUrl'  => troya_room_booking_url( $bnovo_ids ),
+			'bnovoIds' => $bnovo_ids,
 		);
 	}
 

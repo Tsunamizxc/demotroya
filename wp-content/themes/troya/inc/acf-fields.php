@@ -851,7 +851,7 @@ function troya_acf_modal_fields(): void {
 					'label'         => 'Заголовок',
 					'name'          => 'modal_title',
 					'type'          => 'text',
-					'default_value' => 'Онлайн-бронирование',
+					'default_value' => 'Бронирование по телефону',
 				),
 				array(
 					'key'           => 'field_modal_success_title',
@@ -945,6 +945,14 @@ function troya_acf_room_fields(): void {
 							'type'  => 'text',
 						),
 					),
+				),
+				array(
+					'key'           => 'field_room_bnovo_ids',
+					'label'         => 'ID категорий Bnovo',
+					'name'          => 'room_bnovo_ids',
+					'type'          => 'text',
+					'instructions'  => 'ID тарифов/категорий из модуля Bnovo через запятую (для календаря и onlyrooms).',
+					'placeholder'   => '25813,24764',
 				),
 			),
 			'location' => array(

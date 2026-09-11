@@ -2266,6 +2266,11 @@ button {
 
 .room-bookcard .btn {
   width: 100%;
+  margin-top: 10px;
+}
+
+.room-bookcard .btn:first-of-type {
+  margin-top: 18px;
 }
 
 .room-bookcard__phone {
@@ -2280,6 +2285,246 @@ button {
 .room-bookcard__phone:hover {
   color: var(--gold);
 }
+
+/* Bnovo availability on room detail */
+.room-avail {
+  margin-top: 48px;
+  padding: 28px 24px 24px;
+  background: var(--bg-white);
+  border: 1px solid var(--line);
+}
+
+.room-avail__head {
+  margin-bottom: 22px;
+}
+
+.room-avail__lead {
+  margin: 8px 0 0;
+  max-width: 52ch;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.room-avail__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.room-avail__stat {
+  padding: 16px 14px;
+  background: var(--bg-mist, #efe8df);
+  border-radius: 12px;
+}
+
+.room-avail__stat strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: 400;
+  color: var(--gold-deep);
+  line-height: 1.15;
+  margin-bottom: 6px;
+}
+
+.room-avail__stat span {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.room-avail__calendars {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.room-avail__month-label {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  margin: 0 0 10px;
+}
+
+.room-avail__weekdays,
+.room-avail__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.room-avail__weekdays {
+  margin-bottom: 6px;
+}
+
+.room-avail__weekdays span {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.room-avail__day {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: 8px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 12px;
+  line-height: 1.1;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.room-avail__day.is-empty {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.room-avail__day.is-free {
+  background: rgba(91, 51, 37, 0.08);
+  color: var(--ink);
+}
+
+.room-avail__day.is-free:hover {
+  background: var(--gold);
+  color: #2a1a12;
+  transform: translateY(-1px);
+}
+
+.room-avail__day.is-busy {
+  background: rgba(44, 38, 31, 0.05);
+  color: rgba(44, 38, 31, 0.35);
+  text-decoration: line-through;
+}
+
+.room-avail__num {
+  font-weight: 600;
+}
+
+.room-avail__price {
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  opacity: 0.75;
+}
+
+.room-avail__legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px 18px;
+  margin-top: 18px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.room-avail__legend i {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+
+.room-avail__legend i.is-free {
+  background: rgba(91, 51, 37, 0.2);
+}
+
+.room-avail__legend i.is-busy {
+  background: rgba(44, 38, 31, 0.12);
+}
+
+.room-avail__all {
+  margin-left: auto;
+  color: var(--gold-deep);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.room-avail__all:hover {
+  text-decoration: underline;
+}
+
+.hero--booking {
+  min-height: 48vh;
+  min-height: 48dvh;
+}
+
+.hero--booking .hero__title {
+  max-width: 16ch;
+}
+
+/* Bnovo booking page */
+.booking-page {
+  padding: 28px 0 48px;
+}
+
+.booking-page__frame {
+  width: min(100% - 40px, var(--container, 1280px));
+  margin: 0 auto;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid var(--line, rgba(44, 38, 31, 0.1));
+}
+
+.booking-page__iframe {
+  display: block;
+  width: 100%;
+  height: 800px;
+  min-height: 640px;
+  border: 0;
+  background: #fff;
+}
+
+@media (max-width: 900px) {
+  .room-avail__stats,
+  .room-avail__calendars {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .booking-page {
+    padding-top: 16px;
+    padding-bottom: 28px;
+  }
+
+  .booking-page__frame {
+    width: 100%;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+  }
+
+  .booking-page__iframe {
+    height: 720px;
+    min-height: 560px;
+  }
+
+  .room-avail {
+    padding: 20px 16px;
+  }
+
+  .room-avail__all {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+
+
 
 .room-perks {
   display: grid;
@@ -2732,54 +2977,5 @@ button {
   }
   .room-gallery__item.is-wide {
     grid-column: auto;
-  }
-}
-
-/* Bnovo booking page */
-.booking-page {
-  padding: calc(var(--header-h, 72px) + 28px) 0 64px;
-}
-
-.booking-page__head {
-  margin-bottom: 28px;
-}
-
-.booking-page__lead {
-  margin-top: 12px;
-  max-width: 56ch;
-}
-
-.booking-page__frame {
-  width: min(100% - 40px, var(--container, 1280px));
-  margin: 0 auto;
-  border-radius: 18px;
-  overflow: hidden;
-  background: #fff;
-  border: 1px solid var(--line, rgba(44, 38, 31, 0.1));
-  min-height: 70vh;
-}
-
-.booking-page__iframe {
-  display: block;
-  width: 100%;
-  min-height: 2200px;
-  border: 0;
-  background: #fff;
-}
-
-@media (max-width: 640px) {
-  .booking-page {
-    padding-top: calc(var(--header-h, 72px) + 16px);
-  }
-
-  .booking-page__frame {
-    width: 100%;
-    border-radius: 0;
-    border-left: 0;
-    border-right: 0;
-  }
-
-  .booking-page__iframe {
-    min-height: 2400px;
   }
 }

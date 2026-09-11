@@ -74,7 +74,7 @@ function troya_seed_content(): void {
 		'footer_brand'            => 'Отель <span>Троя</span>',
 		'footer_meta'             => 'ООО «ТРОЯ» · ИНН 1657131940 · ЕРОКСТИ С162024017530 · 420095, РФ, РТ, г.Казань, ул.Восстания 119',
 		'footer_copy'             => '© 2026 Все права защищены',
-		'modal_title'             => 'Онлайн-бронирование',
+		'modal_title'             => 'Бронирование по телефону',
 		'modal_success_title'     => 'Заявка отправлена',
 		'modal_success_text'      => 'Мы свяжемся с вами в ближайшее время для подтверждения бронирования.',
 		'modal_hint'              => '* ОБЯЗАТЕЛЬНЫЕ ПОЛЯ · ЗАВТРАК +300 ₽ · ДОП. КРОВАТЬ +1 200 ₽',
@@ -280,6 +280,10 @@ function troya_seed_rooms(): void {
 		update_field( 'room_subtitle', $room['subtitle'], $id );
 		update_field( 'room_price', $room['price'], $id );
 		update_field( 'room_desc', $room['desc'], $id );
+		$map = troya_bnovo_default_room_map();
+		if ( ! empty( $map[ $room['title'] ] ) ) {
+			update_field( 'room_bnovo_ids', $map[ $room['title'] ], $id );
+		}
 		update_field(
 			'room_features',
 			array_map(
