@@ -1,52 +1,49 @@
 /**
- * Auto-fit Bnovo booking iframe height (iframe-resizer + fallback).
+ * Keep Bnovo booking iframe at viewport height.
+ *
+ * Auto-growing to full content height (via iframe-resizer / postMessage)
+ * makes position:fixed lightboxes inside the module enormous
+ * (.lightbox.lightbox--white), because fixed is relative to the iframe box.
  */
 (function () {
   var iframe = document.getElementById("bnovo_booking_iframe");
   if (!iframe) return;
 
-  function applyHeight(h) {
-    var height = Math.ceil(Number(h));
-    if (!height || height < 400) return;
-    // Cap runaway values but allow tall booking flows.
-    height = Math.min(height, 12000);
+  var locking = false;
+
+  function viewportHeight() {
+    var vv = window.visualViewport;
+    var viewH = vv && vv.height ? vv.height : window.innerHeight;
+    return Math.round(Math.max(560, viewH - 24));
+  }
+
+  function applyHeight() {
+    if (locking) return;
+    locking = true;
+    var height = viewportHeight();
     iframe.style.height = height + "px";
     iframe.setAttribute("height", String(height));
+    window.requestAnimationFrame(function () {
+      locking = false;
+    });
   }
 
-  if (typeof window.iFrameResize === "function") {
-    window.iFrameResize(
-      {
-        log: false,
-        checkOrigin: false,
-        heightCalculationMethod: "lowestElement",
-        tolerance: 12,
-        minHeight: 640,
-        onResized: function (data) {
-          if (data && data.height) applyHeight(data.height);
-        },
-      },
-      iframe
-    );
+  applyHeight();
+  window.addEventListener("resize", applyHeight);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener("resize", applyHeight);
   }
 
-  // Fallback: some Bnovo builds also emit numeric / signal heights.
+  // Bnovo may try to stretch frameElement from inside — pin it back.
+  new MutationObserver(applyHeight).observe(iframe, {
+    attributes: true,
+    attributeFilter: ["style", "height"],
+  });
+
   window.addEventListener("message", function (event) {
     if (!event || !event.origin) return;
     if (event.origin.indexOf("reservationsteps.ru") === -1) return;
-
-    var data = event.data;
-    if (typeof data === "number") {
-      applyHeight(data);
-      return;
-    }
-    if (typeof data === "string" && /^\d+$/.test(data)) {
-      applyHeight(data);
-      return;
-    }
-    if (data && typeof data === "object") {
-      if (data.height) applyHeight(data.height);
-      if (data.params && data.params.height) applyHeight(data.params.height);
-    }
+    // Any resize signal from the module: stay viewport-sized.
+    applyHeight();
   });
 })();
