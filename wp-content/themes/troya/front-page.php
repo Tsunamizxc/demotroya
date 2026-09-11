@@ -69,47 +69,68 @@ if ( ! is_array( $stats ) || ! $stats ) {
 		</div>
 	</div>
 
-	<div class="bnovo-widget anim-up" style="--d: 0.85s">
+	<div class="bnovo-widget">
 		<div class="bnovo-widget__inner" id="_bn_widget_">
 			<a href="https://bnovo.ru/" id="_bnovo_link_" target="_blank" rel="noopener noreferrer">Bnovo</a>
 		</div>
 	</div>
-	<script src="//widget.reservationsteps.ru/js/bnovo.js"></script>
+	<script src="https://widget.reservationsteps.ru/js/bnovo.js"></script>
 	<script>
 	(function () {
-		if (typeof Bnovo_Widget === 'undefined') return;
-		Bnovo_Widget.init(function () {
-			Bnovo_Widget.open('_bn_widget_', {
-				type: 'horizontal',
-				uid: <?php echo wp_json_encode( troya_option( 'bnovo_uid', 'eb9cee17-77f8-4f25-9817-b3fc2080617b' ) ); ?>,
-				lang: 'ru',
-				width: '100%',
-				background: '#e8c64e',
-				bg_alpha: '80',
-				padding: '20',
-				border_radius: '1',
-				font_type: 'arial',
-				font_size: '16',
-				title_color: '#3e2319',
-				title_size: '18',
-				inp_color: '#222222',
-				inp_bordhover: '#3796e5',
-				inp_bordcolor: '#cccccc',
-				inp_alpha: '100',
-				btn_background: '#5b3325',
-				btn_background_over: '#754d40',
-				btn_textcolor: '#ffffff',
-				btn_textover: '#ffffff',
-				btn_bordcolor: '#5b3325',
-				btn_bordhover: '#754d40',
-				text_concierge: 'Получи скидку через Bnovo Concierge',
-				url: <?php echo wp_json_encode( home_url( '/booking/' ) ); ?>,
-				adults_default: '2',
-				dates_preset: 'on',
-				dfrom_tomorrow: 'on',
-				dto_nextday: 'on'
+		var opts = {
+			type: 'horizontal',
+			uid: <?php echo wp_json_encode( troya_option( 'bnovo_uid', 'eb9cee17-77f8-4f25-9817-b3fc2080617b' ) ); ?>,
+			lang: 'ru',
+			width: '100%',
+			background: '#e8c64e',
+			bg_alpha: '80',
+			padding: '20',
+			border_radius: '1',
+			font_type: 'arial',
+			font_size: '16',
+			title_color: '#3e2319',
+			title_size: '18',
+			inp_color: '#222222',
+			inp_bordhover: '#3796e5',
+			inp_bordcolor: '#cccccc',
+			inp_alpha: '100',
+			btn_background: '#5b3325',
+			btn_background_over: '#754d40',
+			btn_textcolor: '#ffffff',
+			btn_textover: '#ffffff',
+			btn_bordcolor: '#5b3325',
+			btn_bordhover: '#754d40',
+			text_concierge: 'Получи скидку через Bnovo Concierge',
+			url: <?php echo wp_json_encode( home_url( '/booking/' ) ); ?>,
+			adults_default: '2',
+			dates_preset: 'on',
+			dfrom_tomorrow: 'on',
+			dto_nextday: 'on'
+		};
+
+		function boot() {
+			if (typeof Bnovo_Widget === 'undefined') return false;
+			Bnovo_Widget.init(function () {
+				Bnovo_Widget.open('_bn_widget_', opts);
 			});
-		});
+			return true;
+		}
+
+		if (boot()) return;
+
+		// Script blocked/slow: retry briefly, then show booking fallback.
+		var tries = 0;
+		var timer = setInterval(function () {
+			tries += 1;
+			if (boot() || tries >= 20) {
+				clearInterval(timer);
+				if (typeof Bnovo_Widget === 'undefined') {
+					var box = document.getElementById('_bn_widget_');
+					if (!box || box.querySelector('iframe')) return;
+					box.innerHTML = '<a class="btn btn--gold" href="' + String(opts.url).replace(/"/g, '&quot;') + '">Забронировать онлайн</a>';
+				}
+			}
+		}, 250);
 	})();
 	</script>
 </section>

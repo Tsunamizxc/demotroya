@@ -811,6 +811,8 @@ button {
   width: 100%;
   padding: 0 24px;
   box-sizing: border-box;
+  /* Never stay invisible if entrance animation is skipped/blocked */
+  opacity: 1;
 }
 
 .bnovo-widget__inner {
@@ -2898,10 +2900,36 @@ button {
 .booking-page__iframe {
   display: block;
   width: 100%;
-  height: calc(100dvh - 24px);
-  min-height: 560px;
-  max-height: calc(100dvh - 24px);
+  height: 800px;
+  min-height: 640px;
   border: 0;
+  background: #fff;
+}
+
+/* While Bnovo lightbox/modal is open: pin iframe to the viewport */
+html.bnovo-overlay-open,
+body.bnovo-overlay-open {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
+body.bnovo-overlay-open {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: 100%;
+  touch-action: none;
+}
+
+.booking-page__iframe--overlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 10050 !important;
+  width: 100vw !important;
+  max-width: none !important;
+  height: 100dvh !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  border-radius: 0 !important;
   background: #fff;
 }
 
@@ -2926,9 +2954,8 @@ button {
   }
 
   .booking-page__iframe {
-    height: calc(100dvh - 16px);
-    min-height: 480px;
-    max-height: calc(100dvh - 16px);
+    height: 720px;
+    min-height: 560px;
   }
 
   .room-avail {
@@ -3471,9 +3498,11 @@ button {
 
   .reveal,
   .reveal-left,
-  .reveal-right {
+  .reveal-right,
+  .anim-up {
     opacity: 1;
     transform: none;
+    animation: none !important;
   }
 
   .rooms-story__card {

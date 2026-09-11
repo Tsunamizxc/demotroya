@@ -63,7 +63,7 @@ $hero  = troya_img_url( troya_option( 'hero_poster' ), troya_asset( 'photos/hero
 			width="100%"
 			height="800"
 			frameborder="0"
-			scrolling="yes"
+			scrolling="no"
 			allowfullscreen
 			loading="eager"
 			referrerpolicy="no-referrer-when-downgrade"

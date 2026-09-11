@@ -92,9 +92,16 @@ function troya_enqueue_assets(): void {
 
 	if ( is_page_template( 'page-booking.php' ) || is_page( 'booking' ) ) {
 		wp_enqueue_script(
+			'troya-iframe-resizer',
+			troya_asset( 'vendor/iframeResizer.min.js' ),
+			array(),
+			'4.3.9',
+			true
+		);
+		wp_enqueue_script(
 			'troya-booking-iframe',
 			troya_asset( 'booking-iframe.js' ),
-			array(),
+			array( 'troya-iframe-resizer' ),
 			TROYA_VERSION,
 			true
 		);
