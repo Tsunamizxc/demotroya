@@ -57,7 +57,7 @@ function troya_seed_content(): void {
 		'about_card_title'        => 'ул. Восстания, 119',
 		'about_card_sub'          => 'Казань, Татарстан',
 		'rooms_eyebrow'           => 'Номерной фонд',
-		'rooms_title'             => 'Выберите свой номер',
+		'rooms_title'             => 'Наши номера',
 		'rooms_note'              => 'Завтрак — 300 ₽ · Доп. кровать — 1 200 ₽',
 		'amenities_eyebrow'       => 'Сервис',
 		'amenities_title'         => "Всё для вашего<br /><em>комфорта</em>",

@@ -31,6 +31,14 @@ $hint    = troya_option( 'modal_hint', '* ОБЯЗАТЕЛЬНЫЕ ПОЛЯ · �
 		<p class="footer__meta"><?php echo esc_html( $meta ); ?></p>
 		<p class="footer__copy"><?php echo esc_html( $copy ); ?></p>
 	</div>
+	<div class="footer__credit">
+		<div class="container footer__credit-inner">
+			<span class="footer__credit-text">Создание сайта —</span>
+			<a class="footer__credit-link" href="https://cursiva.ru/" target="_blank" rel="noopener noreferrer" aria-label="Cursiva — веб-студия">
+				<img class="footer__credit-logo" src="<?php echo esc_url( troya_asset( 'logo-cursiva-white.png' ) ); ?>" alt="Cursiva" width="120" height="40" loading="lazy" decoding="async" />
+			</a>
+		</div>
+	</div>
 </footer>
 
 <div class="modal" id="booking-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modal-title">

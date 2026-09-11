@@ -153,41 +153,55 @@ if ( ! is_array( $stats ) || ! $stats ) {
 	</div>
 </section>
 
-<section id="rooms" class="rooms section section--mist">
-	<div class="container">
-		<div class="rooms__top reveal">
-			<div>
-				<p class="eyebrow"><?php echo esc_html( troya_option( 'rooms_eyebrow', 'Номерной фонд' ) ); ?></p>
-				<h2 class="heading gold-line"><?php echo esc_html( troya_option( 'rooms_title', 'Выберите свой номер' ) ); ?></h2>
-				<p class="rooms__all"><a href="<?php echo esc_url( $rooms_url ); ?>">Все номера →</a></p>
-			</div>
-			<div class="rooms__controls">
-				<button type="button" class="slider-nav" id="rooms-prev" aria-label="Предыдущий номер">
-					<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5L8 12l7 7" /></svg>
-				</button>
-				<span class="rooms__counter"><b id="rooms-current">01</b><i>/</i><span id="rooms-total">05</span></span>
-				<button type="button" class="slider-nav" id="rooms-next" aria-label="Следующий номер">
-					<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" /></svg>
-				</button>
-			</div>
-		</div>
-	</div>
+<section id="rooms" class="rooms-story" data-rooms-slider>
+	<div class="rooms-story__frame">
+		<div class="rooms-story__media" id="rooms-videos" aria-hidden="true"></div>
+		<div class="rooms-story__veil"></div>
 
-	<div class="rooms-slider reveal delay-200" id="rooms-slider">
-		<div class="rooms-slider__stage" id="rooms-stage"></div>
-		<div class="rooms-slider__panel">
-			<span class="rooms__tag" id="room-tag"></span>
-			<h3 class="rooms__name" id="room-name"></h3>
-			<p class="rooms__subtitle" id="room-subtitle"></p>
-			<p class="rooms__price" id="room-price"></p>
-			<p class="rooms__desc text" id="room-desc"></p>
-			<div class="rooms__features" id="room-features"></div>
-			<div class="rooms__footer">
-				<p class="rooms__note"><?php echo esc_html( troya_option( 'rooms_note', 'Завтрак — 300 ₽ · Доп. кровать — 1 200 ₽' ) ); ?></p>
-				<div class="rooms__footer-actions">
-					<a class="btn btn--outline" id="room-more" href="<?php echo esc_url( $rooms_url ); ?>">Подробнее</a>
-					<a class="btn btn--gold" id="room-book" href="<?php echo esc_url( troya_booking_url() ); ?>">Забронировать</a>
+		<div class="rooms-story__ui">
+			<div class="rooms-story__header">
+				<div>
+					<p class="eyebrow"><?php echo esc_html( troya_option( 'rooms_eyebrow', 'Номерной фонд' ) ); ?></p>
+					<h2 class="heading heading--light"><?php echo esc_html( troya_option( 'rooms_title', 'Наши номера' ) ); ?></h2>
 				</div>
+				<div class="rooms-story__meta">
+					<div class="rooms-story__controls">
+						<button type="button" class="slider-nav slider-nav--ghost" id="rooms-prev" aria-label="Предыдущий номер">
+							<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 5L8 12l7 7" /></svg>
+						</button>
+						<span class="rooms__counter rooms__counter--light">
+							<b id="rooms-current">01</b><i>/</i><span id="rooms-total">05</span>
+						</span>
+						<button type="button" class="slider-nav slider-nav--ghost" id="rooms-next" aria-label="Следующий номер">
+							<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7" /></svg>
+						</button>
+					</div>
+					<a class="rooms__all rooms__all--light" href="<?php echo esc_url( $rooms_url ); ?>">Все номера →</a>
+				</div>
+			</div>
+
+			<article class="rooms-story__card is-visible" id="rooms-card" aria-live="polite">
+				<figure class="rooms-story__card-media">
+					<img id="room-card-img" src="" alt="" />
+				</figure>
+				<div class="rooms-story__card-body">
+					<span class="rooms__tag" id="room-tag"></span>
+					<h3 class="rooms__name" id="room-name"></h3>
+					<p class="rooms__subtitle" id="room-subtitle"></p>
+					<p class="rooms__price" id="room-price"></p>
+					<p class="rooms__desc text" id="room-desc"></p>
+					<div class="rooms__features" id="room-features"></div>
+					<p class="rooms__note"><?php echo esc_html( troya_option( 'rooms_note', 'Завтрак — 300 ₽ · Доп. кровать — 1 200 ₽' ) ); ?></p>
+					<div class="rooms__footer-actions">
+						<a class="btn btn--outline" id="room-more" href="<?php echo esc_url( $rooms_url ); ?>">Подробнее</a>
+						<a class="btn btn--gold" id="room-book" href="<?php echo esc_url( troya_booking_url() ); ?>">Забронировать</a>
+					</div>
+				</div>
+			</article>
+
+			<div class="rooms-story__footer">
+				<div class="rooms-story__progress" id="rooms-progress" role="tablist" aria-label="Номера"></div>
+				<!-- <p class="rooms-story__hint">Стрелки переключают номера</p> -->
 			</div>
 		</div>
 	</div>

@@ -205,8 +205,11 @@ window.addEventListener("resize", () => {
   if (window.innerWidth > 900) setMenuOpen(false);
 });
 
-/* ─── Rooms stacked slider ───────────────────────── */
-const roomsStage = document.getElementById("rooms-stage");
+/* ─── Rooms video slider ─────────────────────────── */
+const roomsSection = document.querySelector("[data-rooms-slider]");
+const roomsVideosEl = document.getElementById("rooms-videos");
+const roomsCard = document.getElementById("rooms-card");
+const roomCardImg = document.getElementById("room-card-img");
 const roomTag = document.getElementById("room-tag");
 const roomName = document.getElementById("room-name");
 const roomSubtitle = document.getElementById("room-subtitle");
@@ -217,58 +220,259 @@ const roomBook = document.getElementById("room-book");
 const roomMore = document.getElementById("room-more");
 const roomsCurrent = document.getElementById("rooms-current");
 const roomsTotal = document.getElementById("rooms-total");
+const roomsProgress = document.getElementById("rooms-progress");
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 let activeRoom = 0;
+let roomsVideos = [];
+let roomsInView = false;
+let roomsHasPlayed = false;
 
-function updateRoomPanel(index) {
+function updateRoomPanel(index, animate) {
   const room = ROOMS[index];
-  roomTag.textContent = room.tag;
-  roomName.textContent = room.name;
-  roomSubtitle.textContent = room.subtitle;
-  roomPrice.textContent = room.price;
-  roomDesc.textContent = room.desc;
-  roomFeatures.innerHTML = room.features.map((f) => `<span>${f}</span>`).join("");
-  if (roomsCurrent) roomsCurrent.textContent = pad(index + 1);
-  if (roomMore) roomMore.href = room.href || "rooms.html";
-  if (roomBook && roomBook.tagName === "A") {
-    roomBook.href = room.bookUrl || WP.bookingUrl || roomBook.getAttribute("href") || "#";
+  if (!room) return;
+
+  const apply = () => {
+    if (roomTag) roomTag.textContent = room.tag || "";
+    if (roomName) roomName.textContent = room.name || "";
+    if (roomSubtitle) roomSubtitle.textContent = room.subtitle || "";
+    if (roomPrice) roomPrice.textContent = room.price || "";
+    if (roomDesc) roomDesc.textContent = room.desc || "";
+    if (roomFeatures) {
+      roomFeatures.innerHTML = (room.features || []).map((f) => `<span>${f}</span>`).join("");
+    }
+    if (roomsCurrent) roomsCurrent.textContent = pad(index + 1);
+    if (roomMore) roomMore.href = room.href || WP.roomsUrl || "#";
+    if (roomBook && roomBook.tagName === "A") {
+      roomBook.href = room.bookUrl || WP.bookingUrl || roomBook.getAttribute("href") || "#";
+    }
+    if (roomCardImg) {
+      roomCardImg.src = room.img || "";
+      roomCardImg.alt = room.name || "";
+    }
+
+    roomsProgress?.querySelectorAll("[data-room-dot]").forEach((dot, i) => {
+      dot.classList.toggle("is-active", i === index);
+      dot.setAttribute("aria-current", i === index ? "true" : "false");
+    });
+  };
+
+  if (!animate || reduceMotion || !roomsCard) {
+    apply();
+    roomsCard?.classList.add("is-visible");
+    return;
+  }
+
+  roomsCard.classList.add("is-switching");
+  window.setTimeout(() => {
+    apply();
+    roomsCard.classList.remove("is-switching");
+    roomsCard.classList.add("is-visible");
+  }, 220);
+}
+
+function pauseAllRoomsVideos() {
+  roomsVideos.forEach((video) => {
+    if (video.tagName === "VIDEO" && !video.paused) video.pause();
+  });
+}
+
+function setActiveRoomVideo(index) {
+  roomsVideos.forEach((item, i) => {
+    const on = i === index;
+    item.classList.toggle("is-active", on);
+    if (item.tagName !== "VIDEO") return;
+    item.preload = Math.abs(i - index) <= 1 ? "auto" : "metadata";
+    if (!on && !item.paused) item.pause();
+  });
+}
+
+function playRoomVideo(index, fromStart) {
+  const video = roomsVideos[index];
+  if (!video || video.tagName !== "VIDEO") {
+    setActiveRoomVideo(index);
+    return;
+  }
+
+  setActiveRoomVideo(index);
+
+  if (reduceMotion) {
+    try {
+      if (Number.isFinite(video.duration) && video.duration > 0) {
+        video.currentTime = Math.max(video.duration - 0.05, 0);
+      }
+    } catch (e) {}
+    video.pause();
+    return;
+  }
+
+  const start = () => {
+    try {
+      if (fromStart) video.currentTime = 0;
+    } catch (e) {}
+    const playPromise = video.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {});
+    }
+  };
+
+  if (video.readyState >= 2) start();
+  else video.addEventListener("loadeddata", start, { once: true });
+}
+
+function goToRoom(index, { play = true, animate = true } = {}) {
+  if (!ROOMS.length) return;
+
+  const next = ((index % ROOMS.length) + ROOMS.length) % ROOMS.length;
+  if (next === activeRoom && !play) return;
+
+  activeRoom = next;
+  updateRoomPanel(activeRoom, animate);
+
+  const shouldPlay = play && (roomsInView || roomsHasPlayed);
+  if (shouldPlay) {
+    roomsInView = true;
+    roomsHasPlayed = true;
+    playRoomVideo(activeRoom, true);
+  } else {
+    setActiveRoomVideo(activeRoom);
+    pauseAllRoomsVideos();
   }
 }
 
-function renderRoomSlides() {
-  if (!roomsStage) return;
-  roomsStage.innerHTML = ROOMS.map(
-    (room, i) => `
-      <article class="room-slide" data-index="${i}">
-        <img src="${room.img}" alt="${room.name}" draggable="false" loading="${i === 0 ? "eager" : "lazy"}" decoding="async" />
-      </article>
-    `
-  ).join("");
-  if (roomsTotal) roomsTotal.textContent = pad(ROOMS.length);
-  setActiveRoom(0);
+function stepRoom(delta) {
+  goToRoom(activeRoom + delta, { play: true, animate: true });
 }
 
-function setActiveRoom(index) {
-  activeRoom = (index + ROOMS.length) % ROOMS.length;
-  const slides = roomsStage?.querySelectorAll(".room-slide");
-  slides?.forEach((slide, i) => {
-    slide.classList.remove("is-active", "is-next", "is-prev", "is-far");
-    if (i === activeRoom) slide.classList.add("is-active");
-    else if (i === (activeRoom + 1) % ROOMS.length) slide.classList.add("is-next");
-    else if (i === (activeRoom - 1 + ROOMS.length) % ROOMS.length) slide.classList.add("is-prev");
-    else slide.classList.add("is-far");
+function initRoomsSlider() {
+  if (!roomsSection || !roomsVideosEl || !ROOMS.length) return;
+
+  if (roomsTotal) roomsTotal.textContent = pad(ROOMS.length);
+
+  roomsVideosEl.innerHTML = ROOMS.map((room, i) => {
+    if (room.video) {
+      return `<video class="rooms-story__video" data-index="${i}" muted playsinline preload="${i === 0 ? "auto" : "metadata"}" poster="${room.img || ""}">
+        <source src="${room.video}" type="video/mp4" />
+      </video>`;
+    }
+    return `<div class="rooms-story__video rooms-story__video--still" data-index="${i}" style="background-image:url('${room.img || ""}')"></div>`;
+  }).join("");
+
+  roomsVideos = Array.from(roomsVideosEl.querySelectorAll(".rooms-story__video"));
+
+  roomsVideos.forEach((video) => {
+    if (video.tagName !== "VIDEO") return;
+    video.addEventListener("ended", () => {
+      video.pause();
+      try {
+        if (Number.isFinite(video.duration) && video.duration > 0) {
+          video.currentTime = Math.max(video.duration - 0.05, 0);
+        }
+      } catch (e) {}
+    });
   });
-  updateRoomPanel(activeRoom);
+
+  if (roomsProgress) {
+    roomsProgress.innerHTML = ROOMS.map(
+      (room, i) =>
+        `<button type="button" class="rooms-story__dot" data-room-dot data-index="${i}" aria-label="${room.name || `Номер ${i + 1}`}"></button>`
+    ).join("");
+
+    roomsProgress.querySelectorAll("[data-room-dot]").forEach((dot) => {
+      dot.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        goToRoom(Number(dot.dataset.index) || 0, { play: true, animate: true });
+      });
+    });
+  }
+
+  document.getElementById("rooms-prev")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    stepRoom(-1);
+  });
+  document.getElementById("rooms-next")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    stepRoom(1);
+  });
+
+  const swipeTarget = roomsSection.querySelector(".rooms-story__frame") || roomsSection;
+  bindSwipe(swipeTarget, () => stepRoom(-1), () => stepRoom(1));
+
+  updateRoomPanel(0, false);
+  roomsVideos.forEach((item, i) => item.classList.toggle("is-active", i === 0));
+
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        roomsInView = entry.isIntersecting && entry.intersectionRatio >= 0.35;
+        if (roomsInView) {
+          if (!roomsHasPlayed) {
+            roomsHasPlayed = true;
+            playRoomVideo(activeRoom, true);
+          } else {
+            const video = roomsVideos[activeRoom];
+            if (
+              video &&
+              video.tagName === "VIDEO" &&
+              video.paused &&
+              Number.isFinite(video.duration) &&
+              video.currentTime < video.duration - 0.15
+            ) {
+              playRoomVideo(activeRoom, false);
+            }
+          }
+        } else {
+          pauseAllRoomsVideos();
+        }
+      },
+      { threshold: [0.35, 0.55] }
+    );
+    io.observe(roomsSection);
+  } else {
+    roomsInView = true;
+    roomsHasPlayed = true;
+    playRoomVideo(0, true);
+  }
+
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) pauseAllRoomsVideos();
+    else if (roomsInView) {
+      const video = roomsVideos[activeRoom];
+      if (
+        video &&
+        video.tagName === "VIDEO" &&
+        Number.isFinite(video.duration) &&
+        video.currentTime < video.duration - 0.15
+      ) {
+        playRoomVideo(activeRoom, false);
+      }
+    }
+  });
 }
+
+initRoomsSlider();
+
+roomBook?.addEventListener("click", () => {
+  reachGoal("CLKBTN");
+});
 
 function bindSwipe(el, onPrev, onNext) {
   if (!el) return;
 
   const THRESHOLD = 36;
+  const IGNORE = "a, button, input, textarea, select, label, [data-no-swipe]";
   let startX = 0;
   let startY = 0;
   let tracking = false;
   let axis = null;
+
+  const isIgnored = (target) => {
+    if (!(target instanceof Element)) return true;
+    return Boolean(target.closest(IGNORE));
+  };
 
   const begin = (x, y) => {
     tracking = true;
@@ -299,6 +503,7 @@ function bindSwipe(el, onPrev, onNext) {
   el.addEventListener(
     "touchstart",
     (e) => {
+      if (isIgnored(e.target)) return;
       const t = e.changedTouches[0];
       begin(t.clientX, t.clientY);
     },
@@ -308,6 +513,7 @@ function bindSwipe(el, onPrev, onNext) {
   el.addEventListener(
     "touchmove",
     (e) => {
+      if (!tracking) return;
       const t = e.changedTouches[0];
       updateAxis(t.clientX, t.clientY);
     },
@@ -317,6 +523,7 @@ function bindSwipe(el, onPrev, onNext) {
   el.addEventListener(
     "touchend",
     (e) => {
+      if (!tracking) return;
       const t = e.changedTouches[0];
       finish(t.clientX);
     },
@@ -326,17 +533,20 @@ function bindSwipe(el, onPrev, onNext) {
   el.addEventListener("pointerdown", (e) => {
     if (e.pointerType === "touch") return;
     if (e.button !== 0) return;
+    if (isIgnored(e.target)) return;
     begin(e.clientX, e.clientY);
     el.setPointerCapture?.(e.pointerId);
   });
 
   el.addEventListener("pointermove", (e) => {
     if (e.pointerType === "touch") return;
+    if (!tracking) return;
     updateAxis(e.clientX, e.clientY);
   });
 
   el.addEventListener("pointerup", (e) => {
     if (e.pointerType === "touch") return;
+    if (!tracking) return;
     finish(e.clientX);
   });
 
@@ -345,65 +555,6 @@ function bindSwipe(el, onPrev, onNext) {
     axis = null;
   });
 }
-
-renderRoomSlides();
-
-const ROOM_AUTOPLAY_MS = 6000;
-const roomsSlider = document.getElementById("rooms-slider");
-let roomAutoplayTimer = null;
-
-function stopRoomAutoplay() {
-  if (roomAutoplayTimer) {
-    clearInterval(roomAutoplayTimer);
-    roomAutoplayTimer = null;
-  }
-}
-
-function startRoomAutoplay() {
-  stopRoomAutoplay();
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-  roomAutoplayTimer = setInterval(() => {
-    setActiveRoom(activeRoom + 1);
-  }, ROOM_AUTOPLAY_MS);
-}
-
-function stepRoom(delta) {
-  setActiveRoom(activeRoom + delta);
-  startRoomAutoplay();
-}
-
-document.getElementById("rooms-prev")?.addEventListener("click", () => stepRoom(-1));
-document.getElementById("rooms-next")?.addEventListener("click", () => stepRoom(1));
-bindSwipe(roomsStage, () => stepRoom(-1), () => stepRoom(1));
-
-roomsSlider?.addEventListener("pointerenter", (e) => {
-  if (e.pointerType === "mouse") stopRoomAutoplay();
-});
-roomsSlider?.addEventListener("pointerleave", (e) => {
-  if (e.pointerType === "mouse") startRoomAutoplay();
-});
-
-document.addEventListener("visibilitychange", () => {
-  if (document.hidden) stopRoomAutoplay();
-  else startRoomAutoplay();
-});
-
-if ("IntersectionObserver" in window && roomsSlider) {
-  const roomsInView = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting) startRoomAutoplay();
-      else stopRoomAutoplay();
-    },
-    { threshold: 0.35 }
-  );
-  roomsInView.observe(roomsSlider);
-} else {
-  startRoomAutoplay();
-}
-
-roomBook?.addEventListener("click", () => {
-  reachGoal("CLKBTN");
-});
 
 /* ─── Amenities mosaic ───────────────────────────── */
 const amenitiesGrid = document.getElementById("amenities-grid");
@@ -557,4 +708,120 @@ initReveal();
     },
     { passive: true }
   );
+})();
+
+/* ─── Room gallery slider + lightbox ─────────────── */
+(function initRoomGallery() {
+  const root = document.querySelector("[data-room-gallery]");
+  if (!root) return;
+
+  const slides = Array.from(root.querySelectorAll(".room-gallery__slide"));
+  const thumbs = Array.from(root.querySelectorAll("[data-gallery-thumb]"));
+  const currentEl = root.querySelector("[data-gallery-current]");
+  const lightbox = document.getElementById("room-lightbox");
+  const lightboxImg = document.getElementById("room-lightbox-img");
+  const lightboxCurrent = lightbox?.querySelector("[data-lightbox-current]");
+  const total = slides.length;
+  if (!total) return;
+
+  let index = 0;
+  let lightboxOpen = false;
+  let lightboxScrollY = 0;
+
+  const images = slides.map((slide) => {
+    const img = slide.querySelector("img");
+    return {
+      src: img?.currentSrc || img?.src || "",
+      alt: img?.alt || "",
+    };
+  });
+
+  function setActive(next, { syncLightbox = true } = {}) {
+    index = ((next % total) + total) % total;
+    slides.forEach((slide, i) => slide.classList.toggle("is-active", i === index));
+    thumbs.forEach((thumb, i) => {
+      const on = i === index;
+      thumb.classList.toggle("is-active", on);
+      thumb.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    if (currentEl) currentEl.textContent = pad(index + 1);
+    if (syncLightbox && lightboxOpen) renderLightbox();
+  }
+
+  function renderLightbox() {
+    if (!lightbox || !lightboxImg) return;
+    const item = images[index];
+    lightboxImg.src = item.src;
+    lightboxImg.alt = item.alt;
+    if (lightboxCurrent) lightboxCurrent.textContent = pad(index + 1);
+  }
+
+  function lockPageScroll() {
+    lightboxScrollY = window.scrollY || window.pageYOffset || 0;
+    document.documentElement.classList.add("lightbox-open");
+    document.body.classList.add("lightbox-open");
+    document.body.style.top = `-${lightboxScrollY}px`;
+  }
+
+  function unlockPageScroll() {
+    document.documentElement.classList.remove("lightbox-open");
+    document.body.classList.remove("lightbox-open");
+    document.body.style.top = "";
+    window.scrollTo(0, lightboxScrollY);
+  }
+
+  function openLightbox(at) {
+    if (!lightbox) return;
+    // Escape any transformed ancestors (reveal animations break position:fixed).
+    if (lightbox.parentElement !== document.body) {
+      document.body.appendChild(lightbox);
+    }
+    setActive(typeof at === "number" ? at : index, { syncLightbox: false });
+    renderLightbox();
+    lightbox.hidden = false;
+    lightbox.classList.add("is-open");
+    lightbox.setAttribute("aria-hidden", "false");
+    lockPageScroll();
+    lightboxOpen = true;
+  }
+
+  function closeLightbox() {
+    if (!lightbox) return;
+    lightbox.hidden = true;
+    lightbox.classList.remove("is-open");
+    lightbox.setAttribute("aria-hidden", "true");
+    unlockPageScroll();
+    lightboxOpen = false;
+  }
+
+  root.querySelector("[data-gallery-prev]")?.addEventListener("click", () => setActive(index - 1));
+  root.querySelector("[data-gallery-next]")?.addEventListener("click", () => setActive(index + 1));
+
+  thumbs.forEach((thumb) => {
+    thumb.addEventListener("click", () => setActive(Number(thumb.dataset.index) || 0));
+  });
+
+  root.querySelectorAll("[data-gallery-open]").forEach((btn) => {
+    btn.addEventListener("click", () => openLightbox(Number(btn.dataset.index) || 0));
+  });
+
+  lightbox?.querySelector("[data-lightbox-close]")?.addEventListener("click", closeLightbox);
+  lightbox?.querySelector("[data-lightbox-prev]")?.addEventListener("click", () => setActive(index - 1));
+  lightbox?.querySelector("[data-lightbox-next]")?.addEventListener("click", () => setActive(index + 1));
+
+  lightbox?.addEventListener("click", (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (!lightboxOpen) return;
+    if (e.key === "Escape") closeLightbox();
+    if (e.key === "ArrowLeft") setActive(index - 1);
+    if (e.key === "ArrowRight") setActive(index + 1);
+  });
+
+  bindSwipe(root.querySelector(".room-gallery__viewport"), () => setActive(index - 1), () => setActive(index + 1));
+  if (lightbox) {
+    bindSwipe(lightbox, () => setActive(index - 1), () => setActive(index + 1));
+  }
 })();

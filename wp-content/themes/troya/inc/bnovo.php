@@ -260,8 +260,11 @@ function troya_format_ru_date( string $ymd ): string {
 
 /**
  * Render availability block for a room (Bnovo min_prices).
+ *
+ * @param int  $post_id  Room post ID.
+ * @param bool $embedded Inside booking card (no outer card chrome).
  */
-function troya_render_room_availability( int $post_id = 0 ): void {
+function troya_render_room_availability( int $post_id = 0, bool $embedded = false ): void {
 	$post_id = $post_id ?: (int) get_the_ID();
 	$ids     = troya_room_bnovo_ids( $post_id );
 	$prices  = troya_bnovo_fetch_min_prices( $ids, 45 );
@@ -285,11 +288,15 @@ function troya_render_room_availability( int $post_id = 0 ): void {
 		}
 		$by_month[ $key ]['days'][] = $day;
 	}
+
+	$wrap_class = 'room-avail' . ( $embedded ? ' room-avail--embedded' : '' );
 	?>
-	<div class="room-avail" data-bnovo-avail>
+	<div class="<?php echo esc_attr( $wrap_class ); ?>" data-bnovo-avail>
 		<div class="room-avail__head">
-			<p class="eyebrow">Доступность · Bnovo</p>
-			<p class="room-avail__lead">Свободные даты и цены по этому номеру из модуля онлайн-бронирования.</p>
+			<p class="eyebrow"><?php echo $embedded ? 'Свободные даты' : 'Доступность · Bnovo'; ?></p>
+			<?php if ( ! $embedded ) : ?>
+				<p class="room-avail__lead">Свободные даты и цены по этому номеру из модуля онлайн-бронирования.</p>
+			<?php endif; ?>
 		</div>
 
 		<div class="room-avail__stats">
@@ -360,7 +367,9 @@ function troya_render_room_availability( int $post_id = 0 ): void {
 		<div class="room-avail__legend">
 			<span><i class="is-free"></i> Свободно</span>
 			<span><i class="is-busy"></i> Занято</span>
-			<a class="room-avail__all" href="<?php echo esc_url( $book ); ?>">Открыть виджет бронирования →</a>
+			<?php if ( ! $embedded ) : ?>
+				<a class="room-avail__all" href="<?php echo esc_url( $book ); ?>">Открыть виджет бронирования →</a>
+			<?php endif; ?>
 		</div>
 	</div>
 	<?php

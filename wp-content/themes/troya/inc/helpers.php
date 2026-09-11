@@ -133,8 +133,10 @@ function troya_get_rooms_payload(): array {
 	);
 
 	$rooms = array();
+	$index = 0;
 
 	foreach ( $query->posts as $post ) {
+		$index++;
 		$features = troya_field( 'room_features', array(), $post->ID );
 		$feat     = array();
 
@@ -161,6 +163,10 @@ function troya_get_rooms_payload(): array {
 
 		$bnovo_ids = troya_room_bnovo_ids( $post->ID );
 
+		$video_rel  = 'videos/room-scroll-' . $index . '.mp4';
+		$video_path = TROYA_DIR . '/assets/' . $video_rel;
+		$video_url  = file_exists( $video_path ) ? troya_asset( $video_rel ) : '';
+
 		$rooms[] = array(
 			'name'     => get_the_title( $post ),
 			'subtitle' => (string) troya_field( 'room_subtitle', '', $post->ID ),
@@ -172,6 +178,7 @@ function troya_get_rooms_payload(): array {
 			'href'     => get_permalink( $post ),
 			'bookUrl'  => troya_room_booking_url( $bnovo_ids ),
 			'bnovoIds' => $bnovo_ids,
+			'video'    => $video_url,
 		);
 	}
 

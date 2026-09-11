@@ -51,8 +51,18 @@ body {
 }
 
 body.modal-open,
-body.menu-open {
-  overflow: hidden;
+body.menu-open,
+html.lightbox-open,
+body.lightbox-open {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
+body.lightbox-open {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: 100%;
+  touch-action: none;
 }
 
 #root {
@@ -202,13 +212,18 @@ button {
 
 .btn--ghost {
   color: #fff;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(18, 16, 14, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(8px);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
 .btn--ghost:hover {
+  color: #fff;
   border-color: #fff;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(18, 16, 14, 0.62);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
 }
 
 .btn--outline {
@@ -974,16 +989,271 @@ button {
   color: var(--muted);
 }
 
-/* Rooms slider — stacked peeks */
-.rooms__top {
+/* Rooms video slider */
+.rooms-story {
+  position: relative;
+  z-index: 1;
+  background: #1a1612;
+  color: #f6f1ea;
+  height: 80vh;
+  height: 80dvh;
+  min-height: 560px;
+  max-height: 900px;
+  overflow: hidden;
+}
+
+.rooms-story__frame {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  display: grid;
+}
+
+.rooms-story__media {
+  position: absolute;
+  inset: 0;
+  background: #12100e;
+}
+
+.rooms-story__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.55s var(--ease);
+  pointer-events: none;
+}
+
+.rooms-story__video.is-active {
+  opacity: 1;
+}
+
+.rooms-story__video--still {
+  background-size: cover;
+  background-position: center;
+}
+
+.rooms-story__veil {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(18, 16, 14, 0.72) 0%, rgba(18, 16, 14, 0.18) 28%, rgba(18, 16, 14, 0.28) 58%, rgba(18, 16, 14, 0.82) 100%),
+    radial-gradient(ellipse 70% 50% at 80% 70%, rgba(176, 138, 74, 0.18), transparent 60%);
+  pointer-events: none;
+}
+
+.rooms-story__ui {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  max-width: var(--container);
+  width: 100%;
+  margin: 0 auto;
+  padding: calc(var(--header-h) + 20px) 32px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.rooms-story__header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   gap: 24px;
   flex-wrap: wrap;
-  margin-bottom: 48px;
 }
 
+.rooms-story__header .eyebrow {
+  color: var(--gold-light);
+}
+
+.heading--light {
+  color: #fbf8f3;
+  margin: 0;
+}
+
+.rooms-story__meta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.rooms-story__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.slider-nav--ghost {
+  background: rgba(251, 248, 243, 0.08);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #fbf8f3;
+}
+
+.slider-nav--ghost:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #fff;
+}
+
+.rooms__counter--light {
+  color: #ffffff;
+  background: rgba(18, 16, 14, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(8px);
+  padding: 8px 12px;
+  border-radius: 999px;
+  min-width: 78px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.rooms__counter--light b {
+  color: #ffffff;
+}
+
+.rooms__counter--light i {
+  color: var(--gold-light);
+}
+
+.rooms__all--light {
+  color: var(--gold-light);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.rooms__all--light:hover {
+  color: #fff;
+}
+
+.rooms-story__card {
+  align-self: flex-end;
+  width: min(620px, 100%);
+  display: grid;
+  grid-template-columns: 1.15fr;
+  gap: 0;
+  background: rgba(251, 248, 243, 0.96);
+  color: var(--ink);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.35);
+  border-radius: 4px;
+  overflow: hidden;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition:
+    opacity 0.35s var(--ease),
+    transform 0.35s var(--ease);
+}
+
+.rooms-story__card.is-switching {
+  opacity: 0;
+  transform: translateY(14px) scale(0.985);
+  pointer-events: none;
+}
+
+.rooms-story__card-media {
+  display: none;
+}
+
+.rooms-story__card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  min-height: 260px;
+}
+
+.rooms-story__card-body {
+  padding: 22px 22px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.rooms-story__card .rooms__name {
+  font-size: clamp(26px, 3vw, 34px);
+  margin-top: 12px;
+  margin-bottom: 2px;
+}
+
+.rooms-story__card .rooms__subtitle {
+  margin-bottom: 10px;
+}
+
+.rooms-story__card .rooms__price {
+  font-size: clamp(22px, 3vw, 28px);
+  margin-bottom: 10px;
+}
+
+.rooms-story__card .rooms__desc {
+  font-size: 14px;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.rooms-story__card .rooms__features {
+  margin-bottom: 14px;
+  gap: 8px;
+}
+
+.rooms-story__card .rooms__features span {
+  font-size: 12px;
+  padding: 5px 10px;
+  background: var(--bg-mist);
+}
+
+.rooms-story__card .rooms__note {
+  margin-bottom: 12px;
+}
+
+.rooms-story__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.rooms-story__progress {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.rooms-story__dot {
+  width: 34px;
+  height: 3px;
+  border: 0;
+  padding: 0;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.28);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.rooms-story__dot.is-active {
+  background: var(--gold-light);
+  transform: scaleX(1.15);
+}
+
+.rooms-story__hint {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(246, 241, 234, 0.55);
+  margin: 0;
+}
+
+/* Legacy rooms helpers still used in catalog/card */
 .rooms__all {
   margin-top: 16px;
 }
@@ -1001,23 +1271,17 @@ button {
   color: var(--gold);
 }
 
-.rooms__controls {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
 .rooms__counter {
   font-family: var(--font-mono);
   font-size: 13px;
   letter-spacing: 0.08em;
-  color: var(--muted);
+  color: #ffffff;
   min-width: 72px;
   text-align: center;
 }
 
 .rooms__counter b {
-  color: var(--ink);
+  color: #ffffff;
   font-weight: 500;
 }
 
@@ -1025,100 +1289,6 @@ button {
   font-style: normal;
   margin: 0 4px;
   color: var(--gold);
-}
-
-.rooms-slider {
-  display: grid;
-  grid-template-columns: 1.35fr 0.9fr;
-  gap: 0;
-  min-height: 520px;
-  width: 100%;
-  max-width: var(--container);
-  margin: 0 auto;
-  padding: 0 32px;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-.rooms-slider__stage {
-  position: relative;
-  height: 560px;
-  perspective: 1200px;
-  cursor: grab;
-  user-select: none;
-  touch-action: pan-y;
-  overflow: hidden;
-}
-
-.rooms-slider__stage:active {
-  cursor: grabbing;
-}
-
-.room-slide {
-  position: absolute;
-  inset: 40px 12% 40px 0;
-  border-radius: 6px;
-  overflow: hidden;
-  background: #1c1814;
-  box-shadow: var(--shadow);
-  transition:
-    transform 0.65s var(--ease),
-    opacity 0.5s ease,
-    filter 0.5s ease;
-  will-change: transform, opacity;
-}
-
-.room-slide img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.room-slide::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(28, 24, 20, 0.45), transparent 45%);
-}
-
-.room-slide.is-active {
-  z-index: 3;
-  transform: translateX(0) scale(1) rotate(0deg);
-  opacity: 1;
-  filter: none;
-}
-
-.room-slide.is-next {
-  z-index: 2;
-  transform: translateX(8%) scale(0.92) rotate(1.5deg);
-  opacity: 0.85;
-  filter: saturate(0.85);
-}
-
-.room-slide.is-prev {
-  z-index: 1;
-  transform: translateX(-8%) scale(0.88) rotate(-2deg);
-  opacity: 0.35;
-  filter: grayscale(0.3);
-}
-
-.room-slide.is-far {
-  z-index: 0;
-  transform: translateX(12%) scale(0.82);
-  opacity: 0;
-  pointer-events: none;
-}
-
-.rooms-slider__panel {
-  background: var(--bg-white);
-  border: 1px solid var(--line);
-  border-left: none;
-  padding: 48px 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-  z-index: 4;
 }
 
 .rooms__tag {
@@ -1173,11 +1343,6 @@ button {
   padding: 6px 14px;
   border-radius: 2px;
   background: var(--bg);
-}
-
-.rooms__footer {
-  border-top: 1px solid var(--line);
-  padding-top: 24px;
 }
 
 .rooms__footer-actions {
@@ -1728,6 +1893,45 @@ button {
   color: var(--muted);
 }
 
+.footer__credit {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.footer__credit-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.footer__credit-text {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.footer__credit-link {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+  opacity: 0.78;
+  transition: opacity 0.2s ease;
+}
+
+.footer__credit-link:hover {
+  opacity: 1;
+}
+
+.footer__credit-logo {
+  display: block;
+  height: 28px;
+  width: auto;
+  /* Logo asset is white — invert for light footer */
+  filter: brightness(0);
+}
+
 /* Modal */
 .modal {
   position: fixed;
@@ -2129,20 +2333,23 @@ button {
 }
 
 .room-band__facts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin: 8px 0 36px;
-  padding: 20px 0;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px 0 0;
+  padding: 10px 0;
   list-style: none;
+  border: 0;
 }
 
 .room-band__facts li {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-mist, #efe8df);
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  color: var(--ink-soft);
 }
 
 .room-band__facts b {
@@ -2219,9 +2426,40 @@ button {
   background: var(--bg-white);
   border: 1px solid var(--line);
   padding: 36px 32px;
+  box-shadow: var(--shadow);
+}
+
+.room-bookcard--stacked {
   position: sticky;
   top: calc(var(--header-h) + 24px);
-  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-height: calc(100vh - var(--header-h) - 40px);
+  overflow: auto;
+}
+
+.room-detail__aside {
+  position: sticky;
+  top: calc(var(--header-h) + 24px);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.room-bookcard__title {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3vw, 36px);
+  font-weight: 300;
+  line-height: 1.15;
+  color: var(--ink);
+  margin: 6px 0 0;
+}
+
+.room-bookcard__actions {
+  margin-top: 8px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
 }
 
 .room-bookcard__price {
@@ -2269,8 +2507,9 @@ button {
   margin-top: 10px;
 }
 
-.room-bookcard .btn:first-of-type {
-  margin-top: 18px;
+.room-bookcard .btn:first-of-type,
+.room-bookcard__actions .btn:first-of-type {
+  margin-top: 0;
 }
 
 .room-bookcard__phone {
@@ -2288,10 +2527,34 @@ button {
 
 /* Bnovo availability on room detail */
 .room-avail {
-  margin-top: 48px;
-  padding: 28px 24px 24px;
+  margin-top: 0;
+  padding: 24px 20px 20px;
   background: var(--bg-white);
   border: 1px solid var(--line);
+}
+
+.room-avail--embedded {
+  margin: 20px 0 0;
+  padding: 20px 0 8px;
+  border: 0;
+  border-top: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.room-avail--embedded .room-avail__head {
+  margin-bottom: 14px;
+}
+
+.room-avail--embedded .room-avail__stats {
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.room-avail--embedded .room-avail__calendars {
+  grid-template-columns: 1fr;
 }
 
 .room-avail__head {
@@ -2322,7 +2585,7 @@ button {
 .room-avail__stat strong {
   display: block;
   font-family: var(--font-display);
-  font-size: clamp(22px, 2.4vw, 28px);
+  font-size: clamp(22px, 2.4vw, 24px);
   font-weight: 400;
   color: var(--gold-deep);
   line-height: 1.15;
@@ -2381,7 +2644,8 @@ button {
   color: inherit;
   font-size: 12px;
   line-height: 1.1;
-  transition: transform 0.15s ease, background 0.15s ease;
+  border: 1px solid transparent;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .room-avail__day.is-empty {
@@ -2390,19 +2654,22 @@ button {
 }
 
 .room-avail__day.is-free {
-  background: rgba(91, 51, 37, 0.08);
-  color: var(--ink);
+  background: #e7f5ea;
+  border-color: #8bc99a;
+  color: #1f5c32;
 }
 
 .room-avail__day.is-free:hover {
-  background: var(--gold);
-  color: #2a1a12;
+  background: #2f8f4e;
+  border-color: #2f8f4e;
+  color: #fff;
   transform: translateY(-1px);
 }
 
 .room-avail__day.is-busy {
-  background: rgba(44, 38, 31, 0.05);
-  color: rgba(44, 38, 31, 0.35);
+  background: #f1ece8;
+  border-color: #d9cfc6;
+  color: #9a9086;
   text-decoration: line-through;
 }
 
@@ -2415,7 +2682,16 @@ button {
   font-family: var(--font-mono);
   font-size: 9px;
   letter-spacing: 0.04em;
-  opacity: 0.75;
+  opacity: 0.9;
+}
+
+.room-avail__day.is-free .room-avail__price {
+  color: #1a6b34;
+  opacity: 1;
+}
+
+.room-avail__day.is-free:hover .room-avail__price {
+  color: #fff;
 }
 
 .room-avail__legend {
@@ -2438,11 +2714,13 @@ button {
 }
 
 .room-avail__legend i.is-free {
-  background: rgba(91, 51, 37, 0.2);
+  background: #2f8f4e;
+  border: 1px solid #237a3e;
 }
 
 .room-avail__legend i.is-busy {
-  background: rgba(44, 38, 31, 0.12);
+  background: #f1ece8;
+  border: 1px solid #d9cfc6;
 }
 
 .room-avail__all {
@@ -2641,21 +2919,9 @@ button {
 }
 
 @media (max-width: 1100px) {
-  .rooms-slider {
-    grid-template-columns: 1fr;
-  }
-
-  .rooms-slider__stage {
-    height: 420px;
-  }
-
-  .room-slide {
-    inset: 16px 6% 16px 0;
-  }
-
-  .rooms-slider__panel {
-    border: 1px solid var(--line);
-    border-top: none;
+  .rooms-story__card {
+    grid-template-columns: 1.15fr;
+    width: min(560px, 100%);
   }
 
   .reviews__layout {
@@ -2685,8 +2951,11 @@ button {
     gap: 40px;
   }
 
-  .room-bookcard {
+  .room-detail__aside,
+  .room-bookcard,
+  .room-bookcard--stacked {
     position: static;
+    max-height: none;
   }
 
   .room-next {
@@ -2767,6 +3036,12 @@ button {
     padding: 0 20px;
   }
 
+  .room-avail--embedded .room-avail__stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
   .section,
   .about.section {
     padding: 72px 0;
@@ -2809,36 +3084,37 @@ button {
     width: 100%;
   }
 
-  .rooms-slider {
-    padding: 0 20px;
+  .rooms-story__ui {
+    padding: calc(var(--header-h) + 12px) 20px 20px;
+  }
+
+  .rooms-story__card {
+    grid-template-columns: 1.15fr;
+    width: 100%;
+    max-height: min(52vh, 380px);
+    overflow: auto;
+  }
+
+  .rooms-story__card-body {
+    padding: 16px 16px 14px;
+  }
+
+  .rooms-story__card .rooms__desc {
+    -webkit-line-clamp: 2;
+  }
+
+  .rooms-story__card .rooms__features {
+    display: none;
+  }
+
+  .rooms-story {
+    height: 80svh;
+    min-height: 520px;
   }
 
   .container {
     padding-left: 20px;
     padding-right: 20px;
-  }
-
-  .rooms-slider__stage {
-    height: 300px;
-  }
-
-  .room-slide.is-next,
-  .room-slide.is-prev,
-  .room-slide.is-far {
-    transform: translateX(0) scale(0.96);
-  }
-
-  .room-slide.is-next {
-    opacity: 0.5;
-  }
-
-  .room-slide.is-prev,
-  .room-slide.is-far {
-    opacity: 0;
-  }
-
-  .rooms-slider__panel {
-    padding: 28px 22px;
   }
 
   .amenities__mosaic {
@@ -2939,43 +3215,324 @@ button {
     opacity: 1;
     transform: none;
   }
+
+  .rooms-story__card {
+    opacity: 1 !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+
+  .rooms-story__hint {
+    display: none;
+  }
 }
 
 .modal__error{color:#a33;font-size:.88rem;margin:0 0 10px;}
 
-/* Room gallery */
+/* Room gallery slider + lightbox */
 .room-gallery {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
   margin-bottom: 28px;
 }
-.room-gallery__item {
-  margin: 0;
+
+.room-gallery__viewport {
+  position: relative;
   border-radius: 18px;
   overflow: hidden;
-  aspect-ratio: 4 / 3;
-  background: #efe8df;
-}
-.room-gallery__item.is-wide {
-  grid-column: 1 / -1;
+  background: #1c1814;
   aspect-ratio: 16 / 10;
 }
-.room-gallery__item img {
+
+.room-gallery__track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.room-gallery__slide {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.45s var(--ease), visibility 0.45s;
+}
+
+.room-gallery__slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  z-index: 1;
+}
+
+.room-gallery__open {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.room-gallery__slide img,
+.room-gallery__open img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.room-gallery__item:hover img {
-  transform: scale(1.04);
+
+.room-gallery__nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  background: rgba(18, 16, 14, 0.45);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
+
+.room-gallery__nav svg {
+  width: 18px;
+  height: 18px;
+}
+
+.room-gallery__nav svg path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.room-gallery__nav:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.room-gallery__nav--prev {
+  left: 14px;
+}
+
+.room-gallery__nav--next {
+  right: 14px;
+}
+
+.room-gallery__counter {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: rgba(18, 16, 14, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+
+.room-gallery__counter i {
+  font-style: normal;
+  margin: 0 4px;
+  color: var(--gold-light);
+}
+
+.room-gallery__thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.room-gallery__thumb {
+  margin: 0;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: #efe8df;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.room-gallery__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.room-gallery__thumb:hover {
+  opacity: 1;
+}
+
+.room-gallery__thumb.is-active {
+  opacity: 1;
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
+
+.room-gallery--single .room-gallery__nav,
+.room-gallery--single .room-gallery__counter,
+.room-gallery--single .room-gallery__thumbs {
+  display: none;
+}
+
+.room-lightbox {
+  position: fixed !important;
+  inset: 0 !important;
+  left: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  z-index: 10000 !important;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  background: rgba(10, 8, 6, 0.92);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.room-lightbox[hidden] {
+  display: none !important;
+}
+
+.room-lightbox.is-open {
+  display: grid !important;
+}
+
+.room-lightbox__figure {
+  margin: 0;
+  max-width: min(1200px, 100%);
+  max-height: calc(100vh - 80px);
+  width: 100%;
+}
+
+.room-lightbox__img {
+  display: block;
+  width: 100%;
+  max-height: calc(100vh - 80px);
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.room-lightbox__close,
+.room-lightbox__nav {
+  position: absolute;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 50%;
+  background: rgba(18, 16, 14, 0.55);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+}
+
+.room-lightbox__close {
+  top: 18px;
+  right: 18px;
+  width: 46px;
+  height: 46px;
+  z-index: 2;
+}
+
+.room-lightbox__close svg,
+.room-lightbox__nav svg {
+  width: 18px;
+  height: 18px;
+}
+
+.room-lightbox__close svg path,
+.room-lightbox__nav svg path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.room-lightbox__nav {
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  z-index: 2;
+}
+
+.room-lightbox__nav--prev {
+  left: 18px;
+}
+
+.room-lightbox__nav--next {
+  right: 18px;
+}
+
+.room-lightbox__close:hover,
+.room-lightbox__nav:hover {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+
+.room-lightbox__counter {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: rgba(18, 16, 14, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  padding: 7px 12px;
+}
+
+.room-lightbox__counter i {
+  font-style: normal;
+  margin: 0 4px;
+  color: var(--gold-light);
+}
+
 @media (max-width: 640px) {
-  .room-gallery {
-    grid-template-columns: 1fr;
+  .room-gallery__viewport {
+    aspect-ratio: 4 / 3;
   }
-  .room-gallery__item.is-wide {
-    grid-column: auto;
+
+  .room-gallery__nav {
+    width: 38px;
+    height: 38px;
+  }
+
+  .room-gallery__thumbs {
+    grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+  }
+
+  .room-lightbox {
+    padding: 12px;
+  }
+
+  .room-lightbox__nav--prev {
+    left: 8px;
+  }
+
+  .room-lightbox__nav--next {
+    right: 8px;
   }
 }

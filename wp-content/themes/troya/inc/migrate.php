@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /** Bump when deploy needs DB-side fixes without manual admin clicks. */
-define( 'TROYA_SCHEMA_VERSION', 4 );
+define( 'TROYA_SCHEMA_VERSION', 5 );
 
 add_action( 'init', 'troya_maybe_run_migrations', 5 );
 add_action( 'after_switch_theme', 'troya_force_run_migrations' );
@@ -48,6 +48,12 @@ function troya_run_migrations(): void {
 
 	if ( $from < 4 ) {
 		troya_ensure_bnovo_room_ids();
+	}
+
+	if ( $from < 5 ) {
+		if ( function_exists( 'update_field' ) ) {
+			update_field( 'rooms_title', 'Наши номера', 'option' );
+		}
 	}
 
 	update_option( 'troya_schema_version', TROYA_SCHEMA_VERSION );
