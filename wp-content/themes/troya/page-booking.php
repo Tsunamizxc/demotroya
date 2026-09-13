@@ -13,7 +13,7 @@ get_header();
 $uid = troya_bnovo_uid();
 
 $query   = array();
-$allowed = array( 'dfrom', 'dto', 'adults', 'children', 'lang', 'currency', 'padding', 'radius', 'promo', 'onlyrooms' );
+$allowed = array( 'dfrom', 'dto', 'adults', 'children', 'lang', 'currency', 'padding', 'radius', 'promo', 'onlyrooms', 'is_auto_search' );
 
 foreach ( $allowed as $key ) {
 	if ( isset( $_GET[ $key ] ) && '' !== $_GET[ $key ] ) {
@@ -29,6 +29,11 @@ if ( empty( $query['lang'] ) ) {
 if ( empty( $query['dfrom'] ) && empty( $query['dto'] ) ) {
 	$query['dfrom'] = wp_date( 'd-m-Y' );
 	$query['dto']   = wp_date( 'd-m-Y', strtotime( '+1 day' ) );
+}
+
+// Эквивалент клика «Найти»: кнопка внутри iframe, с родителя её не нажать.
+if ( empty( $query['is_auto_search'] ) ) {
+	$query['is_auto_search'] = '1';
 }
 
 $iframe_src = add_query_arg(
