@@ -25,6 +25,12 @@ if ( empty( $query['lang'] ) ) {
 	$query['lang'] = 'ru';
 }
 
+// Bnovo не отдаёт список номеров, пока в фильтре нет дат.
+if ( empty( $query['dfrom'] ) && empty( $query['dto'] ) ) {
+	$query['dfrom'] = wp_date( 'd-m-Y' );
+	$query['dto']   = wp_date( 'd-m-Y', strtotime( '+1 day' ) );
+}
+
 $iframe_src = add_query_arg(
 	$query,
 	'https://reservationsteps.ru/rooms/index/' . rawurlencode( $uid )
