@@ -39,6 +39,55 @@
     });
   }
 
+  function pageInfo(windowH) {
+    var rect = iframe.getBoundingClientRect();
+    var body = document.body.getBoundingClientRect();
+    var y = window.scrollY || window.pageYOffset || 0;
+    var viewH = windowH || viewportHeight();
+    return {
+      scrollTop: y,
+      offsetTop: rect.top + y,
+      headerHeight: 0,
+      headMargin: 0,
+      windowHeight: viewH,
+      clientWidth: document.documentElement.clientWidth || window.innerWidth,
+      clientHeight: viewH,
+      footerHeight: 0,
+      bodyPosition: {
+        top: body.top,
+        left: body.left,
+        width: body.width,
+        height: body.height,
+      },
+      iFramePosition: {
+        top: rect.top,
+        left: rect.left,
+        width: rect.width,
+        height: rect.height,
+      },
+    };
+  }
+
+  function sendBnovo(payload) {
+    if (!iframe.iFrameResizer || typeof iframe.iFrameResizer.sendMessage !== "function") {
+      return false;
+    }
+    iframe.iFrameResizer.sendMessage(payload);
+    return true;
+  }
+
+  var didInit = false;
+  function revealRooms() {
+    // Tall viewport: Bnovo inits sliders only for rooms it thinks are on-screen.
+    var info = pageInfo(20000);
+    if (!didInit) {
+      if (!sendBnovo({ type: "init", height: "fixed", value: info })) return;
+      didInit = true;
+      return;
+    }
+    sendBnovo({ value: info });
+  }
+
   function enterOverlayMode() {
     if (overlayMode) return;
     overlayMode = true;
@@ -73,6 +122,11 @@
         heightCalculationMethod: "lowestElement",
         tolerance: 12,
         minHeight: 640,
+        onReady: function () {
+          revealRooms();
+          window.setTimeout(revealRooms, 400);
+          window.setTimeout(revealRooms, 1600);
+        },
         onResized: function (data) {
           if (overlayMode) return;
           if (data && data.height) setIframeHeight(data.height);

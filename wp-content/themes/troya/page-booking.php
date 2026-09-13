@@ -13,7 +13,7 @@ get_header();
 $uid = troya_bnovo_uid();
 
 $query   = array();
-$allowed = array( 'dfrom', 'dto', 'adults', 'children', 'lang', 'currency', 'padding', 'radius', 'promo', 'onlyrooms', 'is_auto_search' );
+$allowed = array( 'dfrom', 'dto', 'adults', 'children', 'lang', 'currency', 'padding', 'radius', 'promo', 'onlyrooms', 'is_auto_search', 'scroll_to_rooms' );
 
 foreach ( $allowed as $key ) {
 	if ( isset( $_GET[ $key ] ) && '' !== $_GET[ $key ] ) {
@@ -34,6 +34,9 @@ if ( empty( $query['dfrom'] ) && empty( $query['dto'] ) ) {
 // Эквивалент клика «Найти»: кнопка внутри iframe, с родителя её не нажать.
 if ( empty( $query['is_auto_search'] ) ) {
 	$query['is_auto_search'] = '1';
+}
+if ( empty( $query['scroll_to_rooms'] ) ) {
+	$query['scroll_to_rooms'] = '1';
 }
 
 $iframe_src = add_query_arg(
