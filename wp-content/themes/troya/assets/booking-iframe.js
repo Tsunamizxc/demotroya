@@ -11,8 +11,13 @@
 
   var locking = false;
   var overlayMode = false;
-  var contentHeight = 800;
+  var contentHeight = 4800;
   var scrollY = 0;
+  var INITIAL_HEIGHT = 4800;
+  var acceptHeight = false;
+
+  iframe.style.height = INITIAL_HEIGHT + "px";
+  iframe.setAttribute("height", String(INITIAL_HEIGHT));
 
   function viewportHeight() {
     var vv = window.visualViewport;
@@ -21,6 +26,7 @@
   }
 
   function setIframeHeight(h) {
+    if (!overlayMode && !acceptHeight) return;
     if (locking) return;
     locking = true;
     var height = Math.ceil(Number(h));
@@ -114,7 +120,9 @@
     setIframeHeight(contentHeight);
   }
 
-  if (typeof window.iFrameResize === "function") {
+  function startResizer() {
+    acceptHeight = true;
+    if (typeof window.iFrameResize !== "function") return;
     window.iFrameResize(
       {
         log: false,
@@ -134,6 +142,16 @@
       },
       iframe
     );
+  }
+
+  // Keep the iframe tall until Bnovo inits sliders/images for every room.
+  // Their lazy-loader only touches rooms inside the iframe viewport.
+  if (document.readyState === "complete") {
+    window.setTimeout(startResizer, 2200);
+  } else {
+    window.addEventListener("load", function () {
+      window.setTimeout(startResizer, 2200);
+    });
   }
 
   window.addEventListener("message", function (event) {

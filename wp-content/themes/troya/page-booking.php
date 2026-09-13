@@ -75,7 +75,7 @@ $hero  = troya_img_url( troya_option( 'hero_poster' ), troya_asset( 'photos/hero
 			src="<?php echo esc_url( $iframe_src ); ?>"
 			title="<?php echo esc_attr( $title ); ?>"
 			width="100%"
-			height="800"
+			height="4800"
 			frameborder="0"
 			scrolling="no"
 			allowfullscreen

@@ -2900,7 +2900,7 @@ button {
 .booking-page__iframe {
   display: block;
   width: 100%;
-  height: 800px;
+  height: 4800px;
   min-height: 640px;
   border: 0;
   background: #fff;
@@ -2954,8 +2954,8 @@ body.bnovo-overlay-open {
   }
 
   .booking-page__iframe {
-    height: 720px;
-    min-height: 560px;
+    height: 4800px;
+    min-height: 640px;
   }
 
   .room-avail {
