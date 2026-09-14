@@ -323,6 +323,43 @@ $gallery_page_url   = troya_gallery_url();
 	</div>
 </section>
 
+<?php
+$directions_routes = troya_directions_routes();
+$directions_lead   = (string) troya_option(
+	'directions_lead',
+	'Отель «Троя» — ул. Восстания, 119. Ближайшая остановка «ПО Тасма» (автобусы 22 и 53). До метро «Яшьлек» и «Северный вокзал» — одна пересадка.'
+);
+?>
+<?php if ( $directions_routes ) : ?>
+<section id="directions" class="directions section">
+	<div class="container">
+		<div class="directions__header reveal">
+			<div>
+				<p class="eyebrow"><?php echo esc_html( troya_option( 'directions_eyebrow', 'Маршруты' ) ); ?></p>
+				<h2 class="heading gold-line"><?php echo wp_kses_post( troya_option( 'directions_title', "Как к нам<br /><em>добраться</em>" ) ); ?></h2>
+			</div>
+			<?php if ( $directions_lead ) : ?>
+				<p class="text directions__lead"><?php echo esc_html( $directions_lead ); ?></p>
+			<?php endif; ?>
+		</div>
+
+		<div class="directions__list">
+			<?php foreach ( $directions_routes as $i => $route ) : ?>
+				<article class="directions__item reveal" style="--d: <?php echo esc_attr( number_format( 0.08 * $i, 2, '.', '' ) ); ?>s">
+					<p class="directions__label"><?php echo esc_html( $route['label'] ); ?></p>
+					<?php if ( $route['title'] ) : ?>
+						<h3 class="directions__title"><?php echo esc_html( $route['title'] ); ?></h3>
+					<?php endif; ?>
+					<?php if ( $route['text'] ) : ?>
+						<p class="text"><?php echo esc_html( $route['text'] ); ?></p>
+					<?php endif; ?>
+				</article>
+			<?php endforeach; ?>
+		</div>
+	</div>
+</section>
+<?php endif; ?>
+
 <section id="contact" class="contact section section--mist">
 	<div class="container contact__grid">
 		<div class="reveal-left">

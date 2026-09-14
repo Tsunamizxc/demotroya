@@ -32,6 +32,7 @@
 				<a href="<?php echo esc_url( home_url( '/#amenities' ) ); ?>" class="nav-link">Удобства</a>
 				<a href="<?php echo esc_url( home_url( '/#excursions' ) ); ?>" class="nav-link">Экскурсии</a>
 				<a href="<?php echo esc_url( home_url( '/#reviews' ) ); ?>" class="nav-link">Отзывы</a>
+				<a href="<?php echo esc_url( home_url( '/#directions' ) ); ?>" class="nav-link">Как добраться</a>
 				<a href="<?php echo esc_url( home_url( '/#contact' ) ); ?>" class="nav-link">Контакты</a>
 				<a href="<?php echo esc_url( $book_url ); ?>" class="btn btn--gold btn--sm"><?php echo esc_html( $cta ); ?></a>
 			</nav>
@@ -58,7 +59,8 @@
 			<a href="<?php echo esc_url( home_url( '/#amenities' ) ); ?>" class="menu-overlay__link" data-i="03"><span>Удобства</span></a>
 			<a href="<?php echo esc_url( home_url( '/#excursions' ) ); ?>" class="menu-overlay__link" data-i="04"><span>Экскурсии</span></a>
 			<a href="<?php echo esc_url( home_url( '/#reviews' ) ); ?>" class="menu-overlay__link" data-i="05"><span>Отзывы</span></a>
-			<a href="<?php echo esc_url( home_url( '/#contact' ) ); ?>" class="menu-overlay__link" data-i="06"><span>Контакты</span></a>
+			<a href="<?php echo esc_url( home_url( '/#directions' ) ); ?>" class="menu-overlay__link" data-i="06"><span>Как добраться</span></a>
+			<a href="<?php echo esc_url( home_url( '/#contact' ) ); ?>" class="menu-overlay__link" data-i="07"><span>Контакты</span></a>
 			<a href="<?php echo esc_url( $book_url ); ?>" class="btn btn--gold menu-overlay__cta"><?php echo esc_html( $cta ); ?></a>
 		</nav>
 		<p class="menu-overlay__meta"><?php echo esc_html( $addr ); ?></p>

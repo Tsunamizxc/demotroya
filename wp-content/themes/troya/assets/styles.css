@@ -1036,9 +1036,15 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
+  background-color: #12100e;
+  background-size: cover;
+  background-position: center;
   opacity: 0;
-  transition: opacity 0.55s var(--ease);
+  transition: opacity 0.45s var(--ease);
   pointer-events: none;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .rooms-story__video.is-active {
@@ -1988,6 +1994,79 @@ button {
 .contact__hours-text {
   font-size: 15px;
   color: var(--ink);
+}
+
+/* Directions / how to get here */
+.directions__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 48px;
+  align-items: end;
+  margin-bottom: 56px;
+}
+
+.directions__lead {
+  max-width: 42ch;
+  margin: 0;
+}
+
+.directions__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--line);
+}
+
+.directions__item {
+  padding: 32px 36px 36px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.directions__item:nth-child(even) {
+  padding-left: 36px;
+  border-left: 1px solid var(--line);
+}
+
+.directions__label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin: 0 0 12px;
+}
+
+.directions__title {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.4vw, 28px);
+  font-weight: 400;
+  line-height: 1.2;
+  margin: 0 0 14px;
+  color: var(--ink);
+}
+
+.directions__item .text {
+  margin: 0;
+  max-width: 46ch;
+}
+
+@media (max-width: 900px) {
+  .directions__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 36px;
+  }
+
+  .directions__list {
+    grid-template-columns: 1fr;
+  }
+
+  .directions__item,
+  .directions__item:nth-child(even) {
+    padding: 24px 0;
+    border-left: 0;
+  }
 }
 
 /* Footer */

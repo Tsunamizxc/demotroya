@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /** Bump when deploy needs DB-side fixes without manual admin clicks. */
-define( 'TROYA_SCHEMA_VERSION', 9 );
+define( 'TROYA_SCHEMA_VERSION', 10 );
 
 add_action( 'init', 'troya_maybe_run_migrations', 5 );
 add_action( 'after_switch_theme', 'troya_force_run_migrations' );
@@ -71,6 +71,10 @@ function troya_run_migrations(): void {
 
 	if ( $from < 9 ) {
 		troya_configure_smtp_beget_v9();
+	}
+
+	if ( $from < 10 ) {
+		troya_seed_directions_v10();
 	}
 
 	update_option( 'troya_schema_version', TROYA_SCHEMA_VERSION );
@@ -555,8 +559,28 @@ function troya_dedupe_all_room_galleries(): void {
 }
 
 /**
- * Map WP rooms to Bnovo rate/category IDs for calendars and onlyrooms filter.
+ * Seed homepage “how to get here” content once.
  */
+function troya_seed_directions_v10(): void {
+	if ( ! function_exists( 'update_field' ) || ! function_exists( 'troya_directions_default_routes' ) ) {
+		return;
+	}
+
+	$existing = troya_option( 'directions_routes', null );
+	if ( is_array( $existing ) && count( $existing ) > 0 ) {
+		return;
+	}
+
+	update_field( 'directions_eyebrow', 'Маршруты', 'option' );
+	update_field( 'directions_title', "Как к нам<br /><em>добраться</em>", 'option' );
+	update_field(
+		'directions_lead',
+		'Отель «Троя» — ул. Восстания, 119. Ближайшая остановка «ПО Тасма» (автобусы 22 и 53). До метро «Яшьлек» и «Северный вокзал» — одна пересадка.',
+		'option'
+	);
+	update_field( 'directions_routes', troya_directions_default_routes(), 'option' );
+}
+
 function troya_ensure_bnovo_room_ids(): void {
 	if ( ! function_exists( 'update_field' ) ) {
 		return;

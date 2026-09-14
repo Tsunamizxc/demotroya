@@ -39,6 +39,7 @@ function troya_register_acf(): void {
 	troya_acf_home_gallery_fields();
 	troya_acf_excursions_fields();
 	troya_acf_reviews_fields();
+	troya_acf_directions_fields();
 	troya_acf_contact_fields();
 	troya_acf_footer_fields();
 	troya_acf_modal_fields();
@@ -800,6 +801,74 @@ function troya_acf_reviews_fields(): void {
 			),
 			'location'   => troya_acf_location_options(),
 			'menu_order' => 80,
+		)
+	);
+}
+
+function troya_acf_directions_fields(): void {
+	$defaults = function_exists( 'troya_directions_default_routes' ) ? troya_directions_default_routes() : array();
+
+	acf_add_local_field_group(
+		array(
+			'key'    => 'group_troya_directions',
+			'title'  => 'Блок: Как добраться',
+			'fields' => array(
+				array(
+					'key'           => 'field_directions_eyebrow',
+					'label'         => 'Надзаголовок',
+					'name'          => 'directions_eyebrow',
+					'type'          => 'text',
+					'default_value' => 'Маршруты',
+				),
+				array(
+					'key'           => 'field_directions_title',
+					'label'         => 'Заголовок (HTML)',
+					'name'          => 'directions_title',
+					'type'          => 'textarea',
+					'rows'          => 2,
+					'default_value' => "Как к нам<br /><em>добраться</em>",
+				),
+				array(
+					'key'           => 'field_directions_lead',
+					'label'         => 'Короткий текст',
+					'name'          => 'directions_lead',
+					'type'          => 'textarea',
+					'rows'          => 3,
+					'default_value' => 'Отель «Троя» — ул. Восстания, 119. Ближайшая остановка «ПО Тасма» (автобусы 22 и 53). До метро «Яшьлек» и «Северный вокзал» — одна пересадка.',
+				),
+				array(
+					'key'          => 'field_directions_routes',
+					'label'        => 'Маршруты',
+					'name'         => 'directions_routes',
+					'type'         => 'repeater',
+					'layout'       => 'block',
+					'button_label' => 'Добавить маршрут',
+					'sub_fields'   => array(
+						array(
+							'key'   => 'field_directions_route_label',
+							'label' => 'Метка',
+							'name'  => 'label',
+							'type'  => 'text',
+						),
+						array(
+							'key'   => 'field_directions_route_title',
+							'label' => 'Заголовок',
+							'name'  => 'title',
+							'type'  => 'text',
+						),
+						array(
+							'key'   => 'field_directions_route_text',
+							'label' => 'Описание',
+							'name'  => 'text',
+							'type'  => 'textarea',
+							'rows'  => 3,
+						),
+					),
+					'default_value' => $defaults,
+				),
+			),
+			'location'   => troya_acf_location_options(),
+			'menu_order' => 85,
 		)
 	);
 }

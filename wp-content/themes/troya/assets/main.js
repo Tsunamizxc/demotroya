@@ -227,6 +227,7 @@ let activeRoom = 0;
 let roomsVideos = [];
 let roomsInView = false;
 let roomsHasPlayed = false;
+let roomPlayToken = 0;
 
 function updateRoomPanel(index, animate) {
   const room = ROOMS[index];
@@ -290,6 +291,37 @@ function prepareRoomVideoEl(video) {
   if (source?.src && !video.getAttribute("src")) {
     video.src = source.src;
   }
+  const poster = video.getAttribute("poster");
+  if (poster) {
+    video.style.backgroundImage = `url("${poster}")`;
+  }
+}
+
+function warmRoomVideo(video) {
+  if (!video || video.tagName !== "VIDEO") return;
+  prepareRoomVideoEl(video);
+  video.preload = "auto";
+  if (video.dataset.warmed === "1") return;
+  video.dataset.warmed = "1";
+
+  const paintFirstFrame = () => {
+    if (!Number.isFinite(video.duration) || video.duration <= 0) return;
+    if (video.currentTime > 0.01) return;
+    try {
+      // Force decode of first frame so first slide-in is not blank.
+      video.currentTime = 0.001;
+    } catch (e) {}
+  };
+
+  if (video.readyState >= 1) {
+    paintFirstFrame();
+    return;
+  }
+
+  video.addEventListener("loadedmetadata", paintFirstFrame, { once: true });
+  try {
+    video.load();
+  } catch (e) {}
 }
 
 function setActiveRoomVideo(index) {
@@ -298,7 +330,7 @@ function setActiveRoomVideo(index) {
     item.classList.toggle("is-active", on);
     if (item.tagName !== "VIDEO") return;
     prepareRoomVideoEl(item);
-    item.preload = Math.abs(i - index) <= 1 ? "auto" : "metadata";
+    item.preload = "auto";
     if (!on && !item.paused) item.pause();
   });
 }
@@ -310,10 +342,18 @@ function playRoomVideo(index, fromStart) {
     return;
   }
 
-  setActiveRoomVideo(index);
+  const token = ++roomPlayToken;
   prepareRoomVideoEl(video);
+  video.preload = "auto";
+  warmRoomVideo(video);
+
+  const show = () => {
+    if (token !== roomPlayToken) return;
+    setActiveRoomVideo(index);
+  };
 
   if (reduceMotion) {
+    show();
     try {
       if (Number.isFinite(video.duration) && video.duration > 0) {
         video.currentTime = Math.max(video.duration - 0.05, 0);
@@ -325,18 +365,34 @@ function playRoomVideo(index, fromStart) {
 
   let started = false;
   const tryPlay = () => {
-    if (started) return;
+    if (token !== roomPlayToken || started) return;
     started = true;
     video.muted = true;
+
+    const onPlaying = () => show();
+    video.addEventListener("playing", onPlaying, { once: true });
+
     const playPromise = video.play();
     if (playPromise && typeof playPromise.catch === "function") {
       playPromise.catch(() => {
         started = false;
+        video.removeEventListener("playing", onPlaying);
+        // Still reveal so the poster/frame is visible even if autoplay is blocked.
+        show();
       });
+    }
+
+    // Already have a painted frame — reveal immediately, keep previous until then.
+    if (video.readyState >= 2) {
+      window.requestAnimationFrame(show);
+    } else {
+      // Safety: never leave the previous clip stuck if `playing` is delayed.
+      window.setTimeout(show, 700);
     }
   };
 
   const start = () => {
+    if (token !== roomPlayToken) return;
     if (fromStart && video.currentTime > 0.02) {
       const onSeeked = () => {
         video.removeEventListener("seeked", onSeeked);
@@ -348,9 +404,8 @@ function playRoomVideo(index, fromStart) {
       } catch (e) {
         tryPlay();
       }
-      // iOS can skip seeked if already near 0 / not ready.
       window.setTimeout(() => {
-        if (video.paused) tryPlay();
+        if (token === roomPlayToken && video.paused) tryPlay();
       }, 250);
       return;
     }
@@ -365,11 +420,8 @@ function playRoomVideo(index, fromStart) {
   const onReady = () => start();
   video.addEventListener("loadeddata", onReady, { once: true });
   video.addEventListener("canplay", onReady, { once: true });
-  try {
-    video.load();
-  } catch (e) {}
   window.setTimeout(() => {
-    if (video.paused) start();
+    if (token === roomPlayToken && video.paused) start();
   }, 600);
 }
 
@@ -420,7 +472,8 @@ function initRoomsSlider() {
 
   roomsVideosEl.innerHTML = ROOMS.map((room, i) => {
     if (room.video) {
-      return `<video class="rooms-story__video" data-index="${i}" muted defaultMuted playsinline webkit-playsinline preload="${i === 0 ? "auto" : "metadata"}" poster="${room.img || ""}" src="${room.video}">
+      // Preload all clips: first-loop jumps on mobile came from late decode.
+      return `<video class="rooms-story__video" data-index="${i}" muted defaultMuted playsinline webkit-playsinline preload="auto" poster="${room.img || ""}" src="${room.video}">
         <source src="${room.video}" type="video/mp4" />
       </video>`;
     }
@@ -437,6 +490,19 @@ function initRoomsSlider() {
       video.pause();
     });
   });
+
+  // Warm non-active clips after first paint so lap 1 matches lap 2.
+  const warmAll = () => {
+    roomsVideos.forEach((video, i) => {
+      if (i === 0) return;
+      warmRoomVideo(video);
+    });
+  };
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(warmAll, { timeout: 1200 });
+  } else {
+    window.setTimeout(warmAll, 400);
+  }
 
   if (roomsProgress) {
     roomsProgress.innerHTML = ROOMS.map(
@@ -468,6 +534,7 @@ function initRoomsSlider() {
 
   updateRoomPanel(0, false);
   roomsVideos.forEach((item, i) => item.classList.toggle("is-active", i === 0));
+  warmRoomVideo(roomsVideos[0]);
 
   if ("IntersectionObserver" in window) {
     const mobile = window.matchMedia("(max-width: 900px)").matches;

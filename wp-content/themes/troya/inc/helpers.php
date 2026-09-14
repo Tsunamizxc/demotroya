@@ -308,3 +308,64 @@ function troya_room_gallery_items( int $post_id ): array {
 
 	return $items;
 }
+
+/**
+ * Default “how to get here” routes for Vosstaniya 119.
+ *
+ * @return array<int, array{label:string,title:string,text:string}>
+ */
+function troya_directions_default_routes(): array {
+	return array(
+		array(
+			'label' => 'Из центра',
+			'title' => 'Кремль и улица Баумана',
+			'text'  => 'Автобус 22 от остановки «Батурина» (рядом с Кремлём) до «ПО Тасма» — в нескольких минутах пешком от отеля. Либо метро до станций «Яшьлек» или «Северный вокзал», далее автобус 22 или 53.',
+		),
+		array(
+			'label' => 'Ж/д и автовокзалы',
+			'title' => 'Казань-1, Казань-2 и автовокзалы',
+			'text'  => 'С Казань-1: метро от «Кремлевская» до «Яшьлек» или «Северный вокзал», затем автобус 22 или 53. С Казань-2 (Северный вокзал) — сразу автобус 22 или 53. С автовокзалов удобнее доехать до метро и далее тем же путём до отеля.',
+		),
+		array(
+			'label' => 'Аэропорт',
+			'title' => 'Международный аэропорт «Казань»',
+			'text'  => 'Автобус 197 до остановки «Проспект Победы». Далее пересадка на метро до станций «Яшьлек» или «Северный вокзал», затем автобус 22 или 53.',
+		),
+		array(
+			'label' => 'В центр',
+			'title' => 'От отеля в центр города',
+			'text'  => 'Автобус 22 до остановки «Батурина» (рядом с Кремлём) или автобус 29 до остановки «Стадион».',
+		),
+	);
+}
+
+/**
+ * Editable directions routes with theme defaults as fallback.
+ *
+ * @return array<int, array{label:string,title:string,text:string}>
+ */
+function troya_directions_routes(): array {
+	$raw = troya_option( 'directions_routes', array() );
+	$out = array();
+
+	if ( is_array( $raw ) ) {
+		foreach ( $raw as $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$label = trim( (string) ( $row['label'] ?? '' ) );
+			$title = trim( (string) ( $row['title'] ?? '' ) );
+			$text  = trim( (string) ( $row['text'] ?? '' ) );
+			if ( '' === $label && '' === $title && '' === $text ) {
+				continue;
+			}
+			$out[] = array(
+				'label' => $label,
+				'title' => $title,
+				'text'  => $text,
+			);
+		}
+	}
+
+	return $out ? $out : troya_directions_default_routes();
+}
