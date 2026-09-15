@@ -18,7 +18,7 @@
   --font-sans: "Manrope", sans-serif;
   --font-mono: "JetBrains Mono", monospace;
   --container: 1280px;
-  --header-h: 72px;
+  --header-h: 120px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --modal-duration: 0.35s;
 }
@@ -291,7 +291,7 @@ button {
   inset: 0 0 auto;
   z-index: 100;
   height: var(--header-h);
-  transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease;
+  transition: background 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease, height 0.3s ease;
   border-bottom: 1px solid transparent;
 }
 
@@ -299,6 +299,7 @@ button {
   background: rgba(246, 241, 234, 0.88);
   backdrop-filter: blur(14px);
   border-bottom-color: var(--line);
+  height: 96px;
 }
 
 .header__inner {
@@ -306,12 +307,21 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 24px;
+}
+
+.header__logo {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  line-height: 0;
 }
 
 .header__logo-img {
-  height: 52px;
+  display: block;
+  height: 105px;
   width: auto;
+  max-height: 105px;
   object-fit: contain;
   transition: height 0.3s ease, filter 0.3s ease, opacity 0.3s ease;
   filter: none;
@@ -324,7 +334,8 @@ button {
 }
 
 .header.is-scrolled .header__logo-img {
-  height: 44px;
+  height: 78px;
+  max-height: 78px;
   filter: brightness(0.55) contrast(1.15) saturate(1.1);
   opacity: 1;
 }
@@ -332,7 +343,15 @@ button {
 .header__nav--desktop {
   display: flex;
   align-items: center;
-  gap: 32px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  min-height: 48px;
+}
+
+.header__nav--desktop .btn--sm {
+  margin-left: 4px;
+  align-self: center;
 }
 
 .nav-link {
@@ -3241,8 +3260,27 @@ body.bnovo-overlay-open {
 }
 
 @media (max-width: 900px) {
+  :root {
+    --header-h: 96px;
+  }
+
+  .header.is-scrolled {
+    height: 84px;
+  }
+
+  .header__logo-img {
+    height: 78px;
+    max-height: 78px;
+  }
+
+  .header.is-scrolled .header__logo-img {
+    height: 64px;
+    max-height: 64px;
+  }
+
   .burger {
     display: flex;
+    align-items: center;
   }
 
   .header__nav--desktop {

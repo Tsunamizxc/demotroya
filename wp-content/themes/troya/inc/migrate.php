@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /** Bump when deploy needs DB-side fixes without manual admin clicks. */
-define( 'TROYA_SCHEMA_VERSION', 11 );
+define( 'TROYA_SCHEMA_VERSION', 12 );
 
 add_action( 'init', 'troya_maybe_run_migrations', 5 );
 add_action( 'after_switch_theme', 'troya_force_run_migrations' );
@@ -79,6 +79,10 @@ function troya_run_migrations(): void {
 
 	if ( $from < 11 ) {
 		troya_refresh_amenities_v11();
+	}
+
+	if ( $from < 12 ) {
+		troya_refresh_directions_to_center_v12();
 	}
 
 	update_option( 'troya_schema_version', TROYA_SCHEMA_VERSION );
@@ -559,6 +563,56 @@ function troya_dedupe_all_room_galleries(): void {
 
 	foreach ( $q->posts as $id ) {
 		troya_dedupe_room_gallery( (int) $id );
+	}
+}
+
+/**
+ * Update “from hotel to center” route wording.
+ */
+function troya_refresh_directions_to_center_v12(): void {
+	if ( ! function_exists( 'update_field' ) || ! function_exists( 'troya_directions_default_routes' ) ) {
+		return;
+	}
+
+	$defaults = troya_directions_default_routes();
+	$to_center = null;
+	foreach ( $defaults as $route ) {
+		if ( 'В центр' === ( $route['label'] ?? '' ) ) {
+			$to_center = $route;
+			break;
+		}
+	}
+	if ( ! $to_center ) {
+		return;
+	}
+
+	$routes = troya_option( 'directions_routes', array() );
+	if ( ! is_array( $routes ) || ! $routes ) {
+		update_field( 'directions_routes', $defaults, 'option' );
+		return;
+	}
+
+	$updated = false;
+	foreach ( $routes as &$row ) {
+		if ( ! is_array( $row ) ) {
+			continue;
+		}
+		$label = trim( (string) ( $row['label'] ?? '' ) );
+		$title = trim( (string) ( $row['title'] ?? '' ) );
+		if ( 'В центр' === $label || false !== mb_stripos( $title, 'в центр' ) ) {
+			$row['label'] = $to_center['label'];
+			$row['title'] = $to_center['title'];
+			$row['text']  = $to_center['text'];
+			$updated      = true;
+		}
+	}
+	unset( $row );
+
+	if ( $updated ) {
+		update_field( 'directions_routes', $routes, 'option' );
+	} else {
+		$routes[] = $to_center;
+		update_field( 'directions_routes', $routes, 'option' );
 	}
 }
 
