@@ -4,13 +4,13 @@
   --bg-mist: #efe8df;
   --bg-sand: #e8dfd3;
   --bg-white: #fbf8f3;
-  --ink: #2c261f;
-  --ink-soft: #4a4238;
-  --muted: #7a7166;
-  --gold: #b08a4a;
-  --gold-deep: #8f6d38;
-  --gold-light: #d4b57a;
-  --gold-wash: rgba(176, 138, 74, 0.12);
+  --ink: #1f1a15;
+  --ink-soft: #3a322a;
+  --muted: #5a5148;
+  --gold: #c49a45;
+  --gold-deep: #a07830;
+  --gold-light: #e2c47a;
+  --gold-wash: rgba(196, 154, 69, 0.14);
   --line: rgba(44, 38, 31, 0.1);
   --line-gold: rgba(176, 138, 74, 0.28);
   --shadow: 0 24px 60px rgba(44, 38, 31, 0.1);
@@ -142,17 +142,18 @@ button {
 
 .eyebrow {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   color: var(--gold-deep);
   text-transform: uppercase;
   margin-bottom: 16px;
+  font-weight: 500;
 }
 
 .heading {
   font-family: var(--font-display);
-  font-size: clamp(32px, 4vw, 52px);
-  font-weight: 300;
+  font-size: clamp(34px, 4.2vw, 56px);
+  font-weight: 500;
   line-height: 1.15;
   color: var(--ink);
 }
@@ -160,12 +161,13 @@ button {
 .heading em {
   color: var(--gold-deep);
   font-style: italic;
+  font-weight: 500;
 }
 
 .text {
   font-size: 16px;
-  font-weight: 300;
-  color: var(--muted);
+  font-weight: 400;
+  color: var(--ink-soft);
   line-height: 1.8;
   margin-bottom: 24px;
 }
@@ -311,16 +313,20 @@ button {
   height: 52px;
   width: auto;
   object-fit: contain;
-  transition: height 0.3s ease, filter 0.3s ease;
-  filter: brightness(0.15) sepia(0.4);
+  transition: height 0.3s ease, filter 0.3s ease, opacity 0.3s ease;
+  filter: none;
+  opacity: 1;
 }
 
 .header:not(.is-scrolled) .header__logo-img {
-  filter: brightness(1.05);
+  filter: brightness(1.18) contrast(1.08) saturate(1.05);
+  opacity: 1;
 }
 
 .header.is-scrolled .header__logo-img {
   height: 44px;
+  filter: brightness(0.55) contrast(1.15) saturate(1.1);
+  opacity: 1;
 }
 
 .header__nav--desktop {
@@ -332,16 +338,18 @@ button {
 .nav-link {
   position: relative;
   font-size: 13px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.78);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.94);
   text-decoration: none;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   transition: color 0.2s ease;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.35);
 }
 
 .header.is-scrolled .nav-link {
-  color: var(--muted);
+  color: var(--ink);
+  text-shadow: none;
 }
 
 .nav-link::after {
@@ -356,7 +364,7 @@ button {
 }
 
 .nav-link:hover {
-  color: var(--gold-light);
+  color: #fff;
 }
 
 .header.is-scrolled .nav-link:hover {
@@ -697,11 +705,13 @@ button {
 
 .hero__eyebrow {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.25em;
   color: var(--gold-light);
   text-transform: uppercase;
   margin-bottom: 24px;
+  font-weight: 500;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.45);
 }
 
 .hero__title {
@@ -716,7 +726,7 @@ button {
 }
 
 .hero__title em {
-  color: var(--gold-light);
+  color: #ffb809;
   font-style: italic;
 }
 
@@ -763,7 +773,7 @@ button {
   object-position: 28% center;
   display: block;
   background: #1c1814;
-  filter: brightness(1) contrast(1.08) saturate(1.06);
+  filter: brightness(0.8) contrast(1.08) saturate(1.06);
 }
 
 .hero--video .hero__overlay {
@@ -1344,7 +1354,7 @@ button {
 .rooms__name {
   font-family: var(--font-display);
   font-size: clamp(32px, 4vw, 44px);
-  font-weight: 300;
+  font-weight: 500;
   color: var(--ink);
   margin-top: 20px;
   margin-bottom: 4px;
@@ -1353,7 +1363,7 @@ button {
 
 .rooms__subtitle {
   font-size: 14px;
-  color: var(--muted);
+  color: var(--ink-soft);
   margin-bottom: 20px;
   letter-spacing: 0.04em;
 }
@@ -1509,8 +1519,8 @@ button {
 
 .amenity h3 {
   font-family: var(--font-display);
-  font-size: clamp(20px, 2.2vw, 26px);
-  font-weight: 400;
+  font-size: clamp(22px, 2.3vw, 28px);
+  font-weight: 500;
   color: var(--ink);
   margin-bottom: 10px;
   position: relative;
@@ -1889,11 +1899,12 @@ button {
 
 .contact__label {
   font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--muted);
+  font-size: 11px;
+  color: var(--ink-soft);
   letter-spacing: 0.15em;
   text-transform: uppercase;
   margin-bottom: 10px;
+  font-weight: 500;
 }
 
 .contact__phone {
@@ -2436,15 +2447,17 @@ button {
   align-items: center;
   gap: 10px;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.55);
+  color: rgba(255, 255, 255, 0.88);
   margin-bottom: 28px;
+  font-weight: 500;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.4);
 }
 
 .crumbs a {
-  color: rgba(255, 255, 255, 0.72);
+  color: #fff;
   text-decoration: none;
 }
 
@@ -2453,7 +2466,7 @@ button {
 }
 
 .crumbs span {
-  opacity: 0.45;
+  opacity: 0.75;
 }
 
 .room-catalog {
@@ -3915,18 +3928,19 @@ body.bnovo-overlay-open {
 
 .photo-gallery__tab {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ink-soft, #6b5e52);
+  color: var(--ink);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   padding-bottom: 4px;
+  font-weight: 600;
 }
 
 .photo-gallery__tab:hover {
-  color: var(--ink, #2b241c);
-  border-bottom-color: var(--gold, #a67c52);
+  color: var(--gold-deep);
+  border-bottom-color: var(--gold);
 }
 
 .photo-gallery__block + .photo-gallery__block {
@@ -3983,15 +3997,15 @@ body.bnovo-overlay-open {
 
 .photo-gallery__room-title {
   font-family: var(--font-display);
-  font-size: clamp(22px, 3vw, 32px);
-  font-weight: 400;
+  font-size: clamp(24px, 3vw, 34px);
+  font-weight: 500;
   margin: 0;
-  color: var(--ink, #2b241c);
+  color: var(--ink);
 }
 
 .photo-gallery__room-link {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--gold, #a67c52);

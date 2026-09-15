@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /** Bump when deploy needs DB-side fixes without manual admin clicks. */
-define( 'TROYA_SCHEMA_VERSION', 10 );
+define( 'TROYA_SCHEMA_VERSION', 11 );
 
 add_action( 'init', 'troya_maybe_run_migrations', 5 );
 add_action( 'after_switch_theme', 'troya_force_run_migrations' );
@@ -75,6 +75,10 @@ function troya_run_migrations(): void {
 
 	if ( $from < 10 ) {
 		troya_seed_directions_v10();
+	}
+
+	if ( $from < 11 ) {
+		troya_refresh_amenities_v11();
 	}
 
 	update_option( 'troya_schema_version', TROYA_SCHEMA_VERSION );
@@ -555,6 +559,67 @@ function troya_dedupe_all_room_galleries(): void {
 
 	foreach ( $q->posts as $id ) {
 		troya_dedupe_room_gallery( (int) $id );
+	}
+}
+
+/**
+ * Drop luggage storage, keep city-only transfer wording.
+ */
+function troya_refresh_amenities_v11(): void {
+	if ( ! function_exists( 'update_field' ) ) {
+		return;
+	}
+
+	$items = troya_option( 'amenities_items', array() );
+	$icons = get_option( 'troya_amenity_icons', array() );
+	if ( ! is_array( $icons ) ) {
+		$icons = array();
+	}
+
+	if ( is_array( $items ) && $items ) {
+		$clean_items = array();
+		$clean_icons = array();
+		foreach ( array_values( $items ) as $i => $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$title = mb_strtolower( trim( (string) ( $row['title'] ?? '' ) ) );
+			$desc  = mb_strtolower( trim( (string) ( $row['desc'] ?? '' ) ) );
+			if ( false !== mb_strpos( $title, 'багаж' ) || ( false !== mb_strpos( $desc, 'багаж' ) && false !== mb_strpos( $desc, 'хранен' ) ) ) {
+				continue;
+			}
+
+			if ( false !== mb_strpos( $title, 'трансфер' ) || false !== mb_strpos( $desc, 'аэропорт' ) ) {
+				$row['title'] = 'Трансфер по городу';
+				$row['desc']  = 'Организация трансфера по городу для гостей отеля.';
+			}
+
+			$clean_items[] = $row;
+			if ( isset( $icons[ $i ] ) ) {
+				$clean_icons[] = $icons[ $i ];
+			}
+		}
+		update_field( 'amenities_items', $clean_items, 'option' );
+		if ( $clean_icons ) {
+			update_option( 'troya_amenity_icons', $clean_icons );
+		}
+	}
+
+	$marquee = troya_option( 'marquee_items', array() );
+	if ( is_array( $marquee ) && $marquee ) {
+		$clean_marquee = array();
+		foreach ( $marquee as $row ) {
+			$text = is_array( $row ) ? trim( (string) ( $row['text'] ?? '' ) ) : trim( (string) $row );
+			$low  = mb_strtolower( $text );
+			if ( '' === $text || false !== mb_strpos( $low, 'багаж' ) ) {
+				continue;
+			}
+			if ( 'трансфер' === $low || false !== mb_strpos( $low, 'аэропорт' ) ) {
+				$text = 'Трансфер по городу';
+			}
+			$clean_marquee[] = array( 'text' => $text );
+		}
+		update_field( 'marquee_items', $clean_marquee, 'option' );
 	}
 }
 
