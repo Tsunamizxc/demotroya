@@ -369,3 +369,36 @@ function troya_directions_routes(): array {
 
 	return $out ? $out : troya_directions_default_routes();
 }
+
+/**
+ * Payment and cancellation terms shown next to booking.
+ *
+ * @return array<int, string>
+ */
+function troya_payment_policy_items(): array {
+	return array(
+		'Предварительная оплата за первые сутки.',
+		'Бесплатная отмена бронирования возможна за сутки до даты заезда.',
+		'При отмене бронирования или незаезде после 14:00 (UTC+03:00) даты заезда взимается стоимость за первые сутки.',
+		'Оплата банковской картой или QR-кодом (СБП).',
+	);
+}
+
+/**
+ * Render the payment policy list.
+ *
+ * @param string $modifier Optional BEM modifier: compact.
+ */
+function troya_render_payment_policy( string $modifier = '' ): void {
+	$class = 'pay-policy' . ( '' !== $modifier ? ' pay-policy--' . sanitize_html_class( $modifier ) : '' );
+	?>
+	<aside class="<?php echo esc_attr( $class ); ?>">
+		<p class="pay-policy__title">Оплата и отмена</p>
+		<ul class="pay-policy__list">
+			<?php foreach ( troya_payment_policy_items() as $item ) : ?>
+				<li><?php echo esc_html( $item ); ?></li>
+			<?php endforeach; ?>
+		</ul>
+	</aside>
+	<?php
+}

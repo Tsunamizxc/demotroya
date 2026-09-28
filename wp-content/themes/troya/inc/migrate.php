@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /** Bump when deploy needs DB-side fixes without manual admin clicks. */
-define( 'TROYA_SCHEMA_VERSION', 12 );
+define( 'TROYA_SCHEMA_VERSION', 13 );
 
 add_action( 'init', 'troya_maybe_run_migrations', 5 );
 add_action( 'after_switch_theme', 'troya_force_run_migrations' );
@@ -83,6 +83,10 @@ function troya_run_migrations(): void {
 
 	if ( $from < 12 ) {
 		troya_refresh_directions_to_center_v12();
+	}
+
+	if ( $from < 13 ) {
+		troya_refresh_copy_v13();
 	}
 
 	update_option( 'troya_schema_version', TROYA_SCHEMA_VERSION );
@@ -298,41 +302,44 @@ function troya_rename_rooms_v6(): void {
  * @return array<int, array<string, mixed>>
  */
 function troya_canonical_rooms_v7(): array {
+	$in_room = 'В номере кондиционер, телевизор, мини-холодильник, шкаф для одежды, телефон и Wi-Fi. В ванной комнате душ, фен и банные принадлежности. Окна номера выходят на улицу Восстания и во двор отеля.';
+	$facts   = array( 'Кондиционер', 'Телевизор', 'Мини-холодильник', 'Шкаф для одежды', 'Телефон', 'Wi-Fi', 'Душ', 'Фен', 'Банные принадлежности' );
+
 	return array(
 		1 => array(
 			'title'    => '2-х местный Стандарт',
 			'tag'      => 'Стандарт',
 			'subtitle' => 'Двухместный',
-			'desc'     => 'Уютный номер с двумя раздельными кроватями, мини-холодильником и современным санузлом.',
-			'features' => array( 'Две кровати', 'Телевизор', 'Кондиционер', 'Мини-холодильник', 'Современный санузел' ),
+			'desc'     => 'Бюджетный просторный номер с двумя кроватями. ' . $in_room . ' Площадь номера — 14 кв. м.',
+			'features' => array_merge( array( 'Две кровати', '14 кв. м' ), $facts ),
 		),
 		2 => array(
 			'title'    => '3-х местный Стандарт',
 			'tag'      => 'Стандарт',
 			'subtitle' => 'Трёхместный',
-			'desc'     => 'Просторный номер для семьи или компании с тремя раздельными кроватями, мини-холодильником и современным санузлом.',
-			'features' => array( 'Три кровати', 'Плазменный ТВ', 'Кондиционер', 'Мини-холодильник', 'Современный санузел' ),
+			'desc'     => 'Бюджетный просторный номер с тремя кроватями. ' . $in_room . ' Площадь номера — 14 кв. м.',
+			'features' => array_merge( array( 'Три кровати', '14 кв. м' ), $facts ),
 		),
 		3 => array(
 			'title'    => 'Бизнес-комфорт',
 			'tag'      => 'Бизнес',
 			'subtitle' => 'Улучшенный',
-			'desc'     => 'Двуспальная кровать, мини-холодильник и современный санузел. Удобный выбор для деловых поездок.',
-			'features' => array( 'Двуспальная кровать', 'Телевизор', 'Кондиционер', 'Мини-холодильник', 'Современный санузел' ),
+			'desc'     => 'Номер с двуспальной кроватью. ' . $in_room,
+			'features' => array_merge( array( 'Двуспальная кровать' ), $facts ),
 		),
 		4 => array(
 			'title'    => 'Бизнес-комфорт семейный',
 			'tag'      => 'Семейный',
-			'subtitle' => 'Трёхместный',
-			'desc'     => 'Рассчитан на трёхместное размещение: основное спальное место и третье — на мягком диване. Есть мини-холодильник и современный санузел.',
-			'features' => array( 'Трёхместное размещение', 'Мягкий диван', 'Халат и тапочки', 'Мини-холодильник', 'Современный санузел' ),
+			'subtitle' => 'До 4 гостей',
+			'desc'     => 'Просторный номер с одной двуспальной кроватью и мягким диваном для размещения до 4 гостей. ' . $in_room . ' Площадь номера — 24 кв. м.',
+			'features' => array_merge( array( 'Двуспальная кровать', 'Мягкий диван', 'До 4 гостей', '24 кв. м' ), $facts ),
 		),
 		5 => array(
 			'title'    => 'Бизнес-комфорт+',
 			'tag'      => 'Премиум',
-			'subtitle' => 'Трёхместный',
-			'desc'     => 'Рассчитан на трёхместное размещение: большая кровать и третье место на мягком диване. Мини-холодильник и современный санузел.',
-			'features' => array( 'Большая кровать', 'Мягкий диван', 'Халат и тапочки', 'Мини-холодильник', 'Современный санузел' ),
+			'subtitle' => 'До 4 гостей',
+			'desc'     => 'Просторный номер с одной двуспальной кроватью и мягким диваном для размещения до 4 гостей. ' . $in_room . ' Площадь номера — 20 кв. м.',
+			'features' => array_merge( array( 'Двуспальная кровать', 'Мягкий диван', 'До 4 гостей', '20 кв. м' ), $facts ),
 		),
 	);
 }
@@ -613,6 +620,64 @@ function troya_refresh_directions_to_center_v12(): void {
 	} else {
 		$routes[] = $to_center;
 		update_field( 'directions_routes', $routes, 'option' );
+	}
+}
+
+/**
+ * Remove city transfer from comfort services and refresh room descriptions.
+ */
+function troya_refresh_copy_v13(): void {
+	troya_remove_city_transfer_v13();
+	troya_refresh_rooms_content_v7();
+}
+
+/**
+ * City transfer overlaps with the taxi service, so it leaves the comfort list.
+ */
+function troya_remove_city_transfer_v13(): void {
+	if ( ! function_exists( 'update_field' ) ) {
+		return;
+	}
+
+	$items = troya_option( 'amenities_items', array() );
+	$icons = get_option( 'troya_amenity_icons', array() );
+	if ( ! is_array( $icons ) ) {
+		$icons = array();
+	}
+
+	if ( is_array( $items ) && $items ) {
+		$clean_items = array();
+		$clean_icons = array();
+		foreach ( array_values( $items ) as $i => $row ) {
+			if ( ! is_array( $row ) ) {
+				continue;
+			}
+			$title = mb_strtolower( trim( (string) ( $row['title'] ?? '' ) ) );
+			if ( false !== mb_strpos( $title, 'трансфер' ) ) {
+				continue;
+			}
+			$clean_items[] = $row;
+			if ( isset( $icons[ $i ] ) ) {
+				$clean_icons[] = $icons[ $i ];
+			}
+		}
+		update_field( 'amenities_items', $clean_items, 'option' );
+		if ( $clean_icons ) {
+			update_option( 'troya_amenity_icons', array_values( $clean_icons ) );
+		}
+	}
+
+	$marquee = troya_option( 'marquee_items', array() );
+	if ( is_array( $marquee ) && $marquee ) {
+		$clean_marquee = array();
+		foreach ( $marquee as $row ) {
+			$text = is_array( $row ) ? trim( (string) ( $row['text'] ?? '' ) ) : trim( (string) $row );
+			if ( '' === $text || false !== mb_strpos( mb_strtolower( $text ), 'трансфер' ) ) {
+				continue;
+			}
+			$clean_marquee[] = array( 'text' => $text );
+		}
+		update_field( 'marquee_items', $clean_marquee, 'option' );
 	}
 }
 

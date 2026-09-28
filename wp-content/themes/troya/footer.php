@@ -115,6 +115,7 @@ $hint    = troya_option( 'modal_hint', '* ОБЯЗАТЕЛЬНЫЕ ПОЛЯ · �
 			</div>
 
 			<p class="modal__hint"><?php echo esc_html( $hint ); ?></p>
+			<?php troya_render_payment_policy( 'compact' ); ?>
 			<p class="modal__error" id="modal-error" hidden></p>
 			<button type="submit" class="btn btn--gold btn--block">Отправить заявку</button>
 		</form>

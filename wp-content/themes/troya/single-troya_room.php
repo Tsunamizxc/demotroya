@@ -134,7 +134,12 @@ while ( have_posts() ) :
 				<?php endif; ?>
 
 				<p class="room-detail__lead"><?php echo esc_html( (string) troya_field( 'room_desc' ) ); ?></p>
-				<div class="text"><?php the_content(); ?></div>
+				<?php
+				$room_body = trim( wp_strip_all_tags( get_the_content() ) );
+				if ( $room_body && $room_body !== trim( (string) troya_field( 'room_desc' ) ) ) :
+					?>
+					<div class="text"><?php the_content(); ?></div>
+				<?php endif; ?>
 				<?php if ( is_array( $feats ) && $feats ) : ?>
 					<ul class="room-band__facts">
 						<?php foreach ( $feats as $f ) : ?>
@@ -149,6 +154,7 @@ while ( have_posts() ) :
 					<h2 class="room-bookcard__title"><?php the_title(); ?></h2>
 					<p class="room-bookcard__price"><?php echo esc_html( (string) troya_field( 'room_price' ) ); ?><small>за ночь</small></p>
 					<p class="room-bookcard__note"><?php echo esc_html( troya_option( 'rooms_note' ) ); ?></p>
+					<?php troya_render_payment_policy( 'compact' ); ?>
 				</div>
 
 				<?php troya_render_room_availability( get_the_ID(), true ); ?>

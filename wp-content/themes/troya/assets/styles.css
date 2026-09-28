@@ -140,6 +140,10 @@ button {
   background: var(--bg-sand);
 }
 
+.section--compact {
+  padding: 48px 0 56px;
+}
+
 .eyebrow {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -1051,6 +1055,7 @@ button {
   height: 100%;
   overflow: hidden;
   display: grid;
+  grid-template-rows: minmax(0, 1fr);
 }
 
 .rooms-story__media {
@@ -1102,10 +1107,12 @@ button {
   width: 100%;
   margin: 0 auto;
   padding: calc(var(--header-h) + 20px) 32px 28px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 20px;
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  align-content: stretch;
+  gap: 12px;
   box-sizing: border-box;
 }
 
@@ -1184,16 +1191,17 @@ button {
 }
 
 .rooms-story__card {
-  align-self: flex-end;
+  justify-self: end;
+  align-self: stretch;
   width: min(620px, 100%);
-  display: grid;
-  grid-template-columns: 1.15fr;
-  gap: 0;
-  background: rgba(251, 248, 243, 0.96);
-  color: var(--ink);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.35);
-  border-radius: 4px;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
   overflow: hidden;
   opacity: 1;
   transform: translateY(0) scale(1);
@@ -1220,10 +1228,29 @@ button {
 }
 
 .rooms-story__card-body {
-  padding: 22px 22px 20px;
+  min-height: 0;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  padding: 22px 22px 20px;
+  background: rgba(251, 248, 243, 0.96);
+  color: var(--ink);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.35);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.rooms-story__card-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(160, 120, 48, 0.45) transparent;
+}
+
+.rooms-story__card-foot {
+  flex-shrink: 0;
 }
 
 .rooms-story__card .rooms__name {
@@ -1243,16 +1270,12 @@ button {
 
 .rooms-story__card .rooms__desc {
   font-size: 14px;
+  line-height: 1.55;
   margin-bottom: 12px;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .rooms-story__card .rooms__features {
-  margin-bottom: 14px;
-  gap: 8px;
+  display: none;
 }
 
 .rooms-story__card .rooms__features span {
@@ -2633,12 +2656,13 @@ button {
 }
 
 .room-detail__lead {
-  font-family: var(--font-display);
-  font-size: clamp(22px, 2.6vw, 30px);
-  font-weight: 300;
-  font-style: italic;
-  line-height: 1.4;
-  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  max-width: 68ch;
   margin-bottom: 28px;
 }
 
@@ -3099,6 +3123,74 @@ body.bnovo-overlay-open {
   margin-top: 28px;
 }
 
+.room-catalog-cta + .pay-policy {
+  margin-top: 48px;
+}
+
+.pay-policy {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 32px;
+  background: var(--bg-white);
+  border: 1px solid var(--line);
+}
+
+.pay-policy__title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-deep);
+  margin-bottom: 14px;
+}
+
+.pay-policy__list {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.pay-policy__list li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.pay-policy__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.65em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+
+.pay-policy--compact {
+  max-width: none;
+  margin: 16px 0 0;
+  padding: 16px 0 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+
+.pay-policy--compact .pay-policy__title {
+  margin-bottom: 10px;
+}
+
+.pay-policy--compact .pay-policy__list li {
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.modal .pay-policy--compact {
+  margin-bottom: 16px;
+}
+
 .room-perk {
   padding: 28px 26px;
   background: var(--bg-white);
@@ -3196,9 +3288,39 @@ body.bnovo-overlay-open {
   }
 }
 
+@media (max-height: 860px) {
+  .rooms-story {
+    height: auto;
+    max-height: none;
+    min-height: 80vh;
+    overflow: visible;
+  }
+
+  .rooms-story__frame,
+  .rooms-story__ui {
+    height: auto;
+    min-height: 80vh;
+    overflow: visible;
+  }
+
+  .rooms-story__card {
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    align-self: end;
+    overflow: visible;
+  }
+
+  .rooms-story__card-body,
+  .rooms-story__card-scroll {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
 @media (max-width: 1100px) {
   .rooms-story__card {
-    grid-template-columns: 1.15fr;
     width: min(560px, 100%);
   }
 
@@ -3393,7 +3515,6 @@ body.bnovo-overlay-open {
   .rooms-story__ui {
     padding: calc(var(--header-h) + 8px) 16px 14px;
     gap: 10px;
-    justify-content: flex-start;
   }
 
   .rooms-story__header {
@@ -3460,18 +3581,23 @@ body.bnovo-overlay-open {
   }
 
   .rooms-story__card {
-    grid-template-columns: 1fr;
+    justify-self: stretch;
     width: 100%;
-    max-height: none;
-    overflow: visible;
-    margin-top: auto;
-    flex-shrink: 0;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+    height: 100%;
   }
 
   .rooms-story__card-body {
     padding: 12px 14px 12px;
     gap: 0;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+  }
+
+  .rooms-story__card-scroll {
+    overflow: visible;
+  }
+
+  .rooms-story__card-foot {
+    padding-top: 0;
   }
 
   .rooms-story__card .rooms__name {

@@ -35,7 +35,7 @@ $marquee = troya_option( 'marquee_items', array() );
 if ( ! is_array( $marquee ) || ! $marquee ) {
 	$marquee = array_map(
 		static fn( $t ) => array( 'text' => $t ),
-		array( 'Бесплатный Wi-Fi', 'Охраняемая парковка', 'Завтрак включён', 'Кондиционер во всех номерах', 'Организация экскурсий', 'Трансфер по городу', 'Прачечная' )
+		array( 'Бесплатный Wi-Fi', 'Охраняемая парковка', 'Завтрак включён', 'Кондиционер во всех номерах', 'Организация экскурсий', 'Прачечная' )
 	);
 }
 
@@ -206,17 +206,21 @@ if ( ! is_array( $stats ) || ! $stats ) {
 					<img id="room-card-img" src="" alt="" />
 				</figure>
 				<div class="rooms-story__card-body">
-					<span class="rooms__tag" id="room-tag"></span>
-					<h3 class="rooms__name" id="room-name"></h3>
-					<p class="rooms__subtitle" id="room-subtitle"></p>
-					<p class="rooms__price" id="room-price"></p>
-					<p class="rooms__desc text" id="room-desc"></p>
-					<div class="rooms__features" id="room-features"></div>
-					<p class="rooms__note"><?php echo esc_html( troya_option( 'rooms_note', 'Завтрак — 300 ₽' ) ); ?></p>
-					<a class="rooms-story__gallery-link" href="<?php echo esc_url( troya_gallery_url() ); ?>">Фотогалерея отеля</a>
-					<div class="rooms__footer-actions">
-						<a class="btn btn--outline" id="room-more" href="<?php echo esc_url( $rooms_url ); ?>">Подробнее</a>
-						<a class="btn btn--gold" id="room-book" href="<?php echo esc_url( troya_booking_url() ); ?>">Забронировать</a>
+					<div class="rooms-story__card-scroll">
+						<span class="rooms__tag" id="room-tag"></span>
+						<h3 class="rooms__name" id="room-name"></h3>
+						<p class="rooms__subtitle" id="room-subtitle"></p>
+						<p class="rooms__price" id="room-price"></p>
+						<p class="rooms__desc text" id="room-desc"></p>
+						<div class="rooms__features" id="room-features"></div>
+					</div>
+					<div class="rooms-story__card-foot">
+						<p class="rooms__note"><?php echo esc_html( troya_option( 'rooms_note', 'Завтрак — 300 ₽' ) ); ?></p>
+						<a class="rooms-story__gallery-link" href="<?php echo esc_url( troya_gallery_url() ); ?>">Фотогалерея отеля</a>
+						<div class="rooms__footer-actions">
+							<a class="btn btn--outline" id="room-more" href="<?php echo esc_url( $rooms_url ); ?>">Подробнее</a>
+							<a class="btn btn--gold" id="room-book" href="<?php echo esc_url( troya_booking_url() ); ?>">Забронировать</a>
+						</div>
 					</div>
 				</div>
 			</article>
@@ -226,6 +230,12 @@ if ( ! is_array( $stats ) || ! $stats ) {
 				<!-- <p class="rooms-story__hint">Стрелки переключают номера</p> -->
 			</div>
 		</div>
+	</div>
+</section>
+
+<section class="section section--compact">
+	<div class="container">
+		<?php troya_render_payment_policy(); ?>
 	</div>
 </section>
 

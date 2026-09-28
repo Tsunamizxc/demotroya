@@ -67,6 +67,12 @@ $hero  = troya_img_url( troya_option( 'hero_poster' ), troya_asset( 'photos/hero
 	</div>
 </section>
 
+<section class="section section--compact">
+	<div class="container">
+		<?php troya_render_payment_policy(); ?>
+	</div>
+</section>
+
 <section class="booking-page">
 	<div class="booking-page__frame">
 		<iframe
