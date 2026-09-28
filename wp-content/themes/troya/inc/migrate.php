@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /** Bump when deploy needs DB-side fixes without manual admin clicks. */
-define( 'TROYA_SCHEMA_VERSION', 13 );
+define( 'TROYA_SCHEMA_VERSION', 14 );
 
 add_action( 'init', 'troya_maybe_run_migrations', 5 );
 add_action( 'after_switch_theme', 'troya_force_run_migrations' );
@@ -87,6 +87,10 @@ function troya_run_migrations(): void {
 
 	if ( $from < 13 ) {
 		troya_refresh_copy_v13();
+	}
+
+	if ( $from < 14 ) {
+		troya_refresh_marquee_breakfast_v14();
 	}
 
 	update_option( 'troya_schema_version', TROYA_SCHEMA_VERSION );
@@ -621,6 +625,31 @@ function troya_refresh_directions_to_center_v12(): void {
 		$routes[] = $to_center;
 		update_field( 'directions_routes', $routes, 'option' );
 	}
+}
+
+/**
+ * Breakfast is sold as a rate option, not included by default.
+ */
+function troya_refresh_marquee_breakfast_v14(): void {
+	if ( ! function_exists( 'update_field' ) ) {
+		return;
+	}
+
+	$marquee = troya_option( 'marquee_items', array() );
+	if ( ! is_array( $marquee ) || ! $marquee ) {
+		return;
+	}
+
+	foreach ( $marquee as &$row ) {
+		$text = is_array( $row ) ? trim( (string) ( $row['text'] ?? '' ) ) : trim( (string) $row );
+		if ( false !== mb_stripos( $text, 'завтрак включ' ) ) {
+			$text = 'Доступны тарифы с завтраком';
+		}
+		$row = array( 'text' => $text );
+	}
+	unset( $row );
+
+	update_field( 'marquee_items', $marquee, 'option' );
 }
 
 /**

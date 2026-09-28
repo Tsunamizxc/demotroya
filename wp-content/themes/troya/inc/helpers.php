@@ -213,11 +213,14 @@ function troya_theme_gallery_album( string $slug, string $alt_prefix = '' ): arr
 		return array();
 	}
 
+	// Photos with staff are not shown anywhere on the site.
+	$hidden = array( 'reception-1.jpg', 'reception-2.jpg', 'reception-3.jpg', 'reception-4.jpg', 'reception-5.jpg', 'reception-wide.jpg' );
+
 	$files = array_values(
 		array_filter(
 			scandir( $dir ) ?: array(),
-			static function ( $name ) use ( $dir ) {
-				if ( '.' === $name || '..' === $name ) {
+			static function ( $name ) use ( $dir, $hidden ) {
+				if ( '.' === $name || '..' === $name || in_array( $name, $hidden, true ) ) {
 					return false;
 				}
 				$ext = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
