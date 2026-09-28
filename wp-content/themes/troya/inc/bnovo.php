@@ -304,7 +304,6 @@ function troya_render_room_availability( int $post_id = 0, bool $embedded = fals
 	?>
 	<div class="<?php echo esc_attr( $wrap_class ); ?>" data-bnovo-avail>
 		<div class="room-avail__head">
-			<p class="eyebrow"><?php echo $embedded ? 'Свободные даты' : 'Доступность · Bnovo'; ?></p>
 			<?php if ( ! $embedded ) : ?>
 				<p class="room-avail__lead">Свободные даты и цены по этому номеру из модуля онлайн-бронирования.</p>
 			<?php endif; ?>

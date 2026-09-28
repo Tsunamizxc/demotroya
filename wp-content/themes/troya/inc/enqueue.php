@@ -12,7 +12,7 @@ add_action( 'wp_enqueue_scripts', 'troya_enqueue_assets' );
 function troya_enqueue_assets(): void {
 	wp_enqueue_style(
 		'troya-fonts',
-		'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap',
+		'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Manrope:wght@300;400;500;600&family=Tenor+Sans&display=swap',
 		array(),
 		null
 	);

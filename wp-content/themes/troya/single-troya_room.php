@@ -46,7 +46,6 @@ while ( have_posts() ) :
 				<a href="<?php echo esc_url( $rooms_url ); ?>">Номера</a><span>/</span>
 				<span><?php the_title(); ?></span>
 			</p>
-			<p class="hero__eyebrow anim-up" style="--d: 0.35s"><?php echo esc_html( (string) troya_field( 'room_tag' ) ); ?></p>
 			<h1 class="hero__title anim-up" style="--d: 0.5s"><?php the_title(); ?></h1>
 			<p class="hero__text anim-up" style="--d: 0.7s"><?php echo esc_html( (string) troya_field( 'room_price' ) ); ?> · <?php echo esc_html( (string) troya_field( 'room_subtitle' ) ); ?></p>
 		</div>
@@ -150,7 +149,6 @@ while ( have_posts() ) :
 			</div>
 			<aside class="room-bookcard room-bookcard--stacked reveal-right">
 				<div class="room-bookcard__top">
-					<p class="eyebrow">Этот номер</p>
 					<h2 class="room-bookcard__title"><?php the_title(); ?></h2>
 					<p class="room-bookcard__price"><?php echo esc_html( (string) troya_field( 'room_price' ) ); ?><small>за ночь</small></p>
 					<p class="room-bookcard__note"><?php echo esc_html( troya_option( 'rooms_note' ) ); ?></p>

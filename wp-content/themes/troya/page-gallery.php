@@ -74,7 +74,6 @@ $total = count( $all_photos );
 		<p class="crumbs anim-up" style="--d: 0.2s">
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Главная</a><span>/</span><span>Галерея</span>
 		</p>
-		<p class="hero__eyebrow anim-up" style="--d: 0.35s">Фотографии</p>
 		<h1 class="hero__title anim-up" style="--d: 0.5s">Галерея отеля</h1>
 		<p class="hero__text anim-up" style="--d: 0.65s">Номера, ресепшен, столовая и виды здания — все фото в одном месте.</p>
 	</div>

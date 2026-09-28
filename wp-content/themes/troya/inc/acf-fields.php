@@ -356,13 +356,6 @@ function troya_acf_hero_fields(): void {
 			'title'  => 'Блок: Hero',
 			'fields' => array(
 				array(
-					'key'           => 'field_hero_eyebrow',
-					'label'         => 'Надзаголовок',
-					'name'          => 'hero_eyebrow',
-					'type'          => 'text',
-					'default_value' => 'Отель в Казани',
-				),
-				array(
 					'key'           => 'field_hero_title',
 					'label'         => 'Заголовок (HTML)',
 					'name'          => 'hero_title',
@@ -451,13 +444,6 @@ function troya_acf_about_fields(): void {
 			'title'  => 'Блок: Об отеле',
 			'fields' => array(
 				array(
-					'key'           => 'field_about_eyebrow',
-					'label'         => 'Надзаголовок',
-					'name'          => 'about_eyebrow',
-					'type'          => 'text',
-					'default_value' => 'Об отеле',
-				),
-				array(
 					'key'           => 'field_about_title',
 					'label'         => 'Заголовок (HTML)',
 					'name'          => 'about_title',
@@ -545,13 +531,6 @@ function troya_acf_rooms_section_fields(): void {
 			'title'  => 'Блок: Номера (секция на главной)',
 			'fields' => array(
 				array(
-					'key'           => 'field_rooms_eyebrow',
-					'label'         => 'Надзаголовок',
-					'name'          => 'rooms_eyebrow',
-					'type'          => 'text',
-					'default_value' => 'Номерной фонд',
-				),
-				array(
 					'key'           => 'field_rooms_title',
 					'label'         => 'Заголовок',
 					'name'          => 'rooms_title',
@@ -578,13 +557,6 @@ function troya_acf_home_gallery_fields(): void {
 			'key'    => 'group_troya_home_gallery',
 			'title'  => 'Блок: Галерея (главная)',
 			'fields' => array(
-				array(
-					'key'           => 'field_home_gallery_eyebrow',
-					'label'         => 'Надзаголовок',
-					'name'          => 'home_gallery_eyebrow',
-					'type'          => 'text',
-					'default_value' => 'Галерея',
-				),
 				array(
 					'key'           => 'field_home_gallery_title',
 					'label'         => 'Заголовок (HTML)',
@@ -621,13 +593,6 @@ function troya_acf_amenities_fields(): void {
 			'key'    => 'group_troya_amenities',
 			'title'  => 'Блок: Удобства',
 			'fields' => array(
-				array(
-					'key'           => 'field_amenities_eyebrow',
-					'label'         => 'Надзаголовок',
-					'name'          => 'amenities_eyebrow',
-					'type'          => 'text',
-					'default_value' => 'Сервис',
-				),
 				array(
 					'key'           => 'field_amenities_title',
 					'label'         => 'Заголовок (HTML)',
@@ -687,13 +652,6 @@ function troya_acf_excursions_fields(): void {
 			'key'    => 'group_troya_excursions',
 			'title'  => 'Блок: Экскурсии',
 			'fields' => array(
-				array(
-					'key'           => 'field_excursions_eyebrow',
-					'label'         => 'Надзаголовок',
-					'name'          => 'excursions_eyebrow',
-					'type'          => 'text',
-					'default_value' => 'Экскурсии',
-				),
 				array(
 					'key'           => 'field_excursions_title',
 					'label'         => 'Заголовок (HTML)',
@@ -761,13 +719,6 @@ function troya_acf_reviews_fields(): void {
 			'title'  => 'Блок: Отзывы',
 			'fields' => array(
 				array(
-					'key'           => 'field_reviews_eyebrow',
-					'label'         => 'Надзаголовок',
-					'name'          => 'reviews_eyebrow',
-					'type'          => 'text',
-					'default_value' => 'Отзывы гостей',
-				),
-				array(
 					'key'           => 'field_reviews_title',
 					'label'         => 'Заголовок (HTML)',
 					'name'          => 'reviews_title',
@@ -813,13 +764,6 @@ function troya_acf_directions_fields(): void {
 			'key'    => 'group_troya_directions',
 			'title'  => 'Блок: Как добраться',
 			'fields' => array(
-				array(
-					'key'           => 'field_directions_eyebrow',
-					'label'         => 'Надзаголовок',
-					'name'          => 'directions_eyebrow',
-					'type'          => 'text',
-					'default_value' => 'Маршруты',
-				),
 				array(
 					'key'           => 'field_directions_title',
 					'label'         => 'Заголовок (HTML)',
@@ -879,13 +823,6 @@ function troya_acf_contact_fields(): void {
 			'key'    => 'group_troya_contact',
 			'title'  => 'Блок: Контакты',
 			'fields' => array(
-				array(
-					'key'           => 'field_contact_eyebrow',
-					'label'         => 'Надзаголовок',
-					'name'          => 'contact_eyebrow',
-					'type'          => 'text',
-					'default_value' => 'Контакты',
-				),
 				array(
 					'key'           => 'field_contact_title',
 					'label'         => 'Заголовок (HTML)',

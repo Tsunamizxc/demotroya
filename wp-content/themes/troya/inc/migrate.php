@@ -755,7 +755,6 @@ function troya_seed_directions_v10(): void {
 		return;
 	}
 
-	update_field( 'directions_eyebrow', 'Маршруты', 'option' );
 	update_field( 'directions_title', "Как к нам<br /><em>добраться</em>", 'option' );
 	update_field(
 		'directions_lead',

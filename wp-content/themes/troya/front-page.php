@@ -60,7 +60,6 @@ if ( ! is_array( $stats ) || ! $stats ) {
 	</div>
 
 	<div class="container hero__content">
-		<p class="hero__eyebrow anim-up" style="--d: 0.25s"><?php echo esc_html( troya_option( 'hero_eyebrow', 'Отель в Казани' ) ); ?></p>
 		<h1 class="hero__title anim-up" style="--d: 0.4s"><?php echo wp_kses_post( troya_option( 'hero_title', 'Отель <em>Троя</em>' ) ); ?></h1>
 		<p class="hero__text anim-up" style="--d: 0.55s"><?php echo esc_html( troya_option( 'hero_text', 'Комфортабельный отель в самом сердце Казани.' ) ); ?></p>
 		<div class="hero__actions anim-up" style="--d: 0.7s">
@@ -148,7 +147,6 @@ if ( ! is_array( $stats ) || ! $stats ) {
 <section class="about section">
 	<div class="container about__grid">
 		<div class="reveal-left">
-			<p class="eyebrow"><?php echo esc_html( troya_option( 'about_eyebrow', 'Об отеле' ) ); ?></p>
 			<h2 class="heading gold-line"><?php echo wp_kses_post( troya_option( 'about_title', 'Место, где<em> история</em><br />встречает комфорт' ) ); ?></h2>
 			<p class="text"><?php echo esc_html( troya_option( 'about_text_1' ) ); ?></p>
 			<p class="text"><?php echo esc_html( troya_option( 'about_text_2' ) ); ?></p>
@@ -182,7 +180,6 @@ if ( ! is_array( $stats ) || ! $stats ) {
 		<div class="rooms-story__ui">
 			<div class="rooms-story__header">
 				<div>
-					<p class="eyebrow"><?php echo esc_html( troya_option( 'rooms_eyebrow', 'Номерной фонд' ) ); ?></p>
 					<h2 class="heading heading--light"><?php echo esc_html( troya_option( 'rooms_title', 'Наши номера' ) ); ?></h2>
 				</div>
 				<div class="rooms-story__meta">
@@ -243,7 +240,6 @@ if ( ! is_array( $stats ) || ! $stats ) {
 	<div class="container">
 		<div class="amenities__intro reveal">
 			<div>
-				<p class="eyebrow"><?php echo esc_html( troya_option( 'amenities_eyebrow', 'Сервис' ) ); ?></p>
 				<h2 class="heading gold-line"><?php echo wp_kses_post( troya_option( 'amenities_title', "Всё для вашего<br /><em>комфорта</em>" ) ); ?></h2>
 			</div>
 			<p class="amenities__aside text"><?php echo esc_html( troya_option( 'amenities_aside' ) ); ?></p>
@@ -260,7 +256,6 @@ $gallery_page_url   = troya_gallery_url();
 <section id="gallery" class="home-gallery section section--mist">
 	<div class="container home-gallery__layout">
 		<div class="home-gallery__copy reveal-left">
-			<p class="eyebrow"><?php echo esc_html( troya_option( 'home_gallery_eyebrow', 'Галерея' ) ); ?></p>
 			<h2 class="heading gold-line"><?php echo wp_kses_post( troya_option( 'home_gallery_title', "Атмосфера<br /><em>отеля Троя</em>" ) ); ?></h2>
 			<p class="text"><?php echo esc_html( troya_option( 'home_gallery_text', 'Номера, ресепшен, столовая и виды здания — загляните в фотогалерею и почувствуйте настроение отеля ещё до заезда.' ) ); ?></p>
 			<a class="btn btn--gold" href="<?php echo esc_url( $gallery_page_url ); ?>"><?php echo esc_html( troya_option( 'home_gallery_cta', 'Смотреть все фото' ) ); ?></a>
@@ -296,7 +291,6 @@ $gallery_page_url   = troya_gallery_url();
 	<div class="container">
 		<div class="excursions__header reveal">
 			<div>
-				<p class="eyebrow"><?php echo esc_html( troya_option( 'excursions_eyebrow', 'Экскурсии' ) ); ?></p>
 				<h2 class="heading gold-line"><?php echo wp_kses_post( troya_option( 'excursions_title', "Откройте Татарстан<br /><em>вместе с нами</em>" ) ); ?></h2>
 			</div>
 			<p class="text excursions__lead"><?php echo esc_html( troya_option( 'excursions_lead' ) ); ?></p>
@@ -318,7 +312,6 @@ $gallery_page_url   = troya_gallery_url();
 <section id="reviews" class="reviews section">
 	<div class="container reviews__layout">
 		<div class="reviews__intro reveal">
-			<p class="eyebrow"><?php echo esc_html( troya_option( 'reviews_eyebrow', 'Отзывы гостей' ) ); ?></p>
 			<h2 class="heading gold-line"><?php echo wp_kses_post( troya_option( 'reviews_title', "Голоса тех,<br /><em>кто уже был</em>" ) ); ?></h2>
 			<div class="reviews__controls">
 				<button type="button" class="slider-nav" id="reviews-prev" aria-label="Предыдущий отзыв">
@@ -345,7 +338,6 @@ $directions_lead   = (string) troya_option(
 	<div class="container">
 		<div class="directions__header reveal">
 			<div>
-				<p class="eyebrow"><?php echo esc_html( troya_option( 'directions_eyebrow', 'Маршруты' ) ); ?></p>
 				<h2 class="heading gold-line"><?php echo wp_kses_post( troya_option( 'directions_title', "Как к нам<br /><em>добраться</em>" ) ); ?></h2>
 			</div>
 			<?php if ( $directions_lead ) : ?>
@@ -373,7 +365,6 @@ $directions_lead   = (string) troya_option(
 <section id="contact" class="contact section section--mist">
 	<div class="container contact__grid">
 		<div class="reveal-left">
-			<p class="eyebrow"><?php echo esc_html( troya_option( 'contact_eyebrow', 'Контакты' ) ); ?></p>
 			<h2 class="heading gold-line"><?php echo wp_kses_post( troya_option( 'contact_title', "Свяжитесь<br /><em>с нами</em>" ) ); ?></h2>
 
 			<div class="contact__list">

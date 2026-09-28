@@ -59,7 +59,6 @@ $hero  = troya_img_url( troya_option( 'hero_poster' ), troya_asset( 'photos/hero
 		<p class="crumbs anim-up" style="--d: 0.2s">
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Главная</a><span>/</span><span>Бронирование</span>
 		</p>
-		<p class="hero__eyebrow anim-up" style="--d: 0.35s">Bnovo</p>
 		<h1 class="hero__title anim-up" style="--d: 0.5s"><?php echo esc_html( $title ); ?></h1>
 		<?php if ( $lead ) : ?>
 			<p class="hero__text anim-up" style="--d: 0.7s"><?php echo esc_html( $lead ); ?></p>

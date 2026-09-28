@@ -7,35 +7,82 @@
 
 defined( 'ABSPATH' ) || exit;
 
-$logo    = troya_img_url( troya_option( 'site_logo' ), troya_asset( 'logo.png' ) );
-$brand   = troya_option( 'footer_brand', 'Отель <span>Троя</span>' );
-$legal   = troya_option( 'legal_name', 'ООО «ТРОЯ»' );
-$inn     = troya_option( 'legal_inn', '1657131940' );
-$eroksti = troya_option( 'legal_eroksti', 'С162024017530' );
-$address = troya_option( 'site_address', '420095, РФ, РТ, г.Казань, ул.Восстания 119' );
-$meta    = troya_option(
-	'footer_meta',
-	sprintf( '%s · ИНН %s · ЕРОКСТИ %s · %s', $legal, $inn, $eroksti, $address )
-);
-$copy    = troya_option( 'footer_copy', '© 2026 Все права защищены' );
-$phone1  = troya_option( 'site_phone_1', '8 (843) 564-46-46' );
-$m_title = troya_option( 'modal_title', 'Бронирование по телефону' );
-$s_title = troya_option( 'modal_success_title', 'Заявка отправлена' );
-$s_text  = troya_option( 'modal_success_text', 'Мы свяжемся с вами в ближайшее время для подтверждения бронирования.' );
-$hint    = troya_option( 'modal_hint', '* ОБЯЗАТЕЛЬНЫЕ ПОЛЯ · ЗАВТРАК +300 ₽' );
+$logo       = troya_img_url( troya_option( 'site_logo' ), troya_asset( 'logo.png' ) );
+$legal      = troya_option( 'legal_name', 'ООО «ТРОЯ»' );
+$inn        = troya_option( 'legal_inn', '1657131940' );
+$eroksti    = troya_option( 'legal_eroksti', 'С162024017530' );
+$address    = troya_option( 'site_address', '420095, РФ, РТ, г.Казань, ул.Восстания 119' );
+$copy       = troya_option( 'footer_copy', '© 2026 Все права защищены' );
+$phone1     = troya_option( 'site_phone_1', '8 (843) 564-46-46' );
+$phone2     = troya_option( 'site_phone_2', '8 (904) 678-56-00' );
+$phone_acc  = troya_option( 'site_phone_accounting', '8 (843) 564-83-19' );
+$acc_hours  = troya_option( 'accounting_hours', 'с 9:00 до 15:00' );
+$email      = troya_option( 'site_email', 'hoteltroya@mail.ru' );
+$hours      = troya_option( 'site_hours', 'Круглосуточно, 24/7' );
+$policy_url = troya_asset( 'docs/privacy-policy.pdf' );
+$tel        = static fn( $p ) => 'tel:' . preg_replace( '/\D+/', '', (string) $p );
+$m_title    = troya_option( 'modal_title', 'Бронирование по телефону' );
+$s_title    = troya_option( 'modal_success_title', 'Заявка отправлена' );
+$s_text     = troya_option( 'modal_success_text', 'Мы свяжемся с вами в ближайшее время для подтверждения бронирования.' );
+$hint       = troya_option( 'modal_hint', '* ОБЯЗАТЕЛЬНЫЕ ПОЛЯ · ЗАВТРАК +300 ₽' );
 ?>
 
 <footer class="footer">
-	<div class="container footer__inner">
-		<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="footer__brand"><?php echo wp_kses_post( $brand ); ?></a>
-		<p class="footer__meta"><?php echo esc_html( $meta ); ?></p>
-		<p class="footer__copy"><?php echo esc_html( $copy ); ?></p>
-	</div>
-	<div class="footer__credit">
-		<div class="container footer__credit-inner">
-			<span class="footer__credit-text">Создание сайта —</span>
-			<a class="footer__credit-link" href="https://cursiva.ru/" target="_blank" rel="noopener noreferrer" aria-label="Cursiva — веб-студия">
-				<img class="footer__credit-logo" src="<?php echo esc_url( troya_asset( 'logo-cursiva-white.png' ) ); ?>" alt="Cursiva" width="120" height="40" loading="lazy" decoding="async" />
+	<div class="container footer__container">
+		<div class="footer__crest">
+			<span class="footer__rule" aria-hidden="true"></span>
+			<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="footer__logo" aria-label="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?> — на главную">
+				<img src="<?php echo esc_url( $logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" width="150" height="150" loading="lazy" decoding="async" />
+			</a>
+			<span class="footer__rule" aria-hidden="true"></span>
+		</div>
+
+		<p class="footer__motto">Место, где <em>история</em> встречает комфорт</p>
+
+		<div class="footer__grid">
+			<div class="footer__col">
+				<h3 class="footer__heading">Адрес</h3>
+				<p class="footer__text"><?php echo esc_html( $address ); ?></p>
+				<a class="footer__link footer__link--arrow" href="<?php echo esc_url( home_url( '/#directions' ) ); ?>">Как добраться</a>
+			</div>
+
+			<div class="footer__col">
+				<h3 class="footer__heading">Бронирование</h3>
+				<a class="footer__phone" href="<?php echo esc_attr( $tel( $phone1 ) ); ?>"><?php echo esc_html( $phone1 ); ?></a>
+				<?php if ( $phone2 ) : ?>
+					<a class="footer__phone" href="<?php echo esc_attr( $tel( $phone2 ) ); ?>"><?php echo esc_html( $phone2 ); ?></a>
+				<?php endif; ?>
+				<a class="footer__link" href="mailto:<?php echo esc_attr( $email ); ?>"><?php echo esc_html( $email ); ?></a>
+				<p class="footer__note"><?php echo esc_html( $hours ); ?></p>
+			</div>
+
+			<nav class="footer__col" aria-label="Навигация в футере">
+				<h3 class="footer__heading">Отель</h3>
+				<ul class="footer__menu">
+					<li><a class="footer__link" href="<?php echo esc_url( troya_rooms_url() ); ?>">Номера</a></li>
+					<li><a class="footer__link" href="<?php echo esc_url( troya_gallery_url() ); ?>">Галерея</a></li>
+					<li><a class="footer__link" href="<?php echo esc_url( home_url( '/#amenities' ) ); ?>">Удобства</a></li>
+					<li><a class="footer__link" href="<?php echo esc_url( home_url( '/#excursions' ) ); ?>">Экскурсии</a></li>
+					<li><a class="footer__link" href="<?php echo esc_url( home_url( '/#reviews' ) ); ?>">Отзывы</a></li>
+					<li><a class="footer__link" href="<?php echo esc_url( troya_booking_url() ); ?>">Онлайн-бронирование</a></li>
+				</ul>
+			</nav>
+
+			<div class="footer__col">
+				<h3 class="footer__heading">Реквизиты</h3>
+				<p class="footer__text"><?php echo esc_html( $legal ); ?></p>
+				<p class="footer__note">ИНН <?php echo esc_html( $inn ); ?></p>
+				<p class="footer__note">ЕРОКСТИ <?php echo esc_html( $eroksti ); ?></p>
+				<p class="footer__note">Бухгалтерия: <a class="footer__link" href="<?php echo esc_attr( $tel( $phone_acc ) ); ?>"><?php echo esc_html( $phone_acc ); ?></a>, <?php echo esc_html( $acc_hours ); ?></p>
+			</div>
+		</div>
+
+		<div class="footer__bottom">
+			<p class="footer__copy"><?php echo esc_html( $copy ); ?></p>
+			<a class="footer__policy" href="<?php echo esc_url( $policy_url ); ?>" target="_blank" rel="noopener">Политика конфиденциальности</a>
+			<a class="footer__credit" href="https://cursiva.ru/" target="_blank" rel="noopener noreferrer" aria-label="Cursiva — веб-студия">
+				<span>Создание сайта</span>
+				<img src="<?php echo esc_url( troya_asset( 'logo-cursiva-white.png' ) ); ?>" alt="Cursiva" width="120" height="40" loading="lazy" decoding="async" />
 			</a>
 		</div>
 	</div>
@@ -48,7 +95,7 @@ $hint    = troya_option( 'modal_hint', '* ОБЯЗАТЕЛЬНЫЕ ПОЛЯ · �
 			<div class="modal__brand">
 				<img src="<?php echo esc_url( $logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" />
 				<div>
-					<p class="modal__eyebrow" id="modal-title"><?php echo esc_html( $m_title ); ?></p>
+					<p class="modal__title" id="modal-title"><?php echo esc_html( $m_title ); ?></p>
 					<p class="modal__room" id="modal-room" hidden></p>
 				</div>
 			</div>

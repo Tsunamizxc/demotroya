@@ -27,7 +27,6 @@ $rooms_q = new WP_Query(
 		<p class="crumbs anim-up" style="--d: 0.2s">
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Главная</a><span>/</span><span>Номера</span>
 		</p>
-		<p class="hero__eyebrow anim-up" style="--d: 0.35s"><?php echo esc_html( troya_option( 'rooms_eyebrow', 'Номерной фонд' ) ); ?></p>
 		<h1 class="hero__title anim-up" style="--d: 0.5s"><?php echo esc_html( troya_option( 'rooms_title', 'Выберите свой номер' ) ); ?></h1>
 	</div>
 </section>
@@ -80,7 +79,6 @@ $rooms_q = new WP_Query(
 <section class="section section--mist">
 	<div class="container">
 		<div class="room-catalog-cta">
-			<p class="eyebrow">Бронирование</p>
 			<h2 class="heading gold-line-center">Не нашли подходящий?</h2>
 			<p class="text"><?php echo esc_html( troya_option( 'rooms_note' ) ); ?></p>
 			<a href="tel:<?php echo esc_attr( preg_replace( '/\D+/', '', troya_option( 'site_phone_1', '88435644646' ) ) ); ?>" class="btn btn--gold"><?php echo esc_html( troya_option( 'site_phone_1', '8 (843) 564-46-46' ) ); ?></a>
