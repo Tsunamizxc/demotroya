@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /** Bump when deploy needs DB-side fixes without manual admin clicks. */
-define( 'TROYA_SCHEMA_VERSION', 15 );
+define( 'TROYA_SCHEMA_VERSION', 16 );
 
 add_action( 'init', 'troya_maybe_run_migrations', 5 );
 add_action( 'after_switch_theme', 'troya_force_run_migrations' );
@@ -95,6 +95,10 @@ function troya_run_migrations(): void {
 
 	if ( $from < 15 ) {
 		troya_refresh_directions_v15();
+	}
+
+	if ( $from < 16 ) {
+		troya_refresh_marquee_breakfast_v16();
 	}
 
 	update_option( 'troya_schema_version', TROYA_SCHEMA_VERSION );
@@ -664,6 +668,28 @@ function troya_refresh_marquee_breakfast_v14(): void {
 		$text = is_array( $row ) ? trim( (string) ( $row['text'] ?? '' ) ) : trim( (string) $row );
 		if ( false !== mb_stripos( $text, 'завтрак включ' ) ) {
 			$text = 'Доступны тарифы с завтраком';
+		}
+		$row = array( 'text' => $text );
+	}
+	unset( $row );
+
+	update_field( 'marquee_items', $marquee, 'option' );
+}
+
+function troya_refresh_marquee_breakfast_v16(): void {
+	if ( ! function_exists( 'update_field' ) ) {
+		return;
+	}
+
+	$marquee = troya_option( 'marquee_items', array() );
+	if ( ! is_array( $marquee ) || ! $marquee ) {
+		return;
+	}
+
+	foreach ( $marquee as &$row ) {
+		$text = is_array( $row ) ? trim( (string) ( $row['text'] ?? '' ) ) : trim( (string) $row );
+		if ( false !== mb_stripos( $text, 'завтрак' ) ) {
+			$text = 'Континентальный завтрак';
 		}
 		$row = array( 'text' => $text );
 	}
