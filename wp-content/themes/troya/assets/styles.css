@@ -900,11 +900,18 @@ button {
 
 .marquee__track {
   display: flex;
-  align-items: center;
-  gap: 20px;
   width: max-content;
   white-space: nowrap;
-  animation: marquee 24s linear infinite;
+  animation: marquee 72s linear infinite;
+  will-change: transform;
+}
+
+.marquee__group {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 20px;
+  padding-right: 20px;
 }
 
 .marquee__track span {
@@ -1356,7 +1363,7 @@ button {
 }
 
 .rooms__tag {
-  display: inline-block;
+  display: none;
   align-self: flex-start;
   font-family: var(--font-label);
   font-size: 10px;

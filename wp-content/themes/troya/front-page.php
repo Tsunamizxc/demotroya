@@ -134,12 +134,20 @@ if ( ! is_array( $stats ) || ! $stats ) {
 	</script>
 </section>
 
+<?php
+// Each half must be wider than the widest screen, otherwise a gap shows before the loop restarts.
+$marquee_repeat = max( 2, (int) ceil( 14 / max( 1, count( $marquee ) ) ) );
+?>
 <div class="marquee">
 	<div class="marquee__track">
-		<?php for ( $i = 0; $i < 2; $i++ ) : ?>
-			<?php foreach ( $marquee as $item ) : ?>
-				<span><?php echo esc_html( $item['text'] ?? '' ); ?></span><i>◆</i>
-			<?php endforeach; ?>
+		<?php for ( $half = 0; $half < 2; $half++ ) : ?>
+			<div class="marquee__group"<?php echo $half ? ' aria-hidden="true"' : ''; ?>>
+				<?php for ( $r = 0; $r < $marquee_repeat; $r++ ) : ?>
+					<?php foreach ( $marquee as $item ) : ?>
+						<span><?php echo esc_html( $item['text'] ?? '' ); ?></span><i aria-hidden="true">◆</i>
+					<?php endforeach; ?>
+				<?php endfor; ?>
+			</div>
 		<?php endfor; ?>
 	</div>
 </div>
@@ -330,7 +338,7 @@ $gallery_page_url   = troya_gallery_url();
 $directions_routes = troya_directions_routes();
 $directions_lead   = (string) troya_option(
 	'directions_lead',
-	'Отель «Троя» — ул. Восстания, 119. Ближайшая остановка «ПО Тасма» (автобусы 22 и 53). До метро «Яшьлек» и «Северный вокзал» — одна пересадка.'
+	'Отель «Троя» — ул. Восстания, 119. Ближайшая остановка «ПО Тасма» (автобусы 10а, 22 и 53). До метро «Яшьлек» и «Северный вокзал» — одна пересадка.'
 );
 ?>
 <?php if ( $directions_routes ) : ?>
