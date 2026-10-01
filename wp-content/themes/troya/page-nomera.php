@@ -79,7 +79,7 @@ $rooms_q = new WP_Query(
 <section class="section section--mist">
 	<div class="container">
 		<div class="room-catalog-cta">
-			<h2 class="heading gold-line-center">Не нашли подходящий?</h2>
+			<h2 class="heading gold-line-center"><?php echo esc_html( (string) troya_option( 'rooms_catalog_cta', 'Не нашли подходящий?' ) ); ?></h2>
 			<p class="text"><?php echo esc_html( troya_option( 'rooms_note' ) ); ?></p>
 			<a href="tel:<?php echo esc_attr( preg_replace( '/\D+/', '', troya_option( 'site_phone_1', '88435644646' ) ) ); ?>" class="btn btn--gold"><?php echo esc_html( troya_option( 'site_phone_1', '8 (843) 564-46-46' ) ); ?></a>
 		</div>

@@ -120,6 +120,22 @@
     setIframeHeight(contentHeight);
   }
 
+  var backBar = document.getElementById("booking-back");
+  var backBtn = document.getElementById("booking-back-btn");
+  var roomsListUrl = backBar ? backBar.getAttribute("data-rooms-src") : "";
+
+  if (backBtn && roomsListUrl) {
+    backBtn.addEventListener("click", function () {
+      exitOverlayMode();
+      iframe.src = "about:blank";
+      window.setTimeout(function () {
+        iframe.src = roomsListUrl;
+      }, 0);
+      var top = iframe.getBoundingClientRect().top + (window.scrollY || window.pageYOffset || 0) - 24;
+      window.scrollTo(0, Math.max(0, top));
+    });
+  }
+
   function startResizer() {
     acceptHeight = true;
     if (typeof window.iFrameResize !== "function") return;

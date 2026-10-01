@@ -35,13 +35,16 @@ function troya_register_acf(): void {
 	troya_acf_marquee_fields();
 	troya_acf_about_fields();
 	troya_acf_rooms_section_fields();
+	troya_acf_payment_fields();
 	troya_acf_amenities_fields();
 	troya_acf_home_gallery_fields();
+	troya_acf_gallery_page_fields();
 	troya_acf_excursions_fields();
 	troya_acf_reviews_fields();
 	troya_acf_directions_fields();
 	troya_acf_contact_fields();
 	troya_acf_footer_fields();
+	troya_acf_booking_page_fields();
 	troya_acf_modal_fields();
 	troya_acf_room_fields();
 }
@@ -153,6 +156,7 @@ function troya_acf_general_settings(): void {
 				array(
 					'key'           => 'field_rooms_page_id',
 					'label'         => 'Страница каталога номеров',
+					'instructions'  => 'Не меняйте. Здесь выбрана готовая страница «Номера».',
 					'name'          => 'rooms_page_id',
 					'type'          => 'post_object',
 					'post_type'     => array( 'page' ),
@@ -166,12 +170,13 @@ function troya_acf_general_settings(): void {
 					'name'          => 'bnovo_uid',
 					'type'          => 'text',
 					'default_value' => 'eb9cee17-77f8-4f25-9817-b3fc2080617b',
-					'instructions'  => 'Меню Bnovo → Каналы продаж → UID модуля онлайн-бронирования',
+					'instructions'  => 'Не меняйте. Если стереть это поле, онлайн-бронирование на сайте перестанет открываться.',
 				),
 				array(
 					'key'           => 'field_booking_page_id',
 					'label'         => 'Страница бронирования',
 					'name'          => 'booking_page_id',
+					'instructions'  => 'Не меняйте. Здесь выбрана готовая страница бронирования.',
 					'type'          => 'post_object',
 					'post_type'     => array( 'page' ),
 					'allow_null'    => 1,
@@ -357,7 +362,7 @@ function troya_acf_hero_fields(): void {
 			'fields' => array(
 				array(
 					'key'           => 'field_hero_title',
-					'label'         => 'Заголовок (HTML)',
+					'label'         => 'Заголовок',
 					'name'          => 'hero_title',
 					'type'          => 'textarea',
 					'rows'          => 2,
@@ -388,14 +393,14 @@ function troya_acf_hero_fields(): void {
 				),
 				array(
 					'key'           => 'field_hero_poster',
-					'label'         => 'Poster / фото',
+					'label'         => 'Фото на фоне',
 					'name'          => 'hero_poster',
 					'type'          => 'image',
 					'return_format' => 'array',
 				),
 				array(
 					'key'           => 'field_hero_video',
-					'label'         => 'Видео (MP4 URL или файл)',
+					'label'         => 'Видео на фоне (файл MP4)',
 					'name'          => 'hero_video',
 					'type'          => 'file',
 					'return_format' => 'array',
@@ -445,7 +450,7 @@ function troya_acf_about_fields(): void {
 			'fields' => array(
 				array(
 					'key'           => 'field_about_title',
-					'label'         => 'Заголовок (HTML)',
+					'label'         => 'Заголовок',
 					'name'          => 'about_title',
 					'type'          => 'textarea',
 					'rows'          => 2,
@@ -543,10 +548,172 @@ function troya_acf_rooms_section_fields(): void {
 					'name'          => 'rooms_note',
 					'type'          => 'text',
 					'default_value' => 'Завтрак — 300 ₽',
+					'instructions'  => 'Короткая строка под карточкой номера на главной и внизу каталога номеров.',
+				),
+				array(
+					'key'           => 'field_rooms_catalog_cta',
+					'label'         => 'Заголовок внизу каталога',
+					'name'          => 'rooms_catalog_cta',
+					'type'          => 'text',
+					'default_value' => 'Не нашли подходящий?',
 				),
 			),
 			'location'   => troya_acf_location_options(),
 			'menu_order' => 50,
+		)
+	);
+}
+
+function troya_acf_payment_fields(): void {
+	acf_add_local_field_group(
+		array(
+			'key'    => 'group_troya_payment',
+			'title'  => 'Блок: Оплата и отмена',
+			'fields' => array(
+				array(
+					'key'           => 'field_payment_policy_title',
+					'label'         => 'Заголовок',
+					'name'          => 'payment_policy_title',
+					'type'          => 'text',
+					'default_value' => 'Оплата и отмена',
+				),
+				array(
+					'key'          => 'field_payment_policy_items',
+					'label'        => 'Пункты',
+					'name'         => 'payment_policy_items',
+					'type'         => 'repeater',
+					'layout'       => 'table',
+					'button_label' => 'Добавить пункт',
+					'instructions' => 'Этот список виден на главной, в номерах, в карточке номера и на странице бронирования.',
+					'sub_fields'   => array(
+						array(
+							'key'   => 'field_payment_policy_text',
+							'label' => 'Текст',
+							'name'  => 'text',
+							'type'  => 'textarea',
+							'rows'  => 2,
+						),
+					),
+				),
+			),
+			'location'   => troya_acf_location_options(),
+			'menu_order' => 52,
+		)
+	);
+}
+
+function troya_acf_gallery_page_fields(): void {
+	acf_add_local_field_group(
+		array(
+			'key'    => 'group_troya_gallery_page',
+			'title'  => 'Фотогалерея отеля',
+			'fields' => array(
+				array(
+					'key'           => 'field_gallery_page_title',
+					'label'         => 'Заголовок страницы',
+					'name'          => 'gallery_page_title',
+					'type'          => 'text',
+					'default_value' => 'Галерея отеля',
+				),
+				array(
+					'key'           => 'field_gallery_page_text',
+					'label'         => 'Текст под заголовком',
+					'name'          => 'gallery_page_text',
+					'type'          => 'textarea',
+					'rows'          => 2,
+					'default_value' => 'Номера, ресепшен, столовая и виды здания — все фото в одном месте.',
+				),
+				array(
+					'key'           => 'field_gallery_building_tab',
+					'label'         => 'Здание: короткое название вкладки',
+					'name'          => 'gallery_building_tab',
+					'type'          => 'text',
+					'default_value' => 'Здание',
+				),
+				array(
+					'key'           => 'field_gallery_building_title',
+					'label'         => 'Здание: заголовок раздела',
+					'name'          => 'gallery_building_title',
+					'type'          => 'text',
+					'default_value' => 'Здание и территория',
+				),
+				array(
+					'key'           => 'field_gallery_building',
+					'label'         => 'Фото здания и коридоров',
+					'name'          => 'gallery_building',
+					'type'          => 'gallery',
+					'return_format' => 'array',
+					'preview_size'  => 'medium',
+					'insert'        => 'append',
+					'library'       => 'all',
+					'instructions'  => 'Порядок на сайте такой же, как здесь. Первые фото этого раздела также попадают в слайдер на главной.',
+				),
+				array(
+					'key'           => 'field_gallery_reception_tab',
+					'label'         => 'Ресепшен: короткое название вкладки',
+					'name'          => 'gallery_reception_tab',
+					'type'          => 'text',
+					'default_value' => 'Ресепшен',
+				),
+				array(
+					'key'           => 'field_gallery_reception_title',
+					'label'         => 'Ресепшен: заголовок раздела',
+					'name'          => 'gallery_reception_title',
+					'type'          => 'text',
+					'default_value' => 'Ресепшен',
+				),
+				array(
+					'key'           => 'field_gallery_reception',
+					'label'         => 'Фото ресепшена',
+					'name'          => 'gallery_reception',
+					'type'          => 'gallery',
+					'return_format' => 'array',
+					'preview_size'  => 'medium',
+					'insert'        => 'append',
+					'library'       => 'all',
+				),
+				array(
+					'key'           => 'field_gallery_dining_tab',
+					'label'         => 'Столовая: короткое название вкладки',
+					'name'          => 'gallery_dining_tab',
+					'type'          => 'text',
+					'default_value' => 'Столовая',
+				),
+				array(
+					'key'           => 'field_gallery_dining_title',
+					'label'         => 'Столовая: заголовок раздела',
+					'name'          => 'gallery_dining_title',
+					'type'          => 'text',
+					'default_value' => 'Столовая',
+				),
+				array(
+					'key'           => 'field_gallery_dining',
+					'label'         => 'Фото столовой',
+					'name'          => 'gallery_dining',
+					'type'          => 'gallery',
+					'return_format' => 'array',
+					'preview_size'  => 'medium',
+					'insert'        => 'append',
+					'library'       => 'all',
+				),
+				array(
+					'key'           => 'field_gallery_rooms_tab',
+					'label'         => 'Номера: короткое название вкладки',
+					'name'          => 'gallery_rooms_tab',
+					'type'          => 'text',
+					'default_value' => 'Номера',
+				),
+				array(
+					'key'           => 'field_gallery_rooms_title',
+					'label'         => 'Номера: заголовок раздела',
+					'name'          => 'gallery_rooms_title',
+					'type'          => 'text',
+					'default_value' => 'Номера',
+					'instructions'  => 'Фото номеров берутся из карточки каждого номера, поле «Галерея номера».',
+				),
+			),
+			'location'   => troya_acf_location_options(),
+			'menu_order' => 56,
 		)
 	);
 }
@@ -559,7 +726,7 @@ function troya_acf_home_gallery_fields(): void {
 			'fields' => array(
 				array(
 					'key'           => 'field_home_gallery_title',
-					'label'         => 'Заголовок (HTML)',
+					'label'         => 'Заголовок',
 					'name'          => 'home_gallery_title',
 					'type'          => 'textarea',
 					'rows'          => 2,
@@ -595,7 +762,7 @@ function troya_acf_amenities_fields(): void {
 			'fields' => array(
 				array(
 					'key'           => 'field_amenities_title',
-					'label'         => 'Заголовок (HTML)',
+					'label'         => 'Заголовок',
 					'name'          => 'amenities_title',
 					'type'          => 'textarea',
 					'rows'          => 2,
@@ -654,7 +821,7 @@ function troya_acf_excursions_fields(): void {
 			'fields' => array(
 				array(
 					'key'           => 'field_excursions_title',
-					'label'         => 'Заголовок (HTML)',
+					'label'         => 'Заголовок',
 					'name'          => 'excursions_title',
 					'type'          => 'textarea',
 					'rows'          => 2,
@@ -720,7 +887,7 @@ function troya_acf_reviews_fields(): void {
 			'fields' => array(
 				array(
 					'key'           => 'field_reviews_title',
-					'label'         => 'Заголовок (HTML)',
+					'label'         => 'Заголовок',
 					'name'          => 'reviews_title',
 					'type'          => 'textarea',
 					'rows'          => 2,
@@ -766,7 +933,7 @@ function troya_acf_directions_fields(): void {
 			'fields' => array(
 				array(
 					'key'           => 'field_directions_title',
-					'label'         => 'Заголовок (HTML)',
+					'label'         => 'Заголовок',
 					'name'          => 'directions_title',
 					'type'          => 'textarea',
 					'rows'          => 2,
@@ -825,7 +992,7 @@ function troya_acf_contact_fields(): void {
 			'fields' => array(
 				array(
 					'key'           => 'field_contact_title',
-					'label'         => 'Заголовок (HTML)',
+					'label'         => 'Заголовок',
 					'name'          => 'contact_title',
 					'type'          => 'textarea',
 					'rows'          => 2,
@@ -888,6 +1055,14 @@ function troya_acf_footer_fields(): void {
 					'default_value' => 'ООО «ТРОЯ» · ИНН 1657131940 · Казань, ул. Восстания, 119',
 				),
 				array(
+					'key'           => 'field_footer_motto',
+					'label'         => 'Фраза под логотипом',
+					'name'          => 'footer_motto',
+					'type'          => 'text',
+					'default_value' => 'Место, где <em>история</em> встречает комфорт',
+					'instructions'  => 'Слово внутри <em> и </em> будет выделено.',
+				),
+				array(
 					'key'           => 'field_footer_copy',
 					'label'         => 'Копирайт',
 					'name'          => 'footer_copy',
@@ -897,6 +1072,35 @@ function troya_acf_footer_fields(): void {
 			),
 			'location'   => troya_acf_location_options(),
 			'menu_order' => 100,
+		)
+	);
+}
+
+function troya_acf_booking_page_fields(): void {
+	acf_add_local_field_group(
+		array(
+			'key'    => 'group_troya_booking_page',
+			'title'  => 'Страница бронирования',
+			'fields' => array(
+				array(
+					'key'           => 'field_booking_page_title',
+					'label'         => 'Заголовок',
+					'name'          => 'booking_page_title',
+					'type'          => 'text',
+					'default_value' => 'Онлайн-бронирование',
+				),
+				array(
+					'key'           => 'field_booking_page_lead',
+					'label'         => 'Текст под заголовком',
+					'name'          => 'booking_page_lead',
+					'type'          => 'textarea',
+					'rows'          => 2,
+					'default_value' => 'Выберите даты и номер — бронирование без комиссии напрямую в отеле «Троя».',
+					'instructions'  => 'Список номеров и цены внутри страницы настраиваются в личном кабинете Bnovo, не на сайте.',
+				),
+			),
+			'location'   => troya_acf_location_options(),
+			'menu_order' => 95,
 		)
 	);
 }
@@ -950,10 +1154,11 @@ function troya_acf_room_fields(): void {
 			'title'  => 'Поля номера',
 			'fields' => array(
 				array(
-					'key'   => 'field_room_tag',
-					'label' => 'Тег',
-					'name'  => 'room_tag',
-					'type'  => 'text',
+					'key'          => 'field_room_tag',
+					'label'        => 'Тег',
+					'name'         => 'room_tag',
+					'type'         => 'text',
+					'instructions' => 'Сейчас на сайте не показывается. Можно оставить пустым.',
 				),
 				array(
 					'key'   => 'field_room_subtitle',
@@ -1012,7 +1217,7 @@ function troya_acf_room_fields(): void {
 					'label'         => 'ID категорий Bnovo',
 					'name'          => 'room_bnovo_ids',
 					'type'          => 'text',
-					'instructions'  => 'ID тарифов/категорий из модуля Bnovo через запятую (для календаря и onlyrooms).',
+					'instructions'  => 'Не меняйте эти цифры. Их использует онлайн-бронирование, чтобы открыть нужный номер.',
 					'placeholder'   => '25813,24764',
 				),
 			),

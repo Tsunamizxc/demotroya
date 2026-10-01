@@ -246,10 +246,45 @@ function troya_theme_gallery_album( string $slug, string $alt_prefix = '' ): arr
 }
 
 /**
- * Curated photo set for homepage gallery preview slider.
+ * Album shown on the site: ACF gallery from settings, theme files if the field is empty.
  *
  * @return array<int, array{url:string,alt:string}>
  */
+function troya_public_gallery_album( string $slug, string $alt_prefix = '' ): array {
+	$field  = 'gallery_' . $slug;
+	$images = function_exists( 'troya_option' ) ? troya_option( $field, array() ) : array();
+	$items  = array();
+
+	if ( is_array( $images ) ) {
+		$i = 0;
+		foreach ( $images as $image ) {
+			$url = '';
+			$alt = '';
+			if ( is_array( $image ) ) {
+				$url = (string) ( $image['url'] ?? '' );
+				$alt = (string) ( $image['alt'] ?? '' );
+			} elseif ( is_numeric( $image ) ) {
+				$url = (string) wp_get_attachment_url( (int) $image );
+				$alt = (string) get_post_meta( (int) $image, '_wp_attachment_image_alt', true );
+			}
+			if ( '' === $url ) {
+				continue;
+			}
+			$i++;
+			$items[] = array(
+				'url' => $url,
+				'alt' => $alt ? $alt : ( $alt_prefix ? sprintf( '%s — фото %d', $alt_prefix, $i ) : '' ),
+			);
+		}
+	}
+
+	if ( $items ) {
+		return $items;
+	}
+
+	return troya_theme_gallery_album( $slug, $alt_prefix );
+}
+
 function troya_home_gallery_preview_items( int $limit = 10 ): array {
 	$albums = array(
 		array( 'building', 'Отель Троя' ),
@@ -259,7 +294,7 @@ function troya_home_gallery_preview_items( int $limit = 10 ): array {
 
 	$sets = array();
 	foreach ( $albums as $album ) {
-		$sets[] = troya_theme_gallery_album( $album[0], $album[1] );
+		$sets[] = troya_public_gallery_album( $album[0], $album[1] );
 	}
 
 	$items = array();
@@ -386,13 +421,29 @@ function troya_directions_routes(): array {
  *
  * @return array<int, string>
  */
-function troya_payment_policy_items(): array {
+function troya_payment_policy_defaults(): array {
 	return array(
 		'Предварительная оплата за первую ночь.',
 		'Бесплатная отмена бронирования возможна за сутки до даты заезда.',
 		'При отмене бронирования или незаезде после 14:00 (UTC+03:00) даты заезда взимается стоимость за первую ночь.',
 		'Оплата банковской картой или QR-кодом (СБП).',
 	);
+}
+
+function troya_payment_policy_items(): array {
+	$rows = troya_option( 'payment_policy_items', array() );
+	$out  = array();
+
+	if ( is_array( $rows ) ) {
+		foreach ( $rows as $row ) {
+			$text = is_array( $row ) ? trim( (string) ( $row['text'] ?? '' ) ) : trim( (string) $row );
+			if ( '' !== $text ) {
+				$out[] = $text;
+			}
+		}
+	}
+
+	return $out ? $out : troya_payment_policy_defaults();
 }
 
 /**
@@ -404,7 +455,7 @@ function troya_render_payment_policy( string $modifier = '' ): void {
 	$class = 'pay-policy' . ( '' !== $modifier ? ' pay-policy--' . sanitize_html_class( $modifier ) : '' );
 	?>
 	<aside class="<?php echo esc_attr( $class ); ?>">
-		<p class="pay-policy__title">Оплата и отмена</p>
+		<p class="pay-policy__title"><?php echo esc_html( (string) troya_option( 'payment_policy_title', 'Оплата и отмена' ) ); ?></p>
 		<ul class="pay-policy__list">
 			<?php foreach ( troya_payment_policy_items() as $item ) : ?>
 				<li><?php echo esc_html( $item ); ?></li>

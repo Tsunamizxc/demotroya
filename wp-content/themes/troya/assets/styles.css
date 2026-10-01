@@ -3185,6 +3185,37 @@ button {
   padding: 28px 0 48px;
 }
 
+.booking-page__back {
+  width: min(100% - 40px, var(--container, 1280px));
+  margin: 0 auto 14px;
+}
+
+.booking-page__back[hidden] {
+  display: none !important;
+}
+
+.booking-page__back-btn {
+  appearance: none;
+  border: 1px solid var(--line, rgba(62, 35, 25, 0.18));
+  background: #fff;
+  color: var(--ink, #3e2319);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.2;
+  padding: 10px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.booking-page__back-btn::before {
+  content: "← ";
+}
+
+.booking-page__back-btn:hover {
+  border-color: var(--gold-deep, #8a6a32);
+  color: var(--gold-deep, #8a6a32);
+}
+
 .booking-page__frame {
   width: min(100% - 40px, var(--container, 1280px));
   margin: 0 auto;
@@ -3215,6 +3246,24 @@ body.bnovo-overlay-open {
   inset: 0 auto auto 0;
   width: 100%;
   touch-action: none;
+}
+
+html.bnovo-overlay-open .booking-page__back:not([hidden]) {
+  position: fixed;
+  z-index: 10060;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: auto;
+  margin: 0;
+  padding: 10px 16px;
+  background: #fff;
+  border-bottom: 1px solid rgba(62, 35, 25, 0.12);
+}
+
+html.bnovo-overlay-open:has(.booking-page__back:not([hidden])) .booking-page__iframe--overlay {
+  top: 54px !important;
+  height: calc(100dvh - 54px) !important;
 }
 
 .booking-page__iframe--overlay {

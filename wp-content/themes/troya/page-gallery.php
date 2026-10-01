@@ -10,18 +10,21 @@ get_header();
 $hotel_sections = array(
 	array(
 		'id'    => 'building',
-		'title' => 'Здание и территория',
-		'items' => troya_theme_gallery_album( 'building', 'Отель Троя' ),
+		'tab'   => (string) troya_option( 'gallery_building_tab', 'Здание' ),
+		'title' => (string) troya_option( 'gallery_building_title', 'Здание и территория' ),
+		'items' => troya_public_gallery_album( 'building', 'Отель Троя' ),
 	),
 	array(
 		'id'    => 'reception',
-		'title' => 'Ресепшен',
-		'items' => troya_theme_gallery_album( 'reception', 'Ресепшен' ),
+		'tab'   => (string) troya_option( 'gallery_reception_tab', 'Ресепшен' ),
+		'title' => (string) troya_option( 'gallery_reception_title', 'Ресепшен' ),
+		'items' => troya_public_gallery_album( 'reception', 'Ресепшен' ),
 	),
 	array(
 		'id'    => 'dining',
-		'title' => 'Столовая',
-		'items' => troya_theme_gallery_album( 'dining', 'Столовая' ),
+		'tab'   => (string) troya_option( 'gallery_dining_tab', 'Столовая' ),
+		'title' => (string) troya_option( 'gallery_dining_title', 'Столовая' ),
+		'items' => troya_public_gallery_album( 'dining', 'Столовая' ),
 	),
 );
 
@@ -74,18 +77,18 @@ $total = count( $all_photos );
 		<p class="crumbs anim-up" style="--d: 0.2s">
 			<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Главная</a><span>/</span><span>Галерея</span>
 		</p>
-		<h1 class="hero__title anim-up" style="--d: 0.5s">Галерея отеля</h1>
-		<p class="hero__text anim-up" style="--d: 0.65s">Номера, ресепшен, столовая и виды здания — все фото в одном месте.</p>
+		<h1 class="hero__title anim-up" style="--d: 0.5s"><?php echo esc_html( (string) troya_option( 'gallery_page_title', 'Галерея отеля' ) ); ?></h1>
+		<p class="hero__text anim-up" style="--d: 0.65s"><?php echo esc_html( (string) troya_option( 'gallery_page_text', 'Номера, ресепшен, столовая и виды здания — все фото в одном месте.' ) ); ?></p>
 	</div>
 </section>
 
 <section class="photo-gallery section" data-site-gallery>
 	<div class="container">
 		<nav class="photo-gallery__tabs" aria-label="Разделы галереи">
-			<a href="#building" class="photo-gallery__tab">Здание</a>
-			<a href="#reception" class="photo-gallery__tab">Ресепшен</a>
-			<a href="#dining" class="photo-gallery__tab">Столовая</a>
-			<a href="#rooms-photos" class="photo-gallery__tab">Номера</a>
+			<?php foreach ( $hotel_sections as $section ) : ?>
+				<a href="#<?php echo esc_attr( $section['id'] ); ?>" class="photo-gallery__tab"><?php echo esc_html( $section['tab'] ); ?></a>
+			<?php endforeach; ?>
+			<a href="#rooms-photos" class="photo-gallery__tab"><?php echo esc_html( (string) troya_option( 'gallery_rooms_tab', 'Номера' ) ); ?></a>
 		</nav>
 
 		<?php
@@ -115,7 +118,7 @@ $total = count( $all_photos );
 		<?php endforeach; ?>
 
 		<div class="photo-gallery__block reveal" id="rooms-photos">
-			<h2 class="heading gold-line">Номера</h2>
+			<h2 class="heading gold-line"><?php echo esc_html( (string) troya_option( 'gallery_rooms_title', 'Номера' ) ); ?></h2>
 			<?php foreach ( $room_blocks as $block ) : ?>
 				<div class="photo-gallery__room">
 					<div class="photo-gallery__room-head">

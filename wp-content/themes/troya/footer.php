@@ -37,7 +37,7 @@ $hint       = troya_option( 'modal_hint', '* ОБЯЗАТЕЛЬНЫЕ ПОЛЯ �
 			<span class="footer__rule" aria-hidden="true"></span>
 		</div>
 
-		<p class="footer__motto">Место, где <em>история</em> встречает комфорт</p>
+		<p class="footer__motto"><?php echo wp_kses_post( (string) troya_option( 'footer_motto', 'Место, где <em>история</em> встречает комфорт' ) ); ?></p>
 
 		<div class="footer__grid">
 			<div class="footer__col">

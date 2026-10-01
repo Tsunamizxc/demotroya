@@ -26,10 +26,10 @@ function troya_register_post_types(): void {
 			'public'       => true,
 			'show_ui'      => true,
 			'menu_icon'    => 'dashicons-building',
-			'supports'     => array( 'title', 'editor', 'thumbnail', 'page-attributes' ),
+			'supports'     => array( 'title', 'page-attributes' ),
 			'has_archive'  => false,
 			'rewrite'      => array( 'slug' => 'room' ),
-			'show_in_rest' => true,
+			'show_in_rest' => false,
 		)
 	);
 

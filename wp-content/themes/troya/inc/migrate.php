@@ -10,7 +10,7 @@
 defined( 'ABSPATH' ) || exit;
 
 /** Bump when deploy needs DB-side fixes without manual admin clicks. */
-define( 'TROYA_SCHEMA_VERSION', 16 );
+define( 'TROYA_SCHEMA_VERSION', 17 );
 
 add_action( 'init', 'troya_maybe_run_migrations', 5 );
 add_action( 'after_switch_theme', 'troya_force_run_migrations' );
@@ -99,6 +99,10 @@ function troya_run_migrations(): void {
 
 	if ( $from < 16 ) {
 		troya_refresh_marquee_breakfast_v16();
+	}
+
+	if ( $from < 17 ) {
+		troya_seed_editable_content_v17();
 	}
 
 	update_option( 'troya_schema_version', TROYA_SCHEMA_VERSION );
@@ -696,6 +700,145 @@ function troya_refresh_marquee_breakfast_v16(): void {
 	unset( $row );
 
 	update_field( 'marquee_items', $marquee, 'option' );
+}
+
+/**
+ * Copy gallery photos, payment terms and page titles into ACF so the client can edit them.
+ */
+function troya_seed_editable_content_v17(): void {
+	if ( ! function_exists( 'update_field' ) ) {
+		return;
+	}
+
+	$payment = troya_option( 'payment_policy_items', array() );
+	if ( ! is_array( $payment ) || ! $payment ) {
+		$rows = array();
+		foreach ( troya_payment_policy_defaults() as $text ) {
+			$rows[] = array( 'text' => $text );
+		}
+		update_field( 'payment_policy_items', $rows, 'option' );
+		update_field( 'payment_policy_title', 'Оплата и отмена', 'option' );
+	}
+
+	if ( ! troya_option( 'footer_motto', '' ) ) {
+		update_field( 'footer_motto', 'Место, где <em>история</em> встречает комфорт', 'option' );
+	}
+	if ( ! troya_option( 'booking_page_title', '' ) ) {
+		update_field( 'booking_page_title', 'Онлайн-бронирование', 'option' );
+	}
+	if ( ! troya_option( 'booking_page_lead', '' ) ) {
+		update_field( 'booking_page_lead', 'Выберите даты и номер — бронирование без комиссии напрямую в отеле «Троя».', 'option' );
+	}
+	if ( ! troya_option( 'rooms_catalog_cta', '' ) ) {
+		update_field( 'rooms_catalog_cta', 'Не нашли подходящий?', 'option' );
+	}
+	if ( ! troya_option( 'gallery_page_title', '' ) ) {
+		update_field( 'gallery_page_title', 'Галерея отеля', 'option' );
+		update_field( 'gallery_page_text', 'Номера, ресепшен, столовая и виды здания — все фото в одном месте.', 'option' );
+		update_field( 'gallery_building_tab', 'Здание', 'option' );
+		update_field( 'gallery_building_title', 'Здание и территория', 'option' );
+		update_field( 'gallery_reception_tab', 'Ресепшен', 'option' );
+		update_field( 'gallery_reception_title', 'Ресепшен', 'option' );
+		update_field( 'gallery_dining_tab', 'Столовая', 'option' );
+		update_field( 'gallery_dining_title', 'Столовая', 'option' );
+		update_field( 'gallery_rooms_tab', 'Номера', 'option' );
+		update_field( 'gallery_rooms_title', 'Номера', 'option' );
+	}
+
+	foreach ( array( 'building', 'reception', 'dining' ) as $slug ) {
+		$current = troya_option( 'gallery_' . $slug, array() );
+		if ( is_array( $current ) && $current ) {
+			continue;
+		}
+		$ids = troya_import_theme_gallery_album( $slug );
+		if ( $ids ) {
+			update_field( 'gallery_' . $slug, $ids, 'option' );
+		}
+	}
+}
+
+/**
+ * @return int[]
+ */
+function troya_import_theme_gallery_album( string $slug ): array {
+	$dir = TROYA_DIR . '/assets/photos/gallery/' . $slug;
+	if ( ! is_dir( $dir ) ) {
+		return array();
+	}
+
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+
+	$hidden = array( 'reception-1.jpg', 'reception-2.jpg', 'reception-3.jpg', 'reception-4.jpg', 'reception-5.jpg', 'reception-wide.jpg' );
+	$files  = array_values(
+		array_filter(
+			scandir( $dir ) ?: array(),
+			static function ( $name ) use ( $dir, $hidden ) {
+				if ( '.' === $name || '..' === $name || in_array( $name, $hidden, true ) ) {
+					return false;
+				}
+				$ext = strtolower( pathinfo( $name, PATHINFO_EXTENSION ) );
+				return in_array( $ext, array( 'jpg', 'jpeg', 'png', 'webp' ), true ) && is_file( $dir . '/' . $name );
+			}
+		)
+	);
+	natcasesort( $files );
+
+	$labels = array(
+		'building'  => 'Отель Троя',
+		'reception' => 'Ресепшен',
+		'dining'    => 'Столовая',
+	);
+	$label  = $labels[ $slug ] ?? 'Отель Троя';
+	$ids    = array();
+	$index  = 0;
+
+	foreach ( $files as $name ) {
+		$index++;
+		$source = $slug . '/' . $name;
+		$found  = get_posts(
+			array(
+				'post_type'      => 'attachment',
+				'post_status'    => 'inherit',
+				'posts_per_page' => 1,
+				'fields'         => 'ids',
+				'meta_key'       => '_troya_gallery_file',
+				'meta_value'     => $source,
+			)
+		);
+
+		if ( $found ) {
+			$ids[] = (int) $found[0];
+			continue;
+		}
+
+		$bits = wp_upload_bits( $name, null, (string) file_get_contents( $dir . '/' . $name ) );
+		if ( ! empty( $bits['error'] ) ) {
+			continue;
+		}
+
+		$filetype = wp_check_filetype( $bits['file'], null );
+		$attach   = wp_insert_attachment(
+			array(
+				'post_mime_type' => $filetype['type'],
+				'post_title'     => $label . ' — фото ' . $index,
+				'post_content'   => '',
+				'post_status'    => 'inherit',
+			),
+			$bits['file']
+		);
+
+		if ( is_wp_error( $attach ) || ! $attach ) {
+			continue;
+		}
+
+		wp_update_attachment_metadata( $attach, wp_generate_attachment_metadata( $attach, $bits['file'] ) );
+		update_post_meta( $attach, '_wp_attachment_image_alt', $label . ' — фото ' . $index );
+		update_post_meta( $attach, '_troya_gallery_file', $source );
+		$ids[] = (int) $attach;
+	}
+
+	return $ids;
 }
 
 /**
