@@ -3196,6 +3196,8 @@ button {
 
 .booking-page__back-btn {
   appearance: none;
+  display: inline-flex;
+  align-items: center;
   border: 1px solid var(--line, rgba(62, 35, 25, 0.18));
   background: #fff;
   color: var(--ink, #3e2319);
@@ -3205,6 +3207,7 @@ button {
   padding: 10px 16px;
   border-radius: 999px;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .booking-page__back-btn::before {

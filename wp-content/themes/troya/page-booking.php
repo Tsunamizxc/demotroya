@@ -44,12 +44,7 @@ $iframe_src = add_query_arg(
 	'https://reservationsteps.ru/rooms/index/' . rawurlencode( $uid )
 );
 
-$list_query = $query;
-unset( $list_query['onlyrooms'] );
-$rooms_list_src = add_query_arg(
-	$list_query,
-	'https://reservationsteps.ru/rooms/index/' . rawurlencode( $uid )
-);
+$rooms_page_url = troya_booking_url();
 
 $title = troya_option( 'booking_page_title', 'Онлайн-бронирование' );
 $lead  = troya_option( 'booking_page_lead', 'Выберите даты и номер — бронирование без комиссии напрямую в отеле «Троя».' );
@@ -80,8 +75,8 @@ $hero  = troya_img_url( troya_option( 'hero_poster' ), troya_asset( 'photos/hero
 </section>
 
 <section class="booking-page">
-	<div class="booking-page__back" id="booking-back" data-rooms-src="<?php echo esc_url( $rooms_list_src ); ?>">
-		<button type="button" class="booking-page__back-btn" id="booking-back-btn">К списку номеров</button>
+	<div class="booking-page__back" id="booking-back">
+		<a class="booking-page__back-btn" id="booking-back-btn" href="<?php echo esc_url( $rooms_page_url ); ?>">К списку номеров</a>
 	</div>
 	<div class="booking-page__frame">
 		<iframe
