@@ -82,16 +82,52 @@
     return true;
   }
 
+  var mobileQuery = window.matchMedia("(max-width: 900px)");
+
+  function isMobile() {
+    return mobileQuery.matches;
+  }
+
+  // While the iframe is pinned to the screen, tell Bnovo the module IS the viewport.
+  // Otherwise it places popups using the full stretched height and they land off-screen.
+  function visibleFrameInfo() {
+    var rect = iframe.getBoundingClientRect();
+    var viewH = Math.round(rect.height || viewportHeight());
+    var viewW = Math.round(rect.width || window.innerWidth);
+    return {
+      scrollTop: 0,
+      offsetTop: 0,
+      headerHeight: 0,
+      headMargin: 0,
+      windowHeight: viewH,
+      clientWidth: viewW,
+      clientHeight: viewH,
+      footerHeight: 0,
+      bodyPosition: { top: 0, left: 0, width: viewW, height: viewH },
+      iFramePosition: { top: 0, left: 0, width: viewW, height: viewH },
+    };
+  }
+
+  function syncBnovoFrame() {
+    if (!didInit) return;
+    sendBnovo({ value: overlayMode ? visibleFrameInfo() : pageInfo() });
+  }
+
   var didInit = false;
   function revealRooms() {
-    // Tall viewport: Bnovo inits sliders only for rooms it thinks are on-screen.
-    var info = pageInfo(20000);
     if (!didInit) {
-      if (!sendBnovo({ type: "init", height: "fixed", value: info })) return;
+      // A tall first report makes Bnovo init every room slider. On a phone the
+      // lasting report must be the real screen, or booking popups drop to the
+      // bottom of the stretched module.
+      var bootHeight = isMobile() ? 20000 : viewportHeight();
+      var boot = pageInfo(bootHeight);
+      var heightMode = isMobile() ? "auto" : "fixed";
+      if (!sendBnovo({ type: "init", height: heightMode, value: boot })) return;
       didInit = true;
+      if (isMobile()) sendBnovo({ value: pageInfo() });
       return;
     }
-    sendBnovo({ value: info });
+    syncBnovoFrame();
   }
 
   function enterOverlayMode() {
@@ -105,6 +141,7 @@
 
     iframe.classList.add("booking-page__iframe--overlay");
     setIframeHeight(viewportHeight());
+    window.requestAnimationFrame(syncBnovoFrame);
   }
 
   function exitOverlayMode() {
@@ -118,6 +155,7 @@
     window.scrollTo(0, scrollY);
 
     setIframeHeight(contentHeight);
+    if (isMobile()) window.requestAnimationFrame(syncBnovoFrame);
   }
 
   var backBtn = document.getElementById("booking-back-btn");
@@ -215,10 +253,25 @@
 
   window.addEventListener("resize", function () {
     if (overlayMode) setIframeHeight(viewportHeight());
+    if (isMobile()) syncBnovoFrame();
   });
   if (window.visualViewport) {
     window.visualViewport.addEventListener("resize", function () {
       if (overlayMode) setIframeHeight(viewportHeight());
+      if (isMobile()) syncBnovoFrame();
     });
   }
+
+  var frameSyncQueued = false;
+  function queueFrameSync() {
+    if (!isMobile() || frameSyncQueued) return;
+    frameSyncQueued = true;
+    window.requestAnimationFrame(function () {
+      frameSyncQueued = false;
+      syncBnovoFrame();
+    });
+  }
+
+  window.addEventListener("scroll", queueFrameSync, { passive: true });
+  window.addEventListener("pointerdown", queueFrameSync, { passive: true });
 })();
