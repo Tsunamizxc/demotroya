@@ -180,15 +180,26 @@
   }
 
   // Bnovo skips the «Размещение» summary when the iframe is 640px or narrower.
-  // Lay the module out wider than that and zoom it back to the phone width,
-  // so the summary opens and stays inside the visible module.
+  // Lay the module out wider than that and scale it back to the phone width.
+  // CSS zoom shrinks the box a second time in iOS Safari, so use transform.
   var MOBILE_LAYOUT_WIDTH = 720;
+
+  function resetFrameFit() {
+    iframe.style.zoom = "";
+    iframe.style.transform = "";
+    iframe.style.webkitTransform = "";
+    iframe.style.transformOrigin = "";
+    iframe.style.webkitTransformOrigin = "";
+    iframe.style.position = "";
+    iframe.style.left = "";
+    iframe.style.top = "";
+    iframe.style.removeProperty("width");
+    iframe.style.removeProperty("height");
+  }
 
   function fitMobileFrame() {
     if (!isMobile()) {
-      iframe.style.zoom = "";
-      iframe.style.removeProperty("width");
-      iframe.style.removeProperty("height");
+      resetFrameFit();
       return;
     }
 
@@ -201,16 +212,23 @@
     iframe.setAttribute("scrolling", "auto");
 
     if (availW > 640) {
-      iframe.style.zoom = "";
+      resetFrameFit();
       iframe.style.setProperty("width", "100%", "important");
       iframe.style.setProperty("height", "100%", "important");
       return;
     }
 
-    var zoom = availW / MOBILE_LAYOUT_WIDTH;
+    var scale = availW / MOBILE_LAYOUT_WIDTH;
+    iframe.style.zoom = "";
+    iframe.style.position = "absolute";
+    iframe.style.left = "0";
+    iframe.style.top = "0";
     iframe.style.setProperty("width", MOBILE_LAYOUT_WIDTH + "px", "important");
-    iframe.style.setProperty("height", Math.ceil(availH / zoom) + "px", "important");
-    iframe.style.setProperty("zoom", String(zoom));
+    iframe.style.setProperty("height", Math.ceil(availH / scale) + "px", "important");
+    iframe.style.transformOrigin = "0 0";
+    iframe.style.webkitTransformOrigin = "0 0";
+    iframe.style.transform = "scale(" + scale + ")";
+    iframe.style.webkitTransform = "scale(" + scale + ")";
   }
 
   function startResizer() {
