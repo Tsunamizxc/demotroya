@@ -16,8 +16,19 @@
   var INITIAL_HEIGHT = 4800;
   var acceptHeight = false;
 
-  iframe.style.height = INITIAL_HEIGHT + "px";
-  iframe.setAttribute("height", String(INITIAL_HEIGHT));
+  var mobileQuery = window.matchMedia("(max-width: 900px)");
+
+  function isMobile() {
+    return mobileQuery.matches;
+  }
+
+  if (isMobile()) {
+    iframe.style.minHeight = "0";
+    iframe.setAttribute("scrolling", "auto");
+  } else {
+    iframe.style.height = INITIAL_HEIGHT + "px";
+    iframe.setAttribute("height", String(INITIAL_HEIGHT));
+  }
 
   function viewportHeight() {
     var vv = window.visualViewport;
@@ -26,6 +37,7 @@
   }
 
   function setIframeHeight(h) {
+    if (isMobile()) return;
     if (!overlayMode && !acceptHeight) return;
     if (locking) return;
     locking = true;
@@ -82,12 +94,6 @@
     return true;
   }
 
-  var mobileQuery = window.matchMedia("(max-width: 900px)");
-
-  function isMobile() {
-    return mobileQuery.matches;
-  }
-
   // While the iframe is pinned to the screen, tell Bnovo the module IS the viewport.
   // Otherwise it places popups using the full stretched height and they land off-screen.
   function visibleFrameInfo() {
@@ -119,19 +125,16 @@
       // A tall first report makes Bnovo init every room slider. On a phone the
       // lasting report must be the real screen, or booking popups drop to the
       // bottom of the stretched module.
-      var bootHeight = isMobile() ? 20000 : viewportHeight();
-      var boot = pageInfo(bootHeight);
-      var heightMode = isMobile() ? "auto" : "fixed";
-      if (!sendBnovo({ type: "init", height: heightMode, value: boot })) return;
+      var boot = pageInfo(viewportHeight());
+      if (!sendBnovo({ type: "init", height: "fixed", value: boot })) return;
       didInit = true;
-      if (isMobile()) sendBnovo({ value: pageInfo() });
       return;
     }
     syncBnovoFrame();
   }
 
   function enterOverlayMode() {
-    if (overlayMode) return;
+    if (isMobile() || overlayMode) return;
     overlayMode = true;
     scrollY = window.scrollY || window.pageYOffset || 0;
 
@@ -176,7 +179,42 @@
     });
   }
 
+  // Bnovo skips the «Размещение» summary when the iframe is 640px or narrower.
+  // Lay the module out wider than that and zoom it back to the phone width,
+  // so the summary opens and stays inside the visible module.
+  var MOBILE_LAYOUT_WIDTH = 720;
+
+  function fitMobileFrame() {
+    if (!isMobile()) {
+      iframe.style.zoom = "";
+      iframe.style.removeProperty("width");
+      iframe.style.removeProperty("height");
+      return;
+    }
+
+    var frame = iframe.parentElement;
+    var availW = frame ? frame.clientWidth : 0;
+    var availH = frame ? frame.clientHeight : 0;
+    if (!availW || !availH) return;
+
+    iframe.style.minHeight = "0";
+    iframe.setAttribute("scrolling", "auto");
+
+    if (availW > 640) {
+      iframe.style.zoom = "";
+      iframe.style.setProperty("width", "100%", "important");
+      iframe.style.setProperty("height", "100%", "important");
+      return;
+    }
+
+    var zoom = availW / MOBILE_LAYOUT_WIDTH;
+    iframe.style.setProperty("width", MOBILE_LAYOUT_WIDTH + "px", "important");
+    iframe.style.setProperty("height", Math.ceil(availH / zoom) + "px", "important");
+    iframe.style.setProperty("zoom", String(zoom));
+  }
+
   function startResizer() {
+    if (isMobile()) return;
     acceptHeight = true;
     if (typeof window.iFrameResize !== "function") return;
     window.iFrameResize(
@@ -252,11 +290,13 @@
   });
 
   window.addEventListener("resize", function () {
+    fitMobileFrame();
     if (overlayMode) setIframeHeight(viewportHeight());
     if (isMobile()) syncBnovoFrame();
   });
   if (window.visualViewport) {
     window.visualViewport.addEventListener("resize", function () {
+      fitMobileFrame();
       if (overlayMode) setIframeHeight(viewportHeight());
       if (isMobile()) syncBnovoFrame();
     });
@@ -271,6 +311,10 @@
       syncBnovoFrame();
     });
   }
+
+  fitMobileFrame();
+  window.addEventListener("load", fitMobileFrame);
+  window.requestAnimationFrame(fitMobileFrame);
 
   window.addEventListener("scroll", queueFrameSync, { passive: true });
   window.addEventListener("pointerdown", queueFrameSync, { passive: true });

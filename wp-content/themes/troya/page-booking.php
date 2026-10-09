@@ -8,6 +8,14 @@
  * @package Troya
  */
 
+add_filter(
+	'body_class',
+	static function ( array $classes ): array {
+		$classes[] = 'booking-widget-page';
+		return $classes;
+	}
+);
+
 get_header();
 
 $uid = troya_bnovo_uid();
