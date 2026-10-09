@@ -7,7 +7,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'TROYA_VERSION', '1.7.8' );
+define( 'TROYA_VERSION', '1.7.10' );
 define( 'TROYA_DIR', get_template_directory() );
 define( 'TROYA_URI', get_template_directory_uri() );
 

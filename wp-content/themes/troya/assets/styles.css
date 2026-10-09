@@ -4046,7 +4046,7 @@ html.bnovo-overlay-open:has(.booking-page__back:not([hidden])) .booking-page__if
   }
 
   .menu-overlay__nav {
-    padding: 100px 24px calc(168px + env(safe-area-inset-bottom, 0px));
+    padding: 35px 24px calc(103px + env(safe-area-inset-bottom, 0px));
     overflow-y: auto;
   }
 
