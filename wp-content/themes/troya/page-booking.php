@@ -84,7 +84,7 @@ $hero  = troya_img_url( troya_option( 'hero_poster' ), troya_asset( 'photos/hero
 
 <section class="booking-page">
 	<div class="booking-page__back" id="booking-back">
-		<a class="booking-page__back-btn" id="booking-back-btn" href="<?php echo esc_url( $rooms_page_url ); ?>">К списку номеров</a>
+		<a class="booking-page__back-btn" id="booking-back-btn" href="<?php echo esc_url( $rooms_page_url ); ?>"><span class="booking-page__back-desktop">К списку номеров</span><span class="booking-page__back-mobile">Вернуться к номерам</span></a>
 	</div>
 	<div class="booking-page__frame">
 		<iframe
